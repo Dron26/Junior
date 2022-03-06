@@ -6,13 +6,13 @@ namespace Test
     {
         static void Main(string[] args)
         {
-          int count;
+          int repeat;
           string text;
           Console.WriteLine("Введите количество повторений: ");
-          count= Convert.ToInt32(Console.ReadLine());
+          repeat= Convert.ToInt32(Console.ReadLine());
           Console.WriteLine("Введите текст повторения: ");
           text=Console.ReadLine();
-          for (int i=0;i<count;i++)
+          for (int i=0;i<repeat;i++)
           {
               Console.WriteLine(text);
           }                            
