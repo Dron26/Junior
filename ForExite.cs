@@ -8,21 +8,17 @@ namespace Test
         {
           float number;
           float summ=0;
-          string selectInMenu;
+          string selectInMenu=null;
           int count=0;
           
           Console.WriteLine("Помогите провести эксперемент, необходимо   складывать числа, пока мы не достигнем математического предела ");
-          while(count<20)
+            
+          while(selectInMenu!="exite")
           {         
             Console.WriteLine("Введите число для сложения: ");
-            selectInMenu=Console.ReadLine();                    if(selectInMenu=="exite")  
-          {
-            break;
-          } 
-            number=Convert.ToInt32(selectInMenu);
+            selectInMenu=Console.ReadLine();                    number=Convert.ToInt32(selectInMenu);
             summ+=number;
             Console.WriteLine($"Сумма :{summ}");
-            count++;
           }                                  
         }
     }
