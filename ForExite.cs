@@ -9,7 +9,7 @@ namespace Test
           float number;
           float summ=0;
           string selectInMenu=null;  
-          bool isOn=true;
+          bool isWorking=true;
           
           Console.WriteLine("Помогите провести эксперемент, необходимо   складывать числа, пока мы не достигнем математического предела ");
           
@@ -27,7 +27,7 @@ namespace Test
             
             else
             {
-              isOn=false;                
+              isWorking=false;                
             }
           } 
           Console.WriteLine("Закрытие программы");
