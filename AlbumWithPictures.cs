@@ -6,12 +6,12 @@ namespace ConsoleApp9
     {
         static void Main(string[] args)
         {
-            int pictures = 52;
-            int maxRows = 3;
-            int totalRows = pictures / maxRows;
-            int overPictures = pictures - (totalRows * maxRows);
-            Console.WriteLine($"Количество: \n  картинок в альбоме - {pictures} \n  рядов картинок - {maxRows} \n  " +
-                $"целых рядов - {totalRows} \n  картинок сверх альбома - {overPictures}");
+            int pictures = 55;
+            int picturesInRow = 3;
+            int totalRows = pictures / picturesInRow;
+            int overPictures = pictures % picturesInRow;
+            Console.WriteLine($"Количество: \n  картинок в альбоме - {pictures} \n  картинок в ряду - {picturesInRow} \n  " +
+            $"целых рядов - {totalRows} \n  картинок сверх альбома - {overPictures}");
         }
     }
 }
