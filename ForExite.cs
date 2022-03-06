@@ -6,23 +6,23 @@ namespace Test
     {
         static void Main(string[] args)
         {
-          float count;
-          float count2=0;
+          float number;
+          float summ=0;
           string selectInMenu;
+          int count=0;
           
           Console.WriteLine("Помогите провести эксперемент, необходимо   складывать числа, пока мы не достигнем математического предела ");
-          while(true)
-          {            
+          while(count<20)
+          {         
             Console.WriteLine("Введите число для сложения: ");
-            selectInMenu=Console.ReadLine();
-            
-            if(selectInMenu=="exite")  
+            selectInMenu=Console.ReadLine();                    if(selectInMenu=="exite")  
           {
             break;
           } 
-            count=Convert.ToInt32(selectInMenu);
-            count2+=count;            
-            Console.WriteLine($"Сумма :{count2}");
+            number=Convert.ToInt32(selectInMenu);
+            summ+=number;
+            Console.WriteLine($"Сумма :{summ}");
+            count++;
           }                                  
         }
     }
