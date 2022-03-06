@@ -6,7 +6,7 @@ namespace ConsoleApp9
     {
         static void Main(string[] args)
         {
-            int pictures = 55;
+            int pictures = 52;
             int picturesInRow = 3;
             int filledRows = pictures / picturesInRow;
             int overPictures = pictures % picturesInRow;
