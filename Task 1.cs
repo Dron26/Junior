@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ConsoleApp9
 {
@@ -10,10 +10,10 @@ namespace ConsoleApp9
             string text;
             int count;
             bool isMan;
-            char g;
+            char symbol;
             byte firstOffer;
-            decimal secondValue;
-            float valueLife;
+            decimal distance;
+            float numberPI;
             long valueWieght;
             uint bigNumber;
             ulong bigNumber2;
