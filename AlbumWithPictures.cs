@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace ConsoleApp9
 {
@@ -6,12 +6,12 @@ namespace ConsoleApp9
     {
         static void Main(string[] args)
         {
-            int quantityPictures = 52;
-            int quantityColumns = 3;
-            int numbersColumns = quantityPictures / quantityColumns;
-            int overColumnsQuantity = quantityPictures - (numbersColumns * quantityColumns);
-            Console.WriteLine($"Количество: \n  картинок в альбоме - {quantityPictures} \n  рядов картинок - {quantityColumns} \n  " +
-                $"целых рядов - {numbersColumns} \n  картинок сверх альбома - {overColumnsQuantity}");
+            int pictures = 52;
+            int maxRows = 3;
+            int totalRows = pictures / maxRows;
+            int overPictures = pictures - (totalRows * maxRows);
+            Console.WriteLine($"Количество: \n  картинок в альбоме - {pictures} \n  рядов картинок - {maxRows} \n  " +
+                $"целых рядов - {totalRows} \n  картинок сверх альбома - {overPictures}");
         }
     }
 }
