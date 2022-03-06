@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Test
 {
@@ -9,12 +6,15 @@ namespace Test
     {
         static void Main(string[] args)
         {
-           int count;
-       Console.WriteLine("Введите количество повторений: ");
+          int count;
+          string text;
+          Console.WriteLine("Введите количество повторений: ");
           count= Convert.ToInt32(Console.ReadLine());
+          Console.WriteLine("Введите текст повторения: ");
+          text=Console.ReadLine();
           for (int i=0;i<count;i++)
           {
-              Console.WriteLine($"Повтор № {i+1}");
+              Console.WriteLine(text);
           }                            
         }
     }
