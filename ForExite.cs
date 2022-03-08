@@ -13,7 +13,7 @@ namespace Test
           
           Console.WriteLine("Помогите провести эксперемент, необходимо   складывать числа, пока мы не достигнем математического предела ");
           
-          while(isOn)
+          while(isWorking)
           {         
             Console.WriteLine("Введите число для сложения: ");            
             selectInMenu=Console.ReadLine(); 
