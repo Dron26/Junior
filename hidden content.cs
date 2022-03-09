@@ -15,6 +15,7 @@ namespace converter
             {
                 Console.WriteLine("Введите пароль для доступа к почте: ");
                 inputUser = Console.ReadLine();
+                
                 if (inputUser == password)
                 {
                     Console.WriteLine("  Пароль верен\n  Секректное сообщение: Нычка в системнике, проверь");
