@@ -7,18 +7,16 @@ namespace converter
         static void Main(string[] args)
         {
             Random random = new Random();
-            float USD= random.Next(50,100);
+            float USD = random.Next(50, 100);
             float RUB = random.Next(5000, 10000);
             float EUR = random.Next(50, 100);
             bool isWorking = true;
             int positionX;
             int positionY;
-            int firstSelection;
-            int secondSelection;
-            int number;
-            string checkInPut;
-            float coursRubToUSD = 0.0095f;
-            float coursRubToEUR = 0.0086f;
+            int summconvert = 0;
+            string inputUser;
+            float coursRubToUsd = 0.0095f;
+            float coursRubToEur = 0.0086f;
             float coursEurToUsd = 1.0927f;
             float coursEurToRub = 115.6212f;
             float coursUsdToEur = 0.9152f;
@@ -37,125 +35,66 @@ namespace converter
                 Console.SetCursorPosition(2, 27);
                 Console.WriteLine("Для выхода нажмите (E)xite");
                 Console.SetCursorPosition(positionX, positionY);
-                Console.WriteLine("Выберете валюту которую хотите обменять \n\n  1 - Рубли - RUB\n  2 - Доллары - USD\n  3 - Евро - EUR");
-                checkInPut = Console.ReadLine();
+                Console.WriteLine("Выберете подходящую операцию по обмену \n\n" +
+                    "  1 - RUB->USD\n  2 - RUB->EUR\n" +
+                    "  3 - USD->RUB\n  4 - USD->EUR\n" +
+                    "  5 - EUR->RUB\n  6 - EUR->USD\n");                
+                inputUser = Console.ReadLine();
 
-                if (checkInPut=="E"| checkInPut == "exite"| checkInPut == "Exite"| checkInPut == "e")
+                if (inputUser == "e" | inputUser == "E" | inputUser == "exite" | inputUser == "Exite")
                 {
+                    Console.WriteLine("Программа завершена");
                     isWorking = false;
-                    break;
                 }
-                firstSelection = Convert.ToInt32(checkInPut);               
-                Console.WriteLine("Выберете валюту на какую хотите обменять \n\n  1 - Рубли - RUB\n  2 - Доллары - USD\n  3 - Евро - EUR");
-                checkInPut = Console.ReadLine();
 
-                if (checkInPut == "E" | checkInPut == "exite" | checkInPut == "Exite")
+                else if (isWorking)
                 {
-                    isWorking = false;
-                    break;
-                }
-                secondSelection = Convert.ToInt32(checkInPut);
-                Console.WriteLine("Введите сумму для обмена: ");
-                checkInPut = Console.ReadLine();
+                    Console.WriteLine("Введите сумму для обмена: ");
+                    summconvert = Convert.ToInt32(Console.ReadLine());
 
-                if (checkInPut == "E" | checkInPut == "exite" | checkInPut == "Exite")
-                {
-                    isWorking = false;
-                    break;
-                }
-                number = Convert.ToInt32(checkInPut);
-
-                if (firstSelection == 1 && secondSelection == 2)
-                {
-                    if (number <= RUB)
+                    if (inputUser == "1" && summconvert <= RUB && isWorking == true)
                     {
-                        RUB -= number;
-                        USD += coursRubToUSD * number;
+                        RUB -= summconvert;
+                        USD += coursRubToUsd * summconvert;
                     }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("У вас не достаточно средств");
-                        Console.ReadLine();
-                    }                       
-                }
 
-                if (firstSelection == 1 && secondSelection == 3)
-                {
-                    if (number <= RUB)
+                    else if (inputUser == "2" && summconvert <= RUB && isWorking == true)
                     {
-                        RUB -= number;
+                        RUB -= summconvert;
+                        EUR += coursRubToEur * summconvert;
+                    }
 
-                        EUR += coursRubToEUR * number;
-                    }
-                    else
+                    else if (inputUser == "3" && summconvert <= USD && isWorking == true)
                     {
-                        Console.Clear();
-                        Console.WriteLine("У вас не достаточно средств");
-                        Console.ReadLine();
+                        USD -= summconvert;
+                        RUB += coursUsdToRub * summconvert;
                     }
-                }
 
-                if (firstSelection == 2 && secondSelection == 1)
-                {
-                    if (number <= USD)
+                    else if (inputUser == "4" && summconvert <= USD && isWorking == true)
                     {
-                        USD -= number;
-                        RUB += coursUsdToRub * number;
+                        USD -= summconvert;
+                        EUR += coursUsdToEur * summconvert;
                     }
+
+                    else if (inputUser == "5" && summconvert <= EUR && isWorking == true)
+                    {
+                        EUR -= summconvert;
+                        RUB += coursEurToRub * summconvert;
+                    }
+
+                    else if (inputUser == "6" && summconvert <= EUR && isWorking == true)
+                    {
+                        EUR -= summconvert;
+                        USD += coursEurToUsd * summconvert;
+                    }
+
                     else
                     {
                         Console.Clear();
                         Console.WriteLine("У вас не достаточно средств");
                         Console.ReadLine();
                     }
-                }
-
-                if (firstSelection == 2 && secondSelection == 3)
-                {
-                    if (number <= USD)
-                    {
-                        USD -= number;
-                        EUR += coursUsdToEur * number;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("У вас не достаточно средств");
-                        Console.ReadLine();
-                    }
-                }
-
-                if (firstSelection == 3 && secondSelection == 1)
-                {
-                    if (number <= EUR)
-                    {
-                        EUR -= number;
-                        RUB += coursEurToRub * number;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("У вас не достаточно средств");
-                        Console.ReadLine();
-                    }
-
-                }
-
-                if (firstSelection == 3 && secondSelection == 2)
-                {
-                    if (number <= EUR)
-                    {
-                        EUR -= number;
-                        USD += coursEurToUsd * number;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("У вас не достаточно средств");
-                        Console.ReadLine();
-                    }
-                }               
+                }                                
             }
         }
     }
