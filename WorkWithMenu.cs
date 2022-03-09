@@ -17,8 +17,8 @@ namespace WorkWithMenu
             bool isWorkingMenu = true;
             string name = null;
             int countInput = 0;
-            int horizontalBorder = 1;
-            int verticalBorder = 2;
+            int horizontalBorder = 100;
+            int verticalBorder = 21;
 
             while (isPasswordCorrect == false)
             {
@@ -278,31 +278,6 @@ namespace WorkWithMenu
 
                 else if (userInput == "6" | userInput == "SetPassword")
                 {
-
-                    Console.Clear();
-
-                    for (int i = 0; i < horizontalBorder; i++)
-                    {
-                        Console.Write("-");
-                    }
-                    positionX = Console.CursorLeft;
-                    Console.WriteLine("");
-                    positionY = Console.CursorTop;
-                    Console.SetCursorPosition(0, 21);
-
-                    for (int i = 0; i < horizontalBorder; i++)
-                    {
-                        Console.Write("-");
-                    }
-                    Console.SetCursorPosition(positionX - 1, positionY + 1);
-
-                    for (int i = 0; i < verticalBorder; i++)
-                    {
-                        Console.WriteLine("|");
-                        Console.SetCursorPosition(positionX - 1, positionY + i);
-                    }
-                    Console.SetCursorPosition(3, 1);
-
                     while (countInput < 3 && isPasswordCorrect == false)
                     {
                         Console.Clear();
@@ -336,7 +311,7 @@ namespace WorkWithMenu
                             Console.WriteLine("Пароль не верен.Повторите ввод.");
                             Console.WriteLine($"Плпыток ввода {2 - countInput}");
                             Console.ReadLine();
-                            countInput++;                            
+                            countInput++;
                         }
 
                         else
@@ -352,7 +327,7 @@ namespace WorkWithMenu
                                 Console.ReadLine();
                             }
 
-                            else  
+                            else
                             {
                                 password = userInput1;
                                 Console.WriteLine("Пароль изменен");
@@ -362,6 +337,10 @@ namespace WorkWithMenu
                     }
                 }
 
+                //поставил тут if тк в других меню нет остановки и при сохранении никнейма или  
+                //имени, консоль пробегает без остановки и непонятно что произошло, чтобы в каждом меню не ставить Console.ReadLine();
+                //поставил 1 здесь на все меню(кроме 6 го, (там необходимо предупреждение вывести до очистки консоли и выхода из меню) 
+                //если не делать if и countPut будет непонятная реакция -необходимо два раза enter нажимать пропуская Console.ReadLine();
                 if (countInput != 3)
                 {
                     Console.ReadLine();
@@ -370,3 +349,4 @@ namespace WorkWithMenu
             }
         }
     }
+}
