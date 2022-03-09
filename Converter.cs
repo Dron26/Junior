@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace converter
 {
@@ -6,10 +6,10 @@ namespace converter
     {
         static void Main(string[] args)
         {
-            Random rnd = new Random();
-            float USD=rnd.Next(50,100);
-            float RUB = rnd.Next(5000, 10000);
-            float EUR = rnd.Next(50, 100);
+            Random random = new Random();
+            float USD= random.Next(50,100);
+            float RUB = random.Next(5000, 10000);
+            float EUR = random.Next(50, 100);
             bool isWorking = true;
             int positionX;
             int positionY;
@@ -17,14 +17,15 @@ namespace converter
             int secondSelection;
             int number;
             string checkInPut;
-            float coursSellUSD = 105.81f;
-            float coursEurToUsd = 0.9152f;
-            float coursUsdToEur = 1.0927f;
-            float coursSellEUR = 116.53f;
+            float coursRubToUSD = 0.0095f;
+            float coursRubToEUR = 0.0086f;
+            float coursEurToUsd = 1.0927f;
+            float coursEurToRub = 115.6212f;
+            float coursUsdToEur = 0.9152f;
+            float coursUsdToRub = 105.8124f;
 
             Console.WriteLine("  Доброго времени суток!\n  Вас приветствует конвертор валют.Здесь вы можете обменять:\n\n  Рубли - RUB\n  Доллары - USD\n  Евро - EUR");
             Console.ReadLine();
-            
 
             while (isWorking)
             {
@@ -36,18 +37,15 @@ namespace converter
                 Console.SetCursorPosition(2, 27);
                 Console.WriteLine("Для выхода нажмите (E)xite");
                 Console.SetCursorPosition(positionX, positionY);
-
                 Console.WriteLine("Выберете валюту которую хотите обменять \n\n  1 - Рубли - RUB\n  2 - Доллары - USD\n  3 - Евро - EUR");
                 checkInPut = Console.ReadLine();
 
-                if (checkInPut=="E"| checkInPut == "exite"| checkInPut == "Exite")
+                if (checkInPut=="E"| checkInPut == "exite"| checkInPut == "Exite"| checkInPut == "e")
                 {
                     isWorking = false;
                     break;
                 }
-                firstSelection = Convert.ToInt32(checkInPut);
-
-                
+                firstSelection = Convert.ToInt32(checkInPut);               
                 Console.WriteLine("Выберете валюту на какую хотите обменять \n\n  1 - Рубли - RUB\n  2 - Доллары - USD\n  3 - Евро - EUR");
                 checkInPut = Console.ReadLine();
 
@@ -72,7 +70,7 @@ namespace converter
                     if (number <= RUB)
                     {
                         RUB -= number;
-                        USD += (1 / coursSellUSD) * number;
+                        USD += coursRubToUSD * number;
                     }
                     else
                     {
@@ -88,7 +86,7 @@ namespace converter
                     {
                         RUB -= number;
 
-                        EUR += (1 / coursSellEUR) * number;
+                        EUR += coursRubToEUR * number;
                     }
                     else
                     {
@@ -103,7 +101,7 @@ namespace converter
                     if (number <= USD)
                     {
                         USD -= number;
-                        RUB += (coursSellUSD / 1) * number;
+                        RUB += coursUsdToRub * number;
                     }
                     else
                     {
@@ -133,7 +131,7 @@ namespace converter
                     if (number <= EUR)
                     {
                         EUR -= number;
-                        RUB += coursSellEUR * number;
+                        RUB += coursEurToRub * number;
                     }
                     else
                     {
@@ -149,7 +147,7 @@ namespace converter
                     if (number <= EUR)
                     {
                         EUR -= number;
-                        USD += (coursEurToUsd / 1) * number;
+                        USD += coursEurToUsd * number;
                     }
                     else
                     {
