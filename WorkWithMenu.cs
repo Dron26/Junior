@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace WorkWithMenu
 {
@@ -11,18 +11,21 @@ namespace WorkWithMenu
             int positionY;
             string password = "1";
             string userInput;
-            string nikName = null;
-            bool isPasswordCorrect = true;
+            string userInput1;
+            string nikтame = null;
+            bool isPasswordCorrect = false;
             bool isWorkingMenu = true;
             string name = null;
             int countInput = 0;
+            int horizontalBorder = 1;
+            int verticalBorder = 2;
 
-            while (isPasswordCorrect)
+            while (isPasswordCorrect == false)
             {
                 Console.SetCursorPosition(3, 1);
                 Console.WriteLine("Вход в программу\n   Введите пароль: \n\n");
                 Console.SetCursorPosition(0, 0);
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < horizontalBorder; i++)
                 {
                     Console.Write("-");
                 }
@@ -31,13 +34,13 @@ namespace WorkWithMenu
                 positionY = Console.CursorTop;
                 Console.SetCursorPosition(0, 21);
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < horizontalBorder; i++)
                 {
                     Console.Write("-");
                 }
                 Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                for (int i = 0; i < 21; i++)
+                for (int i = 0; i < verticalBorder; i++)
                 {
                     Console.WriteLine("|");
                     Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -53,14 +56,15 @@ namespace WorkWithMenu
                 }
                 else
                 {
-                    isPasswordCorrect = false;
+                    isPasswordCorrect = true;
                 }
             }
 
             while (isWorkingMenu)
             {
+                isPasswordCorrect = false;
                 Console.Clear();
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < horizontalBorder; i++)
                 {
                     Console.Write("-");
                 }
@@ -69,13 +73,13 @@ namespace WorkWithMenu
                 positionY = Console.CursorTop;
                 Console.SetCursorPosition(0, 21);
 
-                for (int i = 0; i < 100; i++)
+                for (int i = 0; i < horizontalBorder; i++)
                 {
                     Console.Write("-");
                 }
                 Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                for (int i = 0; i < 21; i++)
+                for (int i = 0; i < verticalBorder; i++)
                 {
                     Console.WriteLine("|");
                     Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -85,18 +89,17 @@ namespace WorkWithMenu
                 Console.WriteLine(" Основное меню  \n\n  1 - SetName\n\n  2 - SetNikName\n\n  3 - ChangeConsoleColor\n\n  4 - WriteName\n\n  5 - WriteNikName\n\n  6 - SetPassword");
                 userInput = Console.ReadLine();
 
-
                 if (userInput == "E" | userInput == "exite" | userInput == "Exite")
                 {
                     isWorkingMenu = false;
                     break;
                 }
 
-                if (userInput == "1" | userInput == "SetName")
+                else if (userInput == "1" | userInput == "SetName")
                 {
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -105,13 +108,13 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -122,11 +125,11 @@ namespace WorkWithMenu
                     Console.WriteLine("Имя сохранено");
                 }
 
-                if (userInput == "2" | userInput == "SetNikName")
+                else if (userInput == "2" | userInput == "SetNikName")
                 {
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -135,28 +138,28 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
                     }
                     Console.SetCursorPosition(3, 1);
                     Console.WriteLine("Введите Никнейм:");
-                    nikName = Console.ReadLine();
+                    nikтame = Console.ReadLine();
                     Console.WriteLine("Никнейм сохранен");
                 }
 
-                if (userInput == "3" | userInput == "ChangeConsoleColor")
+                else if (userInput == "3" | userInput == "ChangeConsoleColor")
                 {
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -165,13 +168,13 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -201,11 +204,11 @@ namespace WorkWithMenu
                     Console.WriteLine("Цвет изменен.");
                 }
 
-                if (userInput == "4" | userInput == "WriteName")
+                else if (userInput == "4" | userInput == "WriteName")
                 {
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -214,13 +217,13 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -237,11 +240,11 @@ namespace WorkWithMenu
 
                 }
 
-                if (userInput == "5" | userInput == "WriteNikName")
+                else if (userInput == "5" | userInput == "WriteNikName")
                 {
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -250,21 +253,21 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
                     }
                     Console.SetCursorPosition(3, 2);
-                    if (nikName != null)
+                    if (nikтame != null)
                     {
-                        Console.WriteLine(nikName);
+                        Console.WriteLine(nikтame);
                     }
 
                     else
@@ -273,12 +276,12 @@ namespace WorkWithMenu
                     }
                 }
 
-                if (userInput == "6" | userInput == "SetPassword")
+                else if (userInput == "6" | userInput == "SetPassword")
                 {
 
                     Console.Clear();
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
@@ -287,24 +290,24 @@ namespace WorkWithMenu
                     positionY = Console.CursorTop;
                     Console.SetCursorPosition(0, 21);
 
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < horizontalBorder; i++)
                     {
                         Console.Write("-");
                     }
                     Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                    for (int i = 0; i < 21; i++)
+                    for (int i = 0; i < verticalBorder; i++)
                     {
                         Console.WriteLine("|");
                         Console.SetCursorPosition(positionX - 1, positionY + i);
                     }
                     Console.SetCursorPosition(3, 1);
 
-                    while (countInput < 3)
+                    while (countInput < 3 && isPasswordCorrect == false)
                     {
                         Console.Clear();
 
-                        for (int i = 0; i < 100; i++)
+                        for (int i = 0; i < horizontalBorder; i++)
                         {
                             Console.Write("-");
                         }
@@ -313,13 +316,13 @@ namespace WorkWithMenu
                         positionY = Console.CursorTop;
                         Console.SetCursorPosition(0, 21);
 
-                        for (int i = 0; i < 100; i++)
+                        for (int i = 0; i < horizontalBorder; i++)
                         {
                             Console.Write("-");
                         }
                         Console.SetCursorPosition(positionX - 1, positionY + 1);
 
-                        for (int i = 0; i < 21; i++)
+                        for (int i = 0; i < verticalBorder; i++)
                         {
                             Console.WriteLine("|");
                             Console.SetCursorPosition(positionX - 1, positionY + i);
@@ -332,8 +335,8 @@ namespace WorkWithMenu
                         {
                             Console.WriteLine("Пароль не верен.Повторите ввод.");
                             Console.WriteLine($"Плпыток ввода {2 - countInput}");
-                            countInput++;
                             Console.ReadLine();
+                            countInput++;                            
                         }
 
                         else
@@ -342,16 +345,18 @@ namespace WorkWithMenu
                             Console.WriteLine("Введите новый пароль:");
                             userInput = Console.ReadLine();
                             Console.WriteLine("Повторите новый пароль:");
-
-                            if (userInput != Console.ReadLine())
+                            userInput1 = Console.ReadLine();
+                            if (userInput != userInput1)
                             {
                                 Console.WriteLine("Пароль не верен.Повторите ввод.");
+                                Console.ReadLine();
                             }
 
-                            if (userInput == Console.ReadLine())
+                            else  
                             {
-                                password = Console.ReadLine();
+                                password = userInput1;
                                 Console.WriteLine("Пароль изменен");
+                                isPasswordCorrect = true;
                             }
                         }
                     }
@@ -365,4 +370,3 @@ namespace WorkWithMenu
             }
         }
     }
-}
