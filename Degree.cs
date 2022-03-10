@@ -1,5 +1,3 @@
-﻿
-
 using System;
 
 namespace converter
@@ -9,7 +7,7 @@ namespace converter
         static void Main(string[] args)
         {
             int Number = 2;
-            int maxNumber = 27;
+            int maxNumber = 1000;
             int degree = 0;
             Random random = new Random();
             int number = random.Next(Number, maxNumber);
@@ -17,7 +15,7 @@ namespace converter
             bool isWorking = true;
 
             while (isWorking)
-            {               
+            {
                 if (upDegree > number)
                 {
                     isWorking = false;
