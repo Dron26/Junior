@@ -8,16 +8,14 @@ namespace converter
         {
             string password = "Admin";
             string inputUser;
-            bool isWorker =true;
-            int inputCount=0;
-            int maxIncorrectInput =3;
-            int attemptCount=2;
+            bool isWorker = true;
+            int attemptCount = 3;
 
-            while (isWorker&&inputCount<maxIncorrectInput)
+            while (isWorker && attemptCount >0)
             {
                 Console.WriteLine("Введите пароль для доступа к почте: ");
                 inputUser = Console.ReadLine();
-                
+
                 if (inputUser == password)
                 {
                     Console.WriteLine("  Пароль верен\n  Секректное сообщение: Нычка в системнике, проверь");
@@ -27,8 +25,8 @@ namespace converter
 
                 else if (inputUser != password)
                 {
-                    Console.WriteLine($"  Введен неверный пароль!\n  Осталось {attemptCount-inputCount} попыток ввода ");
-                    inputCount++;
+                    attemptCount--;
+                    Console.WriteLine($"  Введен неверный пароль!\n  Осталось {attemptCount} попыток ввода ");
                     Console.ReadLine();
                     Console.Clear();
                 }
