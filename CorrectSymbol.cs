@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace converter
 {
@@ -9,7 +9,7 @@ namespace converter
 
             string textInput;
             int upDepth = 0;
-            int downdDepth = 0;
+            int downDepth = 0;
             int maxDepth = 0;
             int clouseDepth = 1;
             int upDepthAll = 1;
@@ -24,7 +24,7 @@ namespace converter
             {             
                 if (c==')')
                 {
-                    downdDepth++;
+                    downDepth++;
                     if (c == ')'&(count == 0| count == 1))
                     {
                         CorrectText = true;
@@ -36,7 +36,7 @@ namespace converter
                         upDepth= upDepth - clouseDepth;
                     }
 
-                    else if (downdDepth> upDepthAll)
+                    else if (downDepth> upDepthAll)
                     {
                         CorrectText = true;
                     }
@@ -49,7 +49,7 @@ namespace converter
                 }
                 count++;              
             }
-            if (upDepthAll != downdDepth)
+            if (upDepthAll != downDepth)
             {
                 CorrectText = true;
                 showCorrectText = "не корректная";
