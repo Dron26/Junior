@@ -19,11 +19,12 @@ namespace converter
             {
                 if ( symbol == '(')
                 {
+                    depth++;
+                    
                     if (maxDepth < depth)
                     {
                         maxDepth = depth;
-                    }
-                    depth++;
+                    }                    
                 }
                 else 
                 {                                                   
