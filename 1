@@ -1,0 +1,184 @@
+using System;
+
+namespace Battel_vs_Boss
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Random random = new Random();
+            string name;
+            int minDamage = 10;
+            int maxDamage = 20;
+            int damage = random.Next(minDamage, maxDamage);
+            int magicHit = random.Next(minDamage, maxDamage);
+            int fireBoll = random.Next(minDamage, maxDamage);
+            int iceBoll = random.Next(minDamage, maxDamage);
+            int magicRecover = random.Next(minDamage, maxDamage);
+            int minHealth = 100;
+            int maxHealth = 150;
+            int health = random.Next(minHealth, maxHealth);
+            int userInput;
+            int chanceFirstStrike = random.Next(0, 100);
+            int selectStrike;
+            bool isSelectStrike = false;
+            int hit = 0;
+            int counIceBoll = 0;
+            int countHealthRecover = 0;
+            int retern = 1;
+            int bossHealth = random.Next(random.Next(90, 101), random.Next(110, 121));
+            int bossDamage = random.Next(random.Next(13, 16), random.Next(18, 26));
+
+            while (true)
+            {
+                Console.WriteLine(" \n Добро пожаловать в игру Битва с Боссом");
+                Console.SetCursorPosition(0, 4);
+                Console.Write(" \n Введи свое имя:");
+                name = Console.ReadLine();
+                Console.WriteLine("\n" + name + "  У тебя есть 4 магических приема:\n" +
+                    $"1 -  Магический удар ({magicHit}) \n" +
+                    $"2 -  Магический огненный шар  ({fireBoll}) \n" +
+                    $"3 -  Магический ледяной шар ({iceBoll})\n" +
+                    $"4 -  Магическое восстановление жизни \n" +
+                    $"4- (можно использовать только после ледяного шара)  (+{magicRecover}xp)");
+                Console.ReadLine();
+                Console.WriteLine(" \n Перед тобой злой Трольь по имени  Гнусвин, " +
+                    "\n  тебе необходимо победить его!");
+                Console.ReadLine();
+                Console.WriteLine("\n Если ты не струсил, прими бой или убегай!");
+                Console.WriteLine("\n  1 - В бой" +
+                                "\n  2 - Заплакать и убежать");
+                userInput = Convert.ToInt32(Console.ReadLine());
+
+                if (userInput == 2 && userInput == 02)
+                {
+                    Console.WriteLine("Подрасти и возвращайся");
+                    Environment.Exit(0);
+                }
+
+                Console.WriteLine("\n Хорошо погнали");
+
+                if (chanceFirstStrike > 50)
+                {
+                    Console.WriteLine("\n Первый удар делаеш Ты");
+                }
+                else
+                {
+                    Console.WriteLine("\n Первый удар делает Гнусвин");
+                }
+                Console.ReadLine();
+
+
+                while (health > 0 && bossHealth > 0)
+                {
+                    Console.WriteLine("  \n Твои жизни  " + health +
+                    "\n  жизни Гнусвина  " + bossHealth);
+
+                    Console.WriteLine("\n Выберите удар:  \n " +
+                    $"1 -  Магический удар ({magicHit}) \n" +
+                    $"2 -  Магический огненный шар  ({fireBoll}) \n" +
+                    $"3 -  Магический ледяной шар ({iceBoll})\n" +
+                    $"4 -  Магическое восстановление жизни (+{magicRecover}xp)");
+                    selectStrike = Convert.ToInt32(Console.ReadLine());
+
+                    while (isSelectStrike == false)
+                    {
+                        switch (selectStrike)
+                        {
+                            case 1:
+                                bossHealth -= magicHit;
+                                break;
+                            case 2:
+                                bossHealth -= fireBoll;
+                                break;
+                            case 3:
+                                bossHealth -= iceBoll;
+                                counIceBoll++;
+                                break;
+                            case 4:
+                                if (counIceBoll > 0)
+                                {
+                                    health += magicRecover;
+                                    counIceBoll = 0;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("ты не можешь применить это заклинание," +
+                                    "\n оно применяется только поле ледяного шара");
+                                    isSelectStrike = true;
+                                }
+                                break;
+                            default:
+                                break;
+
+                        }
+
+                    }
+
+
+
+
+                    else if (selectStrike == 4)
+                    {
+                        if (counIceBoll == 1)
+                        {
+                            health += magicrecover;
+                            counIceBoll = 0;
+                        }
+                        else if (counIceBoll == 0)
+                        {
+                            Console.WriteLine("ты не можешь применить это заклинание," +
+                            "\n оно применяется только поле ледяного шара");
+                            countHealthRecover++;
+                        }
+                    }
+                    if (countHealthRecover == 0)
+                    {
+                        bossHealth -= hit;
+                        health -= bossDamage;
+                        Console.Clear();
+                    }
+                }
+
+
+                else if (firstStrike == 2)
+                {
+
+                    health -= bossDamage;
+
+
+
+                    if (health <= 0)
+                    {
+                        Console.WriteLine("Ты погиб, лучше бы зассал, попробуй если не очкуешь еще раз поставить свое очко на кон");
+                        Console.WriteLine("  1-- Попробовать снова" +
+                            "\n  2-- Ну нахер, я пошел");
+                        userInput = Convert.ToInt32(Console.ReadLine());
+
+                        if (userInput == 2 && userInput == 02)
+                        {
+                            Console.WriteLine("Да и х с тобой");
+                            Environment.Exit(0);
+                        }
+                    }
+
+                    else if (bossHealth <= 0)
+                    {
+                        Console.WriteLine("Нихуя ты баклажан, Ты победил!!! попробуй зарубиться снова");
+                        Console.WriteLine("  1-- Попробовать снова" +
+                            "\n  2-- Ну нахер, я пошел");
+                        userInput = Convert.ToInt32(Console.ReadLine());
+
+                        if (userInput == 2 && userInput == 02)
+                        {
+                            Console.WriteLine("Да и х с тобой");
+                            Environment.Exit(0);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+
