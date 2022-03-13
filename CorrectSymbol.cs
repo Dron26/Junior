@@ -8,53 +8,44 @@ namespace converter
         {
 
             string textInput;
-            int upDepth = 0;
-            int downDepth = 0;
+            int upDepth = 0;;
             int maxDepth = 0;
             int clouseDepth = 1;
-            int upDepthAll = 1;
-            bool CorrectText = false;
+            bool isUncorrectText = false;
             string showCorrectText = null;
             int count = 0;
 
             Console.WriteLine("Введите комбинацию символов");
             textInput=Console.ReadLine();
 
-            foreach (char c in textInput)
-            {             
-                if (c==')')
+            foreach (char symbol in textInput)
+            {
+                if ( symbol == '(')
                 {
-                    downDepth++;
-                    if (c == ')'&(count == 0| count == 1))
+                    upDepth++;
+                }
+
+                else 
+                {           
+                    if (symbol == ')'&(count == 0| count == 1))
                     {
-                        CorrectText = true;
+                        isUncorrectText = true;
                     }
                     
                     else if (maxDepth< upDepth)
                     {
                         maxDepth = upDepth;
-                        upDepth= upDepth - clouseDepth;
                     }
-
-                    else if (downDepth> upDepthAll)
-                    {
-                        CorrectText = true;
-                    }
-                }
-
-                else if(count > 0&&c=='(')
-                {
-                    upDepth++;
-                    upDepthAll++;
-                }
+                    upDepth--;
+                }                
                 count++;              
             }
 
-            if (upDepthAll != downDepth)
+            if (upDepth!=0)
             {
-                CorrectText = true;
+                isUncorrectText = true;
                 showCorrectText = "не корректная";
-            }     
+            }    
             
             else
             {
