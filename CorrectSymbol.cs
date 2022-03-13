@@ -8,7 +8,7 @@ namespace converter
         {
 
             string textInput;
-            int upDepth = 0;;
+            int Depth = 0;
             int maxDepth = 0;
             string showCorrectText = null;
 
@@ -19,25 +19,25 @@ namespace converter
             {
                 if ( symbol == '(')
                 {
-                    upDepth++;
+                    Depth++;
                 }
                 else 
                 {                               
-                    if (maxDepth< upDepth)
+                    if (maxDepth< Depth)
                     {
-                        maxDepth = upDepth;
+                        maxDepth = Depth;
                     }
-                    upDepth--;
+                    Depth--;
                 }                
 
-                if (upDepth < 0)
+                if (Depth < 0)
                 {
                     showCorrectText = "не корректная";
                     break;
                 }
             }
 
-            if (upDepth!=0)
+            if (Depth!=0)
             {                
                 showCorrectText = "не корректная";
             }               
