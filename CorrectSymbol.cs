@@ -49,6 +49,7 @@ namespace converter
                 }
                 count++;              
             }
+
             if (upDepthAll != downDepth)
             {
                 CorrectText = true;
