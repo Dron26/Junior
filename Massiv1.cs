@@ -7,12 +7,11 @@ namespace Massiv
         static void Main(string[] args)
         {
             Random random = new Random();
-
             int setValue = 0;
             int maxValue = 0;
             int maxX = 10;
             int maxY = 10;
-            int[,] arrayA = new int [10,10];
+            int[,] arrayA = new int [maxY, maxX];
             Console.WriteLine("\n\n  Созданный массив\n\n");
 
             for (int i = 0; i < maxY; i++)
@@ -54,8 +53,3 @@ namespace Massiv
         }
     }
 }
-
-
-
-
-
