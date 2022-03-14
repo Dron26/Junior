@@ -59,7 +59,7 @@ namespace Battel_vs_Boss
                 {
                     Console.Clear();
                     Console.WriteLine("\n Хорошо погнали");
-                    Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+                    Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
 
                     if (chanceFirstStrike > 50)
                     {
@@ -69,7 +69,7 @@ namespace Battel_vs_Boss
                     {
                         Console.WriteLine("\n Первый удар делает Гнусвин");
                         health -= bossDamage;
-                        Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+                        Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
                     }
 
                     while (health > 0 && bossHealth > 0)
@@ -139,7 +139,7 @@ namespace Battel_vs_Boss
                         if (health > 0 && bossHealth > 0)
                         {
                             isSelectStrike = false;
-                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
 
                             if (maxHealthRecoverBoss > 70)
                             {
@@ -148,10 +148,10 @@ namespace Battel_vs_Boss
                             }
                             else
                             {
-                                Console.WriteLine("\n Удар наносит Гнусвин");
+                                Console.WriteLine("\n Удар наносит Гнусcвин");
                                 health -= bossDamage;
                             }
-                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
                             Console.ReadLine();
                             Console.Clear();
                         }
