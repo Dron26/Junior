@@ -13,8 +13,8 @@ namespace Massiv
                 { 1, 7, 3, 5 }};
             int sumLine = 0;
             int productColumn = 1;
-            int line = 2;
-            int column = 1;
+            int line = 1;
+            int column = 0;
 
             for (int i = 0; i < array.GetLength(0); i++)
             {
