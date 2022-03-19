@@ -27,10 +27,15 @@ namespace Massiv
 
             for (int i = 0; i < array.GetLength(0); i++)
             {                
-                productColumn *= array[i, column];
                 sumLine += array[line, i];                
+            }
+
+            for (int i = 0; i < array.GetLength(1); i++)
+            {
+                productColumn *= array[i, column];
             }
             Console.WriteLine($"Сумма второй строки {sumLine}, произведение первого столбца {productColumn}");
         }
     }
+}
 }
