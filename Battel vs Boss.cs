@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Battel_vs_Boss
 {
@@ -8,38 +8,43 @@ namespace Battel_vs_Boss
         {
             Random random = new Random();
             string name;
-            int minDamage = 15;
-            int maxDamage = 30;
-            int magicStrike = random.Next(minDamage, maxDamage);
-            int fireBoll = random.Next(minDamage, maxDamage);
-            int iceBoll = random.Next(minDamage, maxDamage);
-            int magicRecover = random.Next(maxDamage, minDamage + maxDamage);
-            int counFireBoll = 0;
-            int minHealth = 100;
-            int maxHealth = 150;
-            int maxHealthRecoverBoss = random.Next(0, 85);
-            int health = random.Next(minHealth, maxHealth);
-            int bossHealth = random.Next(minHealth, maxHealth);
-            int bossDamage = random.Next(minDamage, maxDamage);
-            int chanceFirstStrike = random.Next(0, 100);
-            int userInput;
+            int minDamage = random.Next(10, 18);
+            int maxDamage = random.Next(25, 35);
+            int countFirebolls = 0;
+            int maxCountFirebolls = 3;
+            int minHealth = random.Next(90, 100);
+            int maxHealth = random.Next(145, 160);
+            int maxPerecentChance = 50;
+            string userInput;
             bool isSelectStrike = false;
             bool isTrySelectStrike = false;
             bool isIceBollSelect = false;
             bool isUserSelectNewPlay = true;
+            bool isHealthBossRestored = false;
+            bool isAlive = true;
 
             while (isUserSelectNewPlay == true)
             {
-                Console.Clear();
+                int magicStrike = random.Next(minDamage, maxDamage);
+                int fireboll = random.Next(minDamage, maxDamage);
+                int iceboll = random.Next(minDamage, maxDamage);
+                int magicRestore = random.Next(maxDamage, minDamage + maxDamage);
+                int health = random.Next(minHealth, maxHealth);
+                int bossHealth = random.Next(minHealth, maxHealth);
+                int bossDamage = random.Next(minDamage, maxDamage);
+                int chanceFirstStrike = random.Next(0, 100);
+                int chanceMagicRestore;
+
                 Console.WriteLine(" \n  Добро пожаловать в игру Битва с Боссом");
                 Console.Write(" \n  Введи свое имя: ");
                 name = Console.ReadLine();
+
                 Console.WriteLine($"\n  {name},  У тебя есть 4 магических приема:\n\n" +
                     $"1 - Магический удар - наносит урон (-{magicStrike}xp) \n" +
-                    $"2 - Огненный шар - наносит урон (-{fireBoll}xp) \n" +
+                    $"2 - Огненный шар - наносит урон (-{fireboll}xp) \n" +
                     $" (его можно использовать не более трех раз подряд) \n\n" +
-                    $"3 - Ледяной шар - наносит урон (-{iceBoll}xp)\n" +
-                    $"4 - Магическое восстановление жизни (+{magicRecover}xp)\n" +
+                    $"3 - Ледяной шар - наносит урон (-{iceboll}xp)\n" +
+                    $"4 - Магическое восстановление жизни (+{magicRestore}xp)\n" +
                     $" (его можно использовать только после ледяного шара)");
                 Console.ReadLine();
                 Console.Clear();
@@ -48,9 +53,9 @@ namespace Battel_vs_Boss
                 Console.ReadLine();
                 Console.WriteLine("\n  Если ты не струсил,то прими бой или убегай!");
                 Console.WriteLine("\n  1 - В бой \n  2 - Заплакать и убежать");
-                userInput = Convert.ToInt32(Console.ReadLine());
+                userInput = Console.ReadLine();
 
-                if (userInput == 2)
+                if (userInput == "2")
                 {
                     Console.WriteLine("Подрасти и возвращайся");
                     isUserSelectNewPlay = false;
@@ -59,55 +64,56 @@ namespace Battel_vs_Boss
                 {
                     Console.Clear();
                     Console.WriteLine("\n Хорошо погнали");
-                    Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
+                    Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
 
-                    if (chanceFirstStrike > 50)
+                    if (chanceFirstStrike > maxPerecentChance)
                     {
                         Console.WriteLine("\n Первый удар делаеш Ты");
                     }
                     else
                     {
-                        Console.WriteLine("\n Первый удар делает Гнусвин");
+                        Console.WriteLine($"\n Первый удар делает Гнусвин!  - {bossDamage} xp");
                         health -= bossDamage;
-                        Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
+                        Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
                     }
+                    Console.ReadLine();
 
                     while (health > 0 && bossHealth > 0)
                     {
-                        while (isSelectStrike == false)
+                        while (isSelectStrike == false && isAlive == true)
                         {
                             Console.WriteLine("\n Выбери удар:  \n  " +
                             $"1 -  Магический удар ({magicStrike}) \n  " +
-                            $"2 -  Огненный шар  ({fireBoll}) \n  " +
-                            $"3 -  Ледяной шар ({iceBoll})\n  " +
-                            $"4 -  Восстановление жизни (+{magicRecover}xp)");
-                            userInput = Convert.ToInt32(Console.ReadLine());
+                            $"2 -  Огненный шар  ({fireboll}) \n  " +
+                            $"3 -  Ледяной шар ({iceboll})\n  " +
+                            $"4 -  Восстановление жизни (+{magicRestore}xp)");
+                            userInput = Console.ReadLine();
 
                             switch (userInput)
                             {
-                                case 1:
+                                case "1":
                                     bossHealth -= magicStrike;
                                     break;
-                                case 2:
-                                    if (counFireBoll > 3)
+                                case "2":
+                                    if (countFirebolls > maxCountFirebolls)
                                     {
                                         Console.WriteLine("ты не можешь применить это заклинание больше 3х раз подряд");
                                         isTrySelectStrike = true;
                                     }
                                     else
                                     {
-                                        bossHealth -= fireBoll;
-                                        counFireBoll++;
+                                        bossHealth -= fireboll;
+                                        countFirebolls++;
                                     }
                                     break;
-                                case 3:
-                                    bossHealth -= iceBoll;
+                                case "3":
+                                    bossHealth -= iceboll;
                                     isIceBollSelect = true;
                                     break;
-                                case 4:
+                                case "4":
                                     if (isIceBollSelect == true)
                                     {
-                                        health += magicRecover;
+                                        health += magicRestore;
                                         isIceBollSelect = false;
                                     }
                                     else
@@ -130,28 +136,47 @@ namespace Battel_vs_Boss
                             else
                             {
                                 isSelectStrike = true;
-                                if (userInput != 2)
+                                if (userInput != "2")
                                 {
-                                    counFireBoll = 0;
+                                    countFirebolls = 0;
                                 }
                             }
-                        }
-                        if (health > 0 && bossHealth > 0)
-                        {
-                            isSelectStrike = false;
-                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
 
-                            if (maxHealthRecoverBoss > 70)
+                            if (health > 0 & bossHealth > 0)
                             {
-                                Console.WriteLine($"\n  Гнусвин смог восстановить себе здоровье на {magicRecover}");
-                                bossHealth += magicRecover;
+                                isSelectStrike = false;
+                                Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+
+                                if ((chanceMagicRestore = random.Next(30, 100)) > maxPerecentChance)
+                                {
+                                    Console.WriteLine($"\n Удар наносит Гнусвин!  - {bossDamage} xp");
+                                    health -= bossDamage;
+                                    isHealthBossRestored = false;
+                                }
+                                else
+                                {
+                                    if (isHealthBossRestored == false)
+                                    {
+                                        Console.WriteLine($"\n  Гнусвин смог восстановить себе здоровье на {magicRestore}");
+                                        bossHealth += magicRestore;
+                                        isHealthBossRestored = true;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"\n  Гнусвин промахнулся");
+                                        isHealthBossRestored = false;
+                                    }
+                                }
+
+                                if (health > 0)
+                                {
+                                    Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
+                                }
+                                else
+                                {
+                                    isAlive = false;
+                                }
                             }
-                            else
-                            {
-                                Console.WriteLine("\n Удар наносит Гнусcвин");
-                                health -= bossDamage;
-                            }
-                            Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусcвин  {bossHealth}");
                             Console.ReadLine();
                             Console.Clear();
                         }
@@ -160,25 +185,26 @@ namespace Battel_vs_Boss
                     if (health <= 0)
                     {
                         Console.WriteLine("Ты погиб, но мы будем помнить тебя! Попробуй еще раз, мы сможем воскресить тебя");
-                        Console.WriteLine("  1 - Попробовать снова \n  2 - Хочу на покой");
-                        userInput = Convert.ToInt32(Console.ReadLine());
                     }
                     else
                     {
                         Console.WriteLine(" Ты победил!!! попробуй показать свою мощь еще раз!");
-                        Console.WriteLine("  1 - Попробовать снова \n  2 - Хочу на покой");
-                        userInput = Convert.ToInt32(Console.ReadLine());
                     }
+                    Console.WriteLine("  1 - Попробовать снова \n  2 - Хочу на покой");
+                    userInput = Console.ReadLine();
 
-                    if (userInput == 1)
+                    if (userInput == "1")
                     {
                         Console.WriteLine(" Давай по новой!");
+                        isSelectStrike = false;
+                        isAlive = true;
                     }
                     else
                     {
                         Console.WriteLine("Аминь");
                         isUserSelectNewPlay = false;
                     }
+                    Console.Clear();
                 }
             }
         }
