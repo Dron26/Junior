@@ -34,6 +34,8 @@ namespace Battel_vs_Boss
                 int bossDamage = random.Next(minDamage, maxDamage);
                 int chanceFirstStrike = random.Next(0, 100);
                 int chanceMagicRestore;
+                int minChanceHealthRestore=30;
+                int maxChanceHealthRestore=100;
 
                 Console.WriteLine(" \n  Добро пожаловать в игру Битва с Боссом");
                 Console.Write(" \n  Введи свое имя: ");
@@ -147,7 +149,7 @@ namespace Battel_vs_Boss
                                 isSelectStrike = false;
                                 Console.WriteLine($"\n  Твои жизни  {health}\n  жизни Гнусвина  {bossHealth}");
 
-                                if ((chanceMagicRestore = random.Next(30, 100)) > maxPerecentChance)
+                                if ((chanceMagicRestore = random.Next(minChanceHealthRestore, maxChanceHealthRestore)) > maxPerecentChance)
                                 {
                                     Console.WriteLine($"\n Удар наносит Гнусвин!  - {bossDamage} xp");
                                     health -= bossDamage;
