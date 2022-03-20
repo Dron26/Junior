@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Massivi_zadanij
 {
@@ -12,14 +12,13 @@ namespace Massivi_zadanij
             int localMax = 0;
             int LocalRange = 1;
             int[] localM = new int[localArray.Length];
-            int o;
 
             for (int i = 0; i < localArray.Length; i++)
             {
                 localArray[i] = random.Next(0, 9);
-                Console.Write(localArray[i] + "  ");
+                Console.Write(localArray[i] + " ");
             }
-            Console.WriteLine("\n");
+            Console.WriteLine("\n список локальных максимумов:");
 
             for (int i = 0; i < localArray.Length; i++)
             {
@@ -29,7 +28,7 @@ namespace Massivi_zadanij
                     if (localArray[i] > localArray[i + LocalRange])
                     {
                         localMax = localArray[i];
-                        Console.WriteLine(localMax);
+                        Console.Write(localMax);
                     }
                 }
                 else if (i > 0 && i < localArray.Length - 1)
@@ -37,7 +36,7 @@ namespace Massivi_zadanij
                     if (localArray[i - LocalRange] <= localArray[i] && localArray[i] >= localArray[i + LocalRange])
                     {
                         localMax = localArray[i];
-                        Console.WriteLine(localMax);
+                        Console.Write($" {localMax} ");
                     }
                 }
                 else
@@ -45,7 +44,7 @@ namespace Massivi_zadanij
                     if (localArray[i - LocalRange] <= localArray[i])
                     {
                         localMax = localArray[i];
-                        Console.WriteLine(localMax);
+                        Console.Write(localMax);
                     }
                 }
             }
