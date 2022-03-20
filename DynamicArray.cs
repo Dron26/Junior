@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Динамический_массив
 {
@@ -7,9 +7,7 @@ namespace Динамический_массив
         static void Main(string[] args)
         {
             string userInput;
-            int indexUpArray = 1;
-            int[] arrayTest = new int[0];
-            int arraySum = 0;
+            int[] array = new int[0];
             bool isWorking = true;
 
             while (isWorking)
@@ -21,13 +19,14 @@ namespace Динамический_массив
 
                 if (userInput == "sum")
                 {
-                    for (int i = 0; i < arrayTest.Length; i++)
+                    int arraySum = 0;
+
+                    for (int i = 0; i < array.Length; i++)
                     {
-                        arraySum += arrayTest[i];
+                        arraySum += array[i];
                     }
                     Console.WriteLine("Сумма всех чисел:  " + arraySum + "\n");
                     Console.ReadLine();
-                    arraySum = 0;
                 }
                 else if (userInput == "exit")
                 {
@@ -35,18 +34,17 @@ namespace Динамический_массив
                 }
                 else
                 {
-                    int[] tempArrow = new int[arrayTest.Length + indexUpArray];
+                    int[] tempArrow = new int[array.Length + 1];
 
-                    for (int i = 0; i < arrayTest.Length; i++)
+                    for (int i = 0; i < array.Length; i++)
                     {
-                        tempArrow[i] = arrayTest[i];
+                        tempArrow[i] = array[i];
                     }
-                    tempArrow[tempArrow.Length - indexUpArray] = Convert.ToInt32(userInput);
-                    arrayTest = tempArrow;
+                    tempArrow[tempArrow.Length - 1] = Convert.ToInt32(userInput);
+                    array = tempArrow;
                 }
                 Console.Clear();
             }
         }
     }
 }
-
