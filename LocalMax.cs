@@ -1,6 +1,6 @@
 using System;
 
-namespace Massivi_zadanij
+namespace LocalMax
 {
     class Program
     {
@@ -8,46 +8,33 @@ namespace Massivi_zadanij
         {
             Random random = new Random();
             int maxElements = 30;
-            int[] localArray = new int[maxElements];
-            int localMax = 0;
-            int LocalRange = 1;
-            int[] localM = new int[localArray.Length];
+            int[] array = new int[maxElements];
 
-            for (int i = 0; i < localArray.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
-                localArray[i] = random.Next(0, 9);
-                Console.Write(localArray[i] + " ");
+                array[i] = random.Next(0, 9);
+                Console.Write(array[i] + " ");
             }
             Console.WriteLine("\n список локальных максимумов:");
 
-            for (int i = 0; i < localArray.Length; i++)
+            if (array[0] > array[1])
             {
+                Console.Write(array[0]);
+            }
 
-                if (i == 0)
-                {
-                    if (localArray[i] > localArray[i + LocalRange])
+            for (int i = 1; i < array.GetUpperBound(0); i++)
+            {
+                
+                    if (array[i - 1] <= array[i] && array[i] >= array[i + 1])
                     {
-                        localMax = localArray[i];
-                        Console.Write(localMax);
+                        Console.Write($" {array[i]} ");
                     }
-                }
-                else if (i > 0 && i < localArray.Length - 1)
-                {
-                    if (localArray[i - LocalRange] <= localArray[i] && localArray[i] >= localArray[i + LocalRange])
-                    {
-                        localMax = localArray[i];
-                        Console.Write($" {localMax} ");
-                    }
-                }
-                else
-                {
-                    if (localArray[i - LocalRange] <= localArray[i])
-                    {
-                        localMax = localArray[i];
-                        Console.Write(localMax);
-                    }
-                }
+               
+            }
+
+            if (array[array.GetUpperBound(0)] > array[array.GetUpperBound(0) - 1])
+            {
+                Console.Write(array[array.GetUpperBound(0)]);
             }
         }
     }
-}
