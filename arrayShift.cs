@@ -1,6 +1,6 @@
 using System;
 
-namespace SortArray
+namespace arrayShift
 {
     internal class Program
     {
@@ -9,6 +9,7 @@ namespace SortArray
             Random random = new Random();
             int maxElements = 10;
             int[] array = new int[maxElements];
+            int userInput;
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -16,18 +17,19 @@ namespace SortArray
                 Console.Write(array[i] + " ");
             }
             Console.Write("\n\n");
+            Console.WriteLine("Введите значение сдвига");
+            userInput = Convert.ToInt32(Console.ReadLine());
+            Console.Write("\n\n");
 
-            for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < userInput; i++)
             {
-                for (int j = i + 1; j < array.Length; j++)
+                int number = array[0];
+
+                for (int j = 0; j < array.GetLength(0) - 1; j++)
                 {
-                    if (array[i] > array[j])
-                    {
-                        int number = array[i];
-                        array[i] = array[j];
-                        array[j] = number;
-                    }
+                    array[j] = array[j + 1];
                 }
+                array[array.GetLength(0) - 1] = number;
             }
 
             for (int i = 0; i < array.Length; i++)
