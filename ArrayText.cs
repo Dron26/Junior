@@ -7,11 +7,11 @@ namespace ArrayText
         static void Main(string[] args)
         {
             string text = "Дана строка с текстом, используя метод строки String.Split() получить массив слов, которые разделены пробелом в тексте и вывести массив, каждое слово с новой строки.";
-            string [] emptySpace = text.Split(" ");
+            string [] content = text.Split(" ");
 
-            foreach (var empety in emptySpace)
+            foreach (var part in content)
             {
-                Console.WriteLine(empety);
+                Console.WriteLine(part);
             }            
         }
     }
