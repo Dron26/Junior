@@ -12,7 +12,7 @@ namespace SortArray
 
             for (int i = 0; i < array.Length; i++)
             {
-                array[i] = random.Next(0, 10);
+                array[i] = random.Next(0, maxElements);
                 Console.Write(array[i] + " ");
             }
             Console.Write("\n\n");
