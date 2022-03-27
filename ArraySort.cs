@@ -1,4 +1,4 @@
-﻿using System;
+ing System;
 
 namespace SortArray
 {
@@ -9,8 +9,6 @@ namespace SortArray
             Random random = new Random();
             int maxElements = 10;
             int[] array = new int[maxElements];
-            int countNumberInternalCycles = 0;
-            int countNumberExternalCycles = 0;
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -19,21 +17,17 @@ namespace SortArray
             }
             Console.Write("\n\n");
 
-            while (countNumberExternalCycles + 1 < array.Length)
+            for (int i = 0; i < array.Length; i++)
             {
-                for (int i = countNumberExternalCycles + 1; i < array.Length; i++)
+                for (int j = i + 1; j < array.Length; j++)
                 {
-                    int numberSearchable = array[countNumberInternalCycles];
-                    int number = array[i];
-
-                    if (numberSearchable > number)
+                    if (array[i] > array[j])
                     {
-                        array[countNumberExternalCycles] = number;
-                        array[i] = numberSearchable;
+                        int number = array[i];
+                        array[i] = array[j];
+                        array[j] = number;
                     }
                 }
-                countNumberExternalCycles++;
-                countNumberInternalCycles = countNumberExternalCycles;
             }
 
             for (int i = 0; i < array.Length; i++)
