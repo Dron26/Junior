@@ -46,16 +46,16 @@ namespace Cadrovui_ychet
         {
             string[] tempFamily = new string[fullNames.Length + 1];
             string[] tempPost = new string[positions.Length + 1];
-            string family;
+            string names;
             string post;
 
             Console.Clear();
             Console.WriteLine("  Добавление досье \n  Введите фамилию:\n");
-            family = (" - " + Console.ReadLine() + " - ").ToUpper();
+            names = (" - " + Console.ReadLine() + " - ").ToUpper();
             Console.WriteLine("\n  Введите Имя:\n");
-            family += (Console.ReadLine() + " - ").ToUpper();
+            names += (Console.ReadLine() + " - ").ToUpper();
             Console.WriteLine("\n  Введите Отчество:\n");
-            family += (Console.ReadLine() + " - ").ToUpper();
+            names += (Console.ReadLine() + " - ").ToUpper();
             Console.WriteLine("\n  Введите Должность:\n");
             post = (Console.ReadLine()).ToUpper();
 
@@ -64,7 +64,7 @@ namespace Cadrovui_ychet
                 tempFamily[i] = fullNames[i];
                 tempPost[i] = positions[i];
             }
-            tempFamily[tempFamily.Length - 1] = family;
+            tempFamily[tempFamily.Length - 1] = names;
             tempPost[tempPost.Length - 1] = post;
             fullNames = tempFamily;
             positions = tempPost;
