@@ -1,17 +1,14 @@
 using System;
 
 namespace Cadrovui_ychet
-{
+{ 
     class Program
     {
         static void Main(string[] args)
         {
             string userInput;
-            string[] familyArray = new string[0];
-            string[] nameArray = new string[0];
-            string[] postArray = new string[0];
-            int[] idArray = new int[0];
-            int ID = 0;
+            string[] fullNames = new string[0];
+            string[] positions = new string[0];
             bool isWorking = true;
 
             while (isWorking)
@@ -27,16 +24,16 @@ namespace Cadrovui_ychet
                 switch (userInput)
                 {
                     case "1":
-                        CreatDossier(ref familyArray, ref nameArray, ref postArray, ref ID, ref idArray);
+                        CreatDossier(ref fullNames, ref positions);
                         break;
                     case "2":
-                        ShowAllDossiers(familyArray, nameArray, postArray, idArray);
+                        ShowAllDossiers(fullNames, positions);
                         break;
                     case "3":
-                        DeleteDossier(ref familyArray, ref nameArray, ref postArray, ref idArray);
+                        DeleteDossier(ref fullNames, ref positions);
                         break;
                     case "4":
-                        FindDossier(familyArray, nameArray, postArray, idArray);
+                        FindDossier(fullNames, positions);
                         break;
                     case "5":
                         isWorking = false;
@@ -44,98 +41,46 @@ namespace Cadrovui_ychet
                 }
             }
         }
-        static void DeleteDossier(ref string[] familyArray, ref string[] nameArray, ref string[] postArray, ref int[] idArray)
+
+        static void CreatDossier(ref string[] fullNames, ref string[] positions)
         {
-            string userInput;
-            bool isFinded = false;
+            string[] tempFamily = new string[fullNames.Length + 1];
+            string[] tempPost = new string[positions.Length + 1];
+            string family;
+            string post;
+
             Console.Clear();
-            Console.WriteLine("Ведите номер досье: ");
-            userInput = Console.ReadLine();
+            Console.WriteLine("  Добавление досье \n  Введите фамилию:\n");
+            family = (" - " + Console.ReadLine() + " - ").ToUpper();
+            Console.WriteLine("\n  Введите Имя:\n");
+            family += (Console.ReadLine() + " - ").ToUpper();
+            Console.WriteLine("\n  Введите Отчество:\n");
+            family += (Console.ReadLine() + " - ").ToUpper();
+            Console.WriteLine("\n  Введите Должность:\n");
+            post = (Console.ReadLine()).ToUpper();
 
-            for (int id = 0; id < idArray.Length; id++)
+            for (int i = 0; i < fullNames.GetLength(0); i++)
             {
-                if (Convert.ToInt32(userInput) == id)
-                {
-                    string[] tempFamily = new string[familyArray.Length];
-                    string[] tempFamilyDown = new string[tempFamily.Length - 1];
-                    string[] tempPost = new string[postArray.Length];
-                    string[] tempPostDown = new string[tempPost.Length - 1];
-                    string[] tempName = new string[nameArray.Length];
-                    string[] tempNameDown = new string[tempName.Length - 1];
-                    int[] tempId = new int[idArray.Length];
-                    int[] tempIdDpwn = new int[idArray.Length - 1];
-
-                    for (int i = 0; i < id; i++)
-                    {
-                        tempFamily[i] = familyArray[i];
-                        tempPost[i] = postArray[i];
-                        tempName[i] = nameArray[i];
-                        tempId[i] = idArray[i];
-                    }
-
-                    for (int i = id + 1; i < familyArray.Length; i++)
-                    {
-                        tempFamily[i - 1] = familyArray[i];
-                        tempPost[i - 1] = postArray[i];
-                        tempName[i - 1] = nameArray[i];
-                        tempId[i - 1] = idArray[i];
-                    }
-
-                    for (int i = 0; i < tempFamilyDown.Length; i++)
-                    {
-                        tempFamilyDown[i] = tempFamily[i];
-                        tempPostDown[i] = tempPost[i];
-                        tempNameDown[i] = tempName[i];
-                        tempIdDpwn[i] = tempId[i];
-                    }
-                    familyArray = tempFamilyDown;
-                    postArray = tempPostDown;
-                    nameArray = tempNameDown;
-                    idArray = tempIdDpwn;
-                    Console.WriteLine("Досье успешно удалено");
-                    isFinded = true;
-                }
+                tempFamily[i] = fullNames[i];
+                tempPost[i] = positions[i];
             }
-
-            if (isFinded == false)
-            {
-                Console.WriteLine("Досье не найденоно");
-            }
+            tempFamily[tempFamily.Length - 1] = family;
+            tempPost[tempPost.Length - 1] = post;
+            fullNames = tempFamily;
+            positions = tempPost;
+            Console.WriteLine("Досье успешно добавлено!");
             Console.ReadKey();
         }
-        static void FindDossier(string[] familyArray, string[] nameArray, string[] postArray, int[] idArray)
-        {
-            Console.Clear();
-            Console.WriteLine("   Введите фамилию:  \n");
-            string family = Console.ReadLine();
 
-            for (int i = 0; i < familyArray.Length; i++)
-            {
-                if (family == familyArray[i])
-                {
-                    Console.Clear();
-                    Console.WriteLine($" ID - Фамилия -  Имя - Отчество -  Должность ");
-                    Console.WriteLine($"Досье найдено: { idArray[i] } - { familyArray[i] } -  { nameArray[i] } -  { postArray[i] }");
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("  Досье ненайдено!");
-                }
-            }
-            Console.ReadKey();
-            Console.Clear();
-
-        }
-        static void ShowAllDossiers(string[] familyArray, string[] nameArray, string[] postsArray, int[] idArray)
+        static void ShowAllDossiers(string[] fullNames, string[] positions)
         {
             Console.Clear();
             Console.WriteLine($" ID - Фамилия -  Имя - Отчество -  Должность ");
-            if (familyArray.Length != 0)
+            if (fullNames.Length != 0)
             {
-                for (int i = 0; i < familyArray.GetLength(0); i++)
+                for (int i = 0; i < fullNames.GetLength(0); i++)
                 {
-                    Console.WriteLine($" { idArray[i] } - { familyArray[i] } -  { nameArray[i] } -  { postsArray[i] }");
+                    Console.WriteLine($"  {i} { fullNames[i] } { positions[i] }");
                 }
             }
             else
@@ -145,46 +90,76 @@ namespace Cadrovui_ychet
             Console.ReadKey();
             Console.Clear();
         }
-        static void CreatDossier(ref string[] familyArray, ref string[] nameArray, ref string[] postArray, ref int ID, ref int[] idArray)
+
+        static void DeleteDossier(ref string[] fullNames, ref string[] positions)
         {
-            string[] tempFamily = new string[familyArray.Length + 1];
-            string[] tempName = new string[nameArray.Length + 1];
-            string[] tempPost = new string[postArray.Length + 1];
-            int[] tempId = new int[idArray.Length + 1];
-            string family;
-            string name;
-            string post;
-            ID++;
-
+            int userInput;
             Console.Clear();
-            Console.WriteLine("  Добавление досье \n  Введите фамилию:  \n\n");
-            family = Console.ReadLine();
-            Console.WriteLine("    Введите Имя:  \n\n");
-            name = Console.ReadLine() + " - ";
-            Console.WriteLine("  Введите Отчество:  \n\n");
-            name += Console.ReadLine();
-            Console.WriteLine("  Введите Должность:  \n\n");
-            post = Console.ReadLine();
+            Console.WriteLine("Ведите номер досье: ");
+            userInput = Convert.ToInt32(Console.ReadLine());
 
-            for (int i = 0; i < familyArray.GetLength(0); i++)
+            if (userInput > 0 & userInput <= fullNames.Length)
             {
-                tempFamily[i] = familyArray[i];
-                tempPost[i] = postArray[i];
-                tempName[i] = nameArray[i];
-                tempId[i] = idArray[i];
+                string[] tempFamily = new string[fullNames.Length];
+                string[] tempFamilyDown = new string[tempFamily.Length - 1];
+                string[] tempPost = new string[positions.Length];
+                string[] tempPostDown = new string[tempPost.Length - 1];
+
+                for (int i = 0; i < userInput; i++)
+                {
+                    tempFamily[i] = fullNames[i];
+                    tempPost[i] = positions[i];
+                }
+
+                for (int i = userInput + 1; i < fullNames.Length; i++)
+                {
+                    tempFamily[i - 1] = fullNames[i];
+                    tempPost[i - 1] = positions[i];
+                }
+
+                for (int i = 0; i < tempFamilyDown.Length; i++)
+                {
+                    tempFamilyDown[i] = tempFamily[i];
+                    tempPostDown[i] = tempPost[i];
+                }
+                fullNames = tempFamilyDown;
+                positions = tempPostDown;
+                Console.WriteLine("Досье успешно удалено");
             }
-            tempFamily[tempFamily.Length - 1] = family;
-            tempName[tempFamily.Length - 1] = name;
-            tempPost[tempPost.Length - 1] = post;
-            tempId[tempId.Length - 1] = ID;
-            familyArray = tempFamily;
-            postArray = tempPost;
-            nameArray = tempName;
-            idArray = tempId;
-            Console.WriteLine("Досье успешно добавлено!");
+
+            else
+            {
+                Console.WriteLine("Досье не найденоно");
+            }
             Console.ReadKey();
+        }
+
+        static void FindDossier(string[] fullNames, string[] positions)
+        {
+            bool isFinded = false;
+            Console.Clear();
+            Console.WriteLine("   Введите фамилию:  \n");
+            string userInput = (Console.ReadLine()).ToUpper();
+
+            foreach (var item in fullNames)
+            {
+                if (item.Contains(userInput))
+                {
+                    int number = Array.IndexOf(fullNames, item);
+                    Console.Clear();
+                    Console.WriteLine($" ID - Фамилия -  Имя - Отчество -  Должность ");
+                    Console.WriteLine($"Досье найдено: { number } - { fullNames[number] } { positions[number] }");
+                    isFinded = true;
+                }
+            }
+
+            if (isFinded == false)
+            {
+                Console.Clear();
+                Console.WriteLine("  Досье ненайдено!");
+            }
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
-
-
