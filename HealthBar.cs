@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace HealthBar
 {
@@ -7,65 +7,63 @@ namespace HealthBar
         static void Main(string[] args)
         {
             Random random = new Random();
-            int maxValue = 100;
-            int health = random.Next(0, maxValue); 
+            int lengthStatusBar = 100;
+            int maxValue = 1000;
+            int health = random.Next(0, maxValue);
             int mana = random.Next(0, maxValue);
             int userInput;
-            while (health>0  & mana>0)
+            while (health > 0 & mana > 0)
             {
-                DrawBar(health, maxValue, ConsoleColor.Red, 0, '_');
-                DrawBar(mana, maxValue, ConsoleColor.Blue, 1, '_');
+                DrawBar(lengthStatusBar, health, maxValue, ConsoleColor.Red, 0, '_');
+                DrawBar(lengthStatusBar, mana, maxValue, ConsoleColor.Blue, 1, '_');
 
                 Console.SetCursorPosition(0, 5);
                 Console.Write("Введите число, на которое изменится жизни: ");
                 userInput = Convert.ToInt32(Console.ReadLine());
-                CheckError(userInput, maxValue,ref health);
+                userInput = CheckUserInput(userInput, maxValue, health, lengthStatusBar);
+                health += userInput;
                 Console.Write("Введите число, на которое изменится мана: ");
                 userInput = Convert.ToInt32(Console.ReadLine());
-                CheckError(userInput, maxValue, ref mana);
+                userInput = CheckUserInput(userInput, maxValue, mana, lengthStatusBar);
+                mana += userInput;
                 Console.Clear();
             }
         }
 
-        static void DrawBar(int value, int maxValue,ConsoleColor color, int position, char symbol)
+        static void DrawBar(int lengthStatusBar, int value, int maxValue, ConsoleColor color, int position, char symbol)
         {
-            if (0<=value & value<=maxValue)
+            ConsoleColor defaultColor = Console.BackgroundColor;
+            string statusBar = "";
+
+            for (int i = 0; i < value * lengthStatusBar / maxValue; i++)
             {
-                ConsoleColor defaultColor = Console.BackgroundColor;
-                string statusBar = "";
+                statusBar += ' ';
 
-                for (int i = 0; i < value; i++)
-                {
-                    statusBar += ' ';
-
-                }
-                Console.SetCursorPosition(0, position);
-                Console.Write('[');
-                Console.BackgroundColor = color;
-                Console.Write(statusBar);
-                Console.BackgroundColor = defaultColor;
-                statusBar = "";
-
-                for (int i = value; i < maxValue; i++)
-                {
-                    statusBar += symbol;
-
-                }
-                Console.Write(statusBar + ']');
             }
+            Console.SetCursorPosition(0, position);
+            Console.Write('[');
+            Console.BackgroundColor = color;
+            Console.Write(statusBar);
+            Console.BackgroundColor = defaultColor;
+            statusBar = "";
 
-            else 
-            Console.Write("Введены некорректные данные ");
-        }
-        static void CheckError(int userInput,int maxValue,ref int value)
-        {
-            if (0 <= userInput & userInput <= maxValue)
+            for (int i = value * lengthStatusBar / maxValue; i < lengthStatusBar; i++)
             {
-                value = userInput;
+                statusBar += symbol;
+            }
+            Console.Write(statusBar + ']');
+        }
+        static int CheckUserInput(int userInput, int maxValue, int value, int lengthStatusBar)
+        {
+            if (-maxValue <= userInput + value & userInput + value <= maxValue)
+            {
+                return userInput;
             }
             else
             {
                 Console.WriteLine("Введены некорректные данные ");
+                userInput = 0;
+                return userInput;
             }
         }
     }
