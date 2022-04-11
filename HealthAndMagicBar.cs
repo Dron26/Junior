@@ -66,6 +66,7 @@ namespace HealthBar
                 Console.WriteLine("Введены некорректные данные ");
                 userInput = 0;
                 return userInput;
+                
             }
         }
     }
