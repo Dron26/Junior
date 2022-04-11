@@ -8,7 +8,7 @@ namespace HealthBar
         {
             Random random = new Random();
             int lengthStatusBar = 100;
-            int maxValue = 1000;
+            int maxValue = 100;
             int health = random.Next(0, maxValue);
             int mana = random.Next(0, maxValue);
             int userInput;
