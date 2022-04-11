@@ -12,6 +12,7 @@ namespace HealthBar
             int health = random.Next(0, maxValue);
             int mana = random.Next(0, maxValue);
             int userInput;
+
             while (health > 0 & mana > 0)
             {
                 DrawBar(lengthStatusBar, health, maxValue, ConsoleColor.Red, 0, '_');
@@ -20,11 +21,11 @@ namespace HealthBar
                 Console.SetCursorPosition(0, 5);
                 Console.Write("Введите число, на которое изменится жизни: ");
                 userInput = Convert.ToInt32(Console.ReadLine());
-                userInput = CheckUserInput(userInput, maxValue, health, lengthStatusBar);
+                userInput = CheckUserInput(userInput, maxValue, health);
                 health += userInput;
                 Console.Write("Введите число, на которое изменится мана: ");
                 userInput = Convert.ToInt32(Console.ReadLine());
-                userInput = CheckUserInput(userInput, maxValue, mana, lengthStatusBar);
+                userInput = CheckUserInput(userInput, maxValue, mana);
                 mana += userInput;
                 Console.Clear();
             }
@@ -34,11 +35,11 @@ namespace HealthBar
         {
             ConsoleColor defaultColor = Console.BackgroundColor;
             string statusBar = "";
+            int percentageRatio = value * lengthStatusBar / maxValue;
 
-            for (int i = 0; i < value * lengthStatusBar / maxValue; i++)
+            for (int i = 0; i < percentageRatio; i++)
             {
                 statusBar += ' ';
-
             }
             Console.SetCursorPosition(0, position);
             Console.Write('[');
@@ -47,15 +48,16 @@ namespace HealthBar
             Console.BackgroundColor = defaultColor;
             statusBar = "";
 
-            for (int i = value * lengthStatusBar / maxValue; i < lengthStatusBar; i++)
+            for (int i = percentageRatio; i < lengthStatusBar; i++)
             {
                 statusBar += symbol;
             }
             Console.Write(statusBar + ']');
         }
-        static int CheckUserInput(int userInput, int maxValue, int value, int lengthStatusBar)
+
+        static int CheckUserInput(int userInput, int maxValue, int value)
         {
-            if (-maxValue <= userInput + value & userInput + value <= maxValue)
+            if (0 <= userInput + value & userInput + value <= maxValue)
             {
                 return userInput;
             }
