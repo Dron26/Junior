@@ -14,7 +14,6 @@ namespace TryPars
                 Console.Clear();
                 Console.WriteLine("\n  Введите число для преобразования:   ");
                 userInput = Console.ReadLine();
-
                 isWorking = TryParse(userInput);
             }
         }
@@ -23,6 +22,7 @@ namespace TryPars
         {
             bool isWorking;
             bool result = int.TryParse(userInput.ToString(), out int number);
+            
             if (result)
             {
                 Console.WriteLine($"  Введено число:    {number} \n  Преобразование удалось");
