@@ -34,6 +34,7 @@ namespace TryPars
                 Console.WriteLine("  Вы ввели не число! \n  Повторите");
                 Console.ReadLine();
                 return isWorking = true;
+                
             }
         }
     }
