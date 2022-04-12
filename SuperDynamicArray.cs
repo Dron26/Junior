@@ -8,9 +8,9 @@ namespace Динамический_массив
         static void Main(string[] args)
         {
             string userInput;
-            List<int> countNumber = new List<int>();
-            bool isWorking = true;
             int sum;
+            bool isWorking = true;
+            List<int> countNumber = new List<int>();
 
             while (isWorking)
             {
