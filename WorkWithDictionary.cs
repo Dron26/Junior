@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace WorkWithDictionary
 {
@@ -12,7 +11,7 @@ namespace WorkWithDictionary
             string userInput;
             bool isWorking = true;
 
-            popularWords = FillingDictionary();
+            popularWords = FillDictionary();
             Console.WriteLine("Вы вводите слово, а я обьясняю его значение.");
 
             while (isWorking)
@@ -23,11 +22,11 @@ namespace WorkWithDictionary
                 switch (userInput)
                 {
                     case "1":
-                        FindingWordInDictionary(popularWords);
+                        FindgWordInDictionary(popularWords);
                         break;
 
                     case "2":
-                        ShowingAllInDictionary(popularWords);
+                        ShowAllInDictionary(popularWords);
                         break;
 
                     case "3":
@@ -42,26 +41,27 @@ namespace WorkWithDictionary
 
         }
 
-        static void FindingWordInDictionary(Dictionary<string, string> tempDictionary)
+        static void FindgWordInDictionary(Dictionary<string, string> tempDictionary)
         {
             Console.Clear();
             Console.WriteLine("Введите слово:");
             string userInput = Console.ReadLine();
 
-            foreach (var word in tempDictionary)
+            if (tempDictionary.ContainsKey(userInput))
             {
-                if (word.Key.ToUpper().Contains(userInput.ToUpper()))
-                {
-                    Console.WriteLine($"{word.Key} { tempDictionary[word.Key]}\n\n");  
-                    break;
-                }
+                Console.Clear();
+                Console.WriteLine($"{userInput} { tempDictionary[userInput]}\n\n");                
+            }
+            else
+            {
+                Console.WriteLine($"Своло {userInput} отсутствует в списке");
             }
 
             Console.ReadLine();
             Console.Clear();
         }
 
-        static void ShowingAllInDictionary(Dictionary<string, string> tempDictionary)
+        static void ShowAllInDictionary(Dictionary<string, string> tempDictionary)
         {
             Console.Clear();
 
@@ -74,7 +74,7 @@ namespace WorkWithDictionary
             Console.Clear();
         }
 
-        static Dictionary<string,string> FillingDictionary()
+        static Dictionary<string,string> FillDictionary()
         {
             Dictionary<string, string> tempDictionary = new Dictionary<string, string>()
             {
@@ -97,4 +97,3 @@ namespace WorkWithDictionary
     }
 
 }
-
