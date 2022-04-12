@@ -8,7 +8,7 @@ namespace DrawUsingAnArray
         static void Main(string[] args)
         {
             int pacManPositionX, pacManPositionY;
-            int pacManDectionX = 0, pacManDectionY = 1;
+            int pacManDirectionX = 0, pacManDirectionY = 1;
             int widthWindow = 44;
             int heightWindow = 18;
             char symbolPlayer = '@';
@@ -24,9 +24,6 @@ namespace DrawUsingAnArray
 
             while (isPlaying)
             {
-                int origWidth = Console.WindowWidth;
-                int origHeight = Console.WindowHeight;
-
                 if (Console.KeyAvailable)
                 {
                     key = Console.ReadKey(true);
@@ -37,13 +34,13 @@ namespace DrawUsingAnArray
                     }
                     else
                     {
-                        ChangeDirection(key, ref pacManDectionX, ref pacManDectionY);
+                        ChangeDirection(key, ref pacManDirectionX, ref pacManDirectionY);
                     }
 
                 }
-                else if (map[pacManPositionX + pacManDectionX, pacManPositionY + pacManDectionY] != '#')
+                else if (map[pacManPositionX + pacManDirectionX, pacManPositionY + pacManDirectionY] != '#')
                 {
-                    Move(map, '@', ref pacManPositionX, ref pacManPositionY, pacManDectionX, pacManDectionY);
+                    Move(map, '@', ref pacManPositionX, ref pacManPositionY, pacManDirectionX, pacManDirectionY);
                 }
 
                 System.Threading.Thread.Sleep(100);
@@ -89,32 +86,32 @@ namespace DrawUsingAnArray
 
         }
 
-        static void Move(char[,] map, char symbolPlayer, ref int X, ref int Y, int DX, int DY)
+        static void Move(char[,] map, char symbolPlayer, ref int pacManPositionX, ref int pacManPositionY, int pacManDirectionX, int pacManDirectionY)
         {
-            Console.SetCursorPosition(Y, X);
-            map[X, Y] = ' ';
-            Console.Write(map[X, Y]);
-            X += DX;
-            Y += DY;
-            Console.SetCursorPosition(Y, X);
+            Console.SetCursorPosition(pacManPositionY, pacManPositionX);
+            map[pacManPositionX, pacManPositionY] = ' ';
+            Console.Write(map[pacManPositionX, pacManPositionY]);
+            pacManPositionX += pacManDirectionX;
+            pacManPositionY += pacManDirectionY;
+            Console.SetCursorPosition(pacManPositionY, pacManPositionX);
             Console.Write(symbolPlayer);
         }
 
-        static void ChangeDirection(ConsoleKeyInfo key, ref int directionX, ref int directionY)
+        static void ChangeDirection(ConsoleKeyInfo key, ref int pacManDirectionX, ref int pacManDirectionY)
         {
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    directionX = -1; directionY = 0;
+                    pacManDirectionX = -1; pacManDirectionY = 0;
                     break;
                 case ConsoleKey.DownArrow:
-                    directionX = 1; directionY = 0;
+                    pacManDirectionX = 1; pacManDirectionY = 0;
                     break;
                 case ConsoleKey.LeftArrow:
-                    directionX = 0; directionY = -1;
+                    pacManDirectionX = 0; pacManDirectionY = -1;
                     break;
                 case ConsoleKey.RightArrow:
-                    directionX = 0; directionY = 1;
+                    pacManDirectionX = 0; pacManDirectionY = 1;
                     break;
             }
 
