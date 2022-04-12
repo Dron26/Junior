@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Динамический_массив
@@ -8,45 +8,45 @@ namespace Динамический_массив
         static void Main(string[] args)
         {
             string userInput;
-            int sum;
-            bool isWorking = true;
             List<int> countNumber = new List<int>();
+            bool isWorking = true;
+            bool isNumber=false;
 
             while (isWorking)
             {
-                Console.WriteLine("\n  sum - сумма введеных чисел \n  exit - выход из программы \n\n  Введите число:  \n");                   
+                Console.WriteLine("\n  sum - сумма введеных чисел \n  exit - выход из программы \n\n  Введите число:  \n");
                 userInput = Console.ReadLine();
+                isNumber = TryParse(userInput);
 
-                if (userInput=="sum"| userInput == "exit")
+                if (userInput == "sum")
                 {
-                    if (userInput == "sum")
-                    {
-                        sum = SumNumber(countNumber);
-                       
-                    }
-                    else 
-                    {
-                        isWorking = false;
-                    }
+                    SumNumber(countNumber);
                 }
-                else if (TryParse(userInput))
+                else if (userInput == "exit")
+                {
+                    isWorking = false;
+                }
+                else if (isNumber==true)
                 {
                     countNumber.Add(Convert.ToInt32(userInput));
                 }
+                else
+                {
+                    Console.WriteLine("  Вы ввели не число! \n  Повторите");
+                    Console.ReadLine();
+                }
 
-                Console.Clear();  
+                Console.Clear();
             }
 
         }
 
         static bool TryParse(string userInput)
         {
-            bool result = int.TryParse(userInput.ToString(), out int number);
+            bool result = int.TryParse(userInput, out int number);
 
             if (result == false)
             {
-                Console.WriteLine("  Вы ввели не число! \n  Повторите");
-                Console.ReadLine();
                 return false;
             }
             else
@@ -56,7 +56,7 @@ namespace Динамический_массив
 
         }
 
-        static int SumNumber(List<int> countNumber)
+        static void SumNumber(List<int> countNumber)
         {
             int sum = 0;
 
@@ -67,7 +67,6 @@ namespace Динамический_массив
 
             Console.WriteLine($"Сумма всех чисел: {sum} \n");
             Console.ReadLine();
-            return sum;
         }
 
     }
