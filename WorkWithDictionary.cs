@@ -22,7 +22,7 @@ namespace WorkWithDictionary
                 switch (userInput)
                 {
                     case "1":
-                        FindgWordInDictionary(popularWords);
+                        FindWordInDictionary(popularWords);
                         break;
 
                     case "2":
@@ -41,7 +41,7 @@ namespace WorkWithDictionary
 
         }
 
-        static void FindgWordInDictionary(Dictionary<string, string> tempDictionary)
+        static void FindWordInDictionary(Dictionary<string, string> tempDictionary)
         {
             Console.Clear();
             Console.WriteLine("Введите слово:");
