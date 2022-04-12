@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace DrawUsingAnArray
@@ -51,7 +51,7 @@ namespace DrawUsingAnArray
 
         }
 
-        static char[,] ReadMap(string mapName,char symbolPlayer, out int pacManX, out int pacManY)
+        static char[,] ReadMap(string mapName, char symbolPlayer, out int pacManX, out int pacManY)
         {
             pacManX = 0;
             pacManY = 0;
