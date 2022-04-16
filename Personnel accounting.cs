@@ -7,10 +7,9 @@ namespace Cadrovui_ychet
     {
         static void Main(string[] args)
         {
-            Dictionary<int, string> dossiers = new Dictionary<int, string>();
+            Dictionary<string, string> dossiers = new Dictionary<string, string>();
             string userInput;
             bool isWorking = true;
-            int countDossiers = 0;
 
             while (isWorking)
             {
@@ -18,13 +17,13 @@ namespace Cadrovui_ychet
                 Console.WriteLine("  1 - добавить досье. " +
                     "\n  2 - вывести все досье. " +
                     "\n  3 - удалить досье. " +
-                    "\n  5 - выход");
+                    "\n  4 - выход");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
                 {
                     case "1":
-                        AddDossier(ref dossiers, ref countDossiers);
+                        dossiers= AddDossier( dossiers);
                         break;
 
                     case "2":
@@ -38,35 +37,31 @@ namespace Cadrovui_ychet
                     case "4":
                         isWorking = false;
                         break;
-
-                    default:
-                        break;
                 }
-
             }
-
         }
 
-        static void AddDossier(ref Dictionary<int, string> tempDossiers, ref int countDossiers)
+        static Dictionary<string, string> AddDossier( Dictionary<string, string> tempDossiers )
         {
-            string namesAndPosition;
+            string dossierNumber =Convert.ToString( tempDossiers.Count);
+            string dossier;
 
             Console.Clear();
             Console.WriteLine("  Добавление досье \n  Введите фамилию:\n");
-            namesAndPosition = (" - " + Console.ReadLine() + " - ");
+            dossier = (" - " + Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Имя:\n");
-            namesAndPosition += (Console.ReadLine() + " - ");
+            dossier += (Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Отчество:\n");
-            namesAndPosition += (Console.ReadLine() + " - ");
+            dossier += (Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Должность:\n");
-            namesAndPosition += Console.ReadLine();
-            tempDossiers.Add(countDossiers, namesAndPosition);
-            countDossiers++;
+            dossier += Console.ReadLine();
+            tempDossiers.Add(dossierNumber, dossier);
             Console.WriteLine("Досье успешно добавлено!");
             Console.ReadKey();
+            return tempDossiers;
         }
 
-        static void ShowAllDossiers(Dictionary<int, string> tempDictionary)
+        static void ShowAllDossiers(Dictionary<string, string> tempDictionary)
         {
             Console.Clear();
             Console.WriteLine($" ID - Фамилия -  Имя - Отчество -  Должность ");
@@ -80,37 +75,25 @@ namespace Cadrovui_ychet
             Console.Clear();
         }
 
-        static Dictionary<int, string> DeleteDossier(Dictionary<int, string> dossiers)
+        static Dictionary<string, string> DeleteDossier(Dictionary<string, string> dossiers)
         {
-            Dictionary<int, string> tempDossiers = new Dictionary<int, string>();
 
             Console.Clear();
             Console.WriteLine("Ведите номер досье: ");
-            int userInput = Convert.ToInt32(Console.ReadLine());
+            string userIput = Console.ReadLine();
 
-            if (dossiers.ContainsKey(userInput) == true)
+            if (dossiers.ContainsKey(userIput) == true)
             {
-                int count = 0;
-                dossiers.Remove(userInput);
-
-                foreach (var record in dossiers)
-                {
-                    tempDossiers.Add(count, record.Value);
-                    count++;
-                }
-
-                dossiers = tempDossiers;
+                dossiers.Remove(userIput);
                 Console.WriteLine("Досье успешно удалено");
             }
             else
             {
-                Console.WriteLine("Досье не найденоно");
+                Console.WriteLine("Досье не найдено");
             }
 
             Console.ReadKey();
             return dossiers;
         }
-
     }
-
 }
