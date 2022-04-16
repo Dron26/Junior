@@ -28,7 +28,7 @@ namespace SuperDynamicArray
                 }
                 else if (isNumber == true)
                 {
-                    numbers.Add(Convert.ToInt32(userInput));
+                    numbers.Add(number);
                 }
                 else
                 {
