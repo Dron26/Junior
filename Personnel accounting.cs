@@ -10,7 +10,8 @@ namespace Cadrovui_ychet
             Dictionary<string, string> dossiers = new Dictionary<string, string>();
             string userInput;
             bool isWorking = true;
-
+            int dossierNumber = 0;
+            string dossier;
             while (isWorking)
             {
                 Console.Clear();
@@ -22,8 +23,10 @@ namespace Cadrovui_ychet
 
                 switch (userInput)
                 {
-                    case "1":
-                        dossiers= AddDossier( dossiers);
+                    case "1": 
+                        AddDossierInfo(out dossier);
+                        dossiers.Add(Convert.ToString(dossierNumber), dossier);
+                        dossierNumber++;
                         break;
 
                     case "2":
@@ -31,7 +34,7 @@ namespace Cadrovui_ychet
                         break;
 
                     case "3":
-                        dossiers = DeleteDossier(dossiers);
+                        DeleteDossier(ref dossiers);
                         break;
 
                     case "4":
@@ -41,11 +44,8 @@ namespace Cadrovui_ychet
             }
         }
 
-        static Dictionary<string, string> AddDossier( Dictionary<string, string> tempDossiers )
+        static void AddDossierInfo(out string dossier)
         {
-            string dossierNumber =Convert.ToString( tempDossiers.Count);
-            string dossier;
-
             Console.Clear();
             Console.WriteLine("  Добавление досье \n  Введите фамилию:\n");
             dossier = (" - " + Console.ReadLine() + " - ");
@@ -55,10 +55,8 @@ namespace Cadrovui_ychet
             dossier += (Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Должность:\n");
             dossier += Console.ReadLine();
-            tempDossiers.Add(dossierNumber, dossier);
             Console.WriteLine("Досье успешно добавлено!");
             Console.ReadKey();
-            return tempDossiers;
         }
 
         static void ShowAllDossiers(Dictionary<string, string> tempDictionary)
@@ -75,7 +73,7 @@ namespace Cadrovui_ychet
             Console.Clear();
         }
 
-        static Dictionary<string, string> DeleteDossier(Dictionary<string, string> dossiers)
+        static void DeleteDossier(ref Dictionary<string, string> dossiers)
         {
 
             Console.Clear();
@@ -93,7 +91,6 @@ namespace Cadrovui_ychet
             }
 
             Console.ReadKey();
-            return dossiers;
         }
     }
 }
