@@ -1,34 +1,34 @@
 using System;
 using System.Collections.Generic;
 
-namespace Динамический_массив
+namespace SuperDynamicArray
 {
     class Program
     {
         static void Main(string[] args)
         {
             string userInput;
-            List<int> countNumber = new List<int>();
+            List<int> numbers = new List<int>();
             bool isWorking = true;
-            bool isNumber=false;
+            bool isNumber = false;
 
             while (isWorking)
             {
                 Console.WriteLine("\n  sum - сумма введеных чисел \n  exit - выход из программы \n\n  Введите число:  \n");
                 userInput = Console.ReadLine();
-                isNumber = TryParse(userInput);
+                isNumber = int.TryParse(userInput, out int number);
 
                 if (userInput == "sum")
                 {
-                    SumNumber(countNumber);
+                    ShowSum(numbers);
                 }
                 else if (userInput == "exit")
                 {
                     isWorking = false;
                 }
-                else if (isNumber==true)
+                else if (isNumber == true)
                 {
-                    countNumber.Add(Convert.ToInt32(userInput));
+                    numbers.Add(Convert.ToInt32(userInput));
                 }
                 else
                 {
@@ -41,22 +41,7 @@ namespace Динамический_массив
 
         }
 
-        static bool TryParse(string userInput)
-        {
-            bool result = int.TryParse(userInput, out int number);
-
-            if (result == false)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-
-        }
-
-        static void SumNumber(List<int> countNumber)
+        static void ShowSum(List<int> countNumber)
         {
             int sum = 0;
 
