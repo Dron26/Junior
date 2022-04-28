@@ -11,7 +11,6 @@ namespace Cadrovui_ychet
             string userInput;
             bool isWorking = true;
             int dossierNumber = 0;
-            string dossier;
             while (isWorking)
             {
                 Console.Clear();
@@ -23,10 +22,8 @@ namespace Cadrovui_ychet
 
                 switch (userInput)
                 {
-                    case "1": 
-                        AddDossierInfo(out dossier);
-                        dossiers.Add(Convert.ToString(dossierNumber), dossier);
-                        dossierNumber++;
+                    case "1":
+                        AddDossierInfo(dossiers,ref dossierNumber );
                         break;
 
                     case "2":
@@ -44,8 +41,10 @@ namespace Cadrovui_ychet
             }
         }
 
-        static void AddDossierInfo(out string dossier)
+        static void AddDossierInfo(Dictionary<string, string> dossiers,ref int dossierNumber)
         {
+            string dossier; 
+
             Console.Clear();
             Console.WriteLine("  Добавление досье \n  Введите фамилию:\n");
             dossier = (" - " + Console.ReadLine() + " - ");
@@ -54,8 +53,9 @@ namespace Cadrovui_ychet
             Console.WriteLine("\n  Введите Отчество:\n");
             dossier += (Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Должность:\n");
-            dossier += Console.ReadLine();
+            dossiers[Convert.ToString(dossierNumber)]=( dossier += Console.ReadLine());
             Console.WriteLine("Досье успешно добавлено!");
+            dossierNumber++;
             Console.ReadKey();
         }
 
