@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace FirstConstructor
 {
@@ -27,8 +27,7 @@ namespace FirstConstructor
 
         public void ShowInfo()
         {
-            Console.WriteLine($"Возраст - {Age}, Уровень - {Level}, Имя - {Name}");
+            Console.WriteLine($" Имя - {Name}, Возраст - {Age}, Уровень - {Level}");
         }
-    }
-        
+    }        
 }
