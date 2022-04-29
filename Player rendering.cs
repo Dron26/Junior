@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Player_rendering
 {
@@ -12,31 +12,26 @@ namespace Player_rendering
             Rendering rendering = new Rendering();
             rendering.Draw(player.PositionX,player.PositionY, playerSymbol);
         }
-
     }
 
     class Player
     {
-        private int _positionX;
-        private int _positionY;
-        public int PositionX { get { return _positionX; } }
-        public int PositionY { get { return _positionY;} }
+        public int PositionX { get; private set; }
+        public int PositionY { get; private set; }
 
         public Player(int positionX,int positionY)
         {
-            _positionX=positionX;
-            _positionY=positionY;                    
+            PositionX = positionX;
+            PositionY = positionY;                    
         }
-
     }
 
     class Rendering
     {
-        public void Draw(int X,int Y, char playerSymbol)
+        public void Draw(int positionX,int positionY, char playerSymbol)
         {
-            Console.SetCursorPosition(X, Y);
+            Console.SetCursorPosition(positionX, positionY);
             Console.WriteLine(playerSymbol);
         }
-
     }
 }
