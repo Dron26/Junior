@@ -31,14 +31,16 @@ namespace Cadrovui_ychet
                         break;
 
                     case "3":
-                        DeleteDossier(ref dossiers);
+                        DeleteDossier(dossiers);
                         break;
 
                     case "4":
                         isWorking = false;
                         break;
                 }
+
             }
+
         }
 
         static void AddDossierInfo(Dictionary<string, string> dossiers,ref int dossierNumber)
@@ -53,7 +55,10 @@ namespace Cadrovui_ychet
             Console.WriteLine("\n  Введите Отчество:\n");
             dossier += (Console.ReadLine() + " - ");
             Console.WriteLine("\n  Введите Должность:\n");
-            dossiers[Convert.ToString(dossierNumber)]=( dossier += Console.ReadLine());
+            dossier += Console.ReadLine();
+
+            dossiers[Convert.ToString(dossierNumber)]=dossier;
+
             Console.WriteLine("Досье успешно добавлено!");
             dossierNumber++;
             Console.ReadKey();
@@ -73,7 +78,7 @@ namespace Cadrovui_ychet
             Console.Clear();
         }
 
-        static void DeleteDossier(ref Dictionary<string, string> dossiers)
+        static void DeleteDossier(Dictionary<string, string> dossiers)
         {
 
             Console.Clear();
