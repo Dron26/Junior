@@ -8,26 +8,26 @@ namespace FirstConstructor
         {
             Player player = new Player(19, 99, "Андрей");
             player.ShowInfo();
-        }
+        }       
     }
 
     class Player
     {
-        int Age;
-        int Level;
-        string Name; 
+       private int _age;
+       private int _level;
+       private string _name; 
 
 
         public Player(int age,int level,string name)
         {
-            Age = age;
-            Level = level;
-            Name = name;
+            _age = age;
+            _level = level;
+            _name = name;
         }
 
         public void ShowInfo()
         {
-            Console.WriteLine($" Имя - {Name}, Возраст - {Age}, Уровень - {Level}");
-        }
+            Console.WriteLine($" Имя - {_name}, Возраст - {_age}, Уровень - {_level}");
+        }       
     }        
 }
