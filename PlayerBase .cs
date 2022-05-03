@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PlayerBase
 {
-    class Program
+    class PlayerBase
     {
-        static void Main(string[] args)
+        Player player = new Player();
+        public void PlayersBase()
         {
-            Service service = new Service();
             int idAccount = 0;
-            Dictionary<int, ServiceDictionaryPlayersInfo> AccountRegistry = new Dictionary<int, ServiceDictionaryPlayersInfo>();
-            Player player = new Player();
             string userInput;
             bool isWorking = true;
             int changeAction;
@@ -24,22 +22,22 @@ namespace PlayerBase
                 switch (userInput)
                 {
                     case "1":
-                        player.CreateAccount(ref idAccount, AccountRegistry);
+                        CreateAccount(ref idAccount);
                         break;
                     case "2":
-                        service.FindAccount(AccountRegistry);
+                        FindAccount();
                         break;
                     case "3":
-                        service.ShowAllAccount(AccountRegistry);
+                        ShowAllAccount();
                         break;
                     case "4":
-                        service.ActionOnPlayerAccount(AccountRegistry, changeAction = 1);
+                        ActionOnPlayerAccount(changeAction = 1);
                         break;
                     case "5":
-                        service.ActionOnPlayerAccount(AccountRegistry, changeAction = 2);
+                        ActionOnPlayerAccount(changeAction = 2);
                         break;
                     case "6":
-                        service.ActionOnPlayerAccount(AccountRegistry, changeAction = 3);
+                        ActionOnPlayerAccount(changeAction = 3);
                         break;
                     case "7":
                         isWorking = false;
@@ -50,52 +48,37 @@ namespace PlayerBase
 
         }
 
-    }
-
-    class Player
-    {
-        private int maxLengthName = 20;
-        private int minLevel = 1;
-        private int maxLevel = 100;
-
-        public void CreateAccount(ref int idAccount, Dictionary<int, ServiceDictionaryPlayersInfo> AccountRegistry)
+        public void CreateAccount(ref int idAccount)
         {
-            Service service = new Service();
+            int maxLengthName = 20;
+            int minLevel = 1;
+            int maxLevel = 100;
             List<string> listSymbolBlock = new List<string> { "~", "!", "@", "#", "$", "%", "^", "&" };
             string name = null;
             string nickname;
             int level;
             bool isAccountBlock;
-            bool isTrue = false;
 
-            while (isTrue == false)
-            {
                 Console.Clear();
                 Console.WriteLine("Введите имя игрока");
-                name = service.CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel, out isTrue);
+                name = CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel);
                 Console.WriteLine("Введите ник игрока");
-                nickname = service.CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel, out isTrue);
+                nickname = CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel);
                 Console.WriteLine("Введите уровень игрока");
-                level = Convert.ToInt32(service.CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel, out isTrue));
+                level = Convert.ToInt32(CheckInput(Console.ReadLine(), maxLengthName, listSymbolBlock, minLevel, maxLevel));
                 isAccountBlock = false;
-                AccountRegistry.Add(idAccount, new ServiceDictionaryPlayersInfo { Name = name, Nickname = nickname, Level = level, StatusAccountBlock = isAccountBlock, Id = idAccount });
+                player.AddPlayerInfo(idAccount, name, nickname, level, isAccountBlock);
                 Console.Clear();
                 Console.WriteLine($"  Имя - { name }\n  Ник - {nickname}\n  Уровень - {level}");
                 Console.WriteLine("Данные сохранены");
                 idAccount++;
                 Console.ReadLine();
                 Console.Clear();
-            }
-
         }
 
-    }
-
-    class Service
-    {
-        public string CheckInput(string value, int maxLengthName, List<string> blockSymbol, int minLevel, int maxLevel, out bool isTrue)
+        public string CheckInput(string value, int maxLengthName, List<string> blockSymbol, int minLevel, int maxLevel)
         {
-            isTrue = false;
+           bool isTrue = false;
 
             while (isTrue == false)
             {
@@ -132,7 +115,7 @@ namespace PlayerBase
             return value;
         }
 
-        public void FindAccount(Dictionary<int, ServiceDictionaryPlayersInfo> AccountRegistry)
+        public void FindAccount()
         {
             string userInput;
             bool isFinded = false;
@@ -147,11 +130,11 @@ namespace PlayerBase
                 Console.WriteLine("Ведите Имя");
                 userInput = Console.ReadLine();
 
-                for (int i = 0; i < AccountRegistry.Count; i++)
+                for (int i = 0; i < player.AccountRegistry.Count; i++)
                 {
-                    if (AccountRegistry[i].Name.Contains(userInput))
+                    if (player.AccountRegistry[i].Name.Contains(userInput))
                     {
-                        Console.WriteLine($"  Имя: {AccountRegistry[i].Name}, Ник: {AccountRegistry[i].Nickname}, Уровень: {AccountRegistry[i].Level}, Уникальный номер: {AccountRegistry[i].Id}, Статус блокировки : {AccountRegistry[i].StatusAccountBlock}");
+                        Console.WriteLine($"  Имя: {player.AccountRegistry[i].Name}, Ник: {player.AccountRegistry[i].Nickname}, Уровень: {player.AccountRegistry[i].Level}, Уникальный номер: {player.AccountRegistry[i].Id}, Статус блокировки : {player.AccountRegistry[i].IsAccountBlock}");
                         Console.ReadLine();
                         isFinded = true;
                     }
@@ -172,11 +155,11 @@ namespace PlayerBase
                 Console.WriteLine("Ведите Ник");
                 userInput = Console.ReadLine();
 
-                for (int i = 0; i < AccountRegistry.Count; i++)
+                for (int i = 0; i < player.AccountRegistry.Count; i++)
                 {
-                    if (AccountRegistry[i].Nickname.Contains(userInput))
+                    if (player.AccountRegistry[i].Nickname.Contains(userInput))
                     {
-                        Console.WriteLine($"  Имя: {AccountRegistry[i].Name}, Ник: {AccountRegistry[i].Nickname}, Уровень: {AccountRegistry[i].Level}, Уникальный номер: {AccountRegistry[i].Id}, Статус разблокировки : {AccountRegistry[i].StatusAccountBlock}");
+                        Console.WriteLine($"  Имя: {player.AccountRegistry[i].Name}, Ник: {player.AccountRegistry[i].Nickname}, Уровень: {player.AccountRegistry[i].Level}, Уникальный номер: {player.AccountRegistry[i].Id}, Статус блокировки : {player.AccountRegistry[i].IsAccountBlock}");
                         Console.ReadLine();
                         isFinded = true;
                     }
@@ -194,20 +177,20 @@ namespace PlayerBase
             Console.Clear();
         }
 
-        public void ShowAllAccount(Dictionary<int, ServiceDictionaryPlayersInfo> AccountRegistry)
+        public void ShowAllAccount()
         {
             Console.Clear();
 
-            for (int i = 0; i < AccountRegistry.Count; i++)
+            for (int i = 0; i < player.AccountRegistry.Count; i++)
             {
-                Console.WriteLine($"  Имя: {AccountRegistry[i].Name}, Ник: {AccountRegistry[i].Nickname}, Уровень: {AccountRegistry[i].Level}, Уникальный номер: {AccountRegistry[i].Id}, Статус блокировки : {AccountRegistry[i].StatusAccountBlock}");
+                Console.WriteLine($"  Имя: {player.AccountRegistry[i].Name}, Ник: {player.AccountRegistry[i].Nickname}, Уровень: {player.AccountRegistry[i].Level}, Уникальный номер: {player.AccountRegistry[i]}, Статус блокировки : {player.AccountRegistry[i].IsAccountBlock}");
             }
 
             Console.ReadLine();
             Console.Clear();
         }
 
-        public void ActionOnPlayerAccount(Dictionary<int, ServiceDictionaryPlayersInfo> AccountRegistry, int change)
+        public void ActionOnPlayerAccount(int change)
         {
             string[] action = { "блокировку", "заблокирован", "разблокировку", "разблокирован", "удаление", "удален" };
             bool isActionCompleted = false;
@@ -218,17 +201,16 @@ namespace PlayerBase
             Console.WriteLine(" Ввдите уникальный номер/Id игрока : ");
             userInput = Console.ReadLine();
 
-            for (int i = 0; i < AccountRegistry.Count; i++)
+            for (int i = 0; i < player.AccountRegistry.Count; i++)
             {
-                int z = AccountRegistry[i].Id;
 
-                if (AccountRegistry[i].Id.Equals(Convert.ToInt32(userInput)))
+                if (player.AccountRegistry[i].Id.Equals(Convert.ToInt32(userInput)))
                 {
-                    Console.WriteLine($"  Имя: {AccountRegistry[i].Name}, Ник: {AccountRegistry[i].Nickname}, Уровень: {AccountRegistry[i].Level}, Уникальный номер: {AccountRegistry[i].Id}, Статус блокировки : {AccountRegistry[i].StatusAccountBlock}");
+                    Console.WriteLine($"  Имя: {player.AccountRegistry[i].Name}, Ник: {player.AccountRegistry[i].Nickname}, Уровень: {player.AccountRegistry[i].Level}, Уникальный номер: {player.AccountRegistry[i]}, Статус блокировки : {player.AccountRegistry[i].IsAccountBlock}");
 
                     if (change == 1)
                     {
-                        if (AccountRegistry[i].StatusAccountBlock == true)
+                        if (player.AccountRegistry[i].IsAccountBlock == true)
                         {
                             Console.WriteLine($"Аккаунт уже заблокирован");
                             isActionCancell = true;
@@ -241,7 +223,7 @@ namespace PlayerBase
 
                             if (userInput.ToLower() == "y")
                             {
-                                AccountRegistry[i].StatusAccountBlock = true;
+                                player.BlockAccount(i);
                                 Console.WriteLine($" Игрок  {action[1]}!");
                                 isActionCompleted = true;
                                 Console.ReadLine();
@@ -259,7 +241,7 @@ namespace PlayerBase
 
                     else if (change == 2)
                     {
-                        if (AccountRegistry[i].StatusAccountBlock == false)
+                        if (player.AccountRegistry[i].IsAccountBlock == false)
                         {
                             Console.WriteLine($"Аккаунт уже разблокирован");
                             isActionCancell = true;
@@ -272,7 +254,7 @@ namespace PlayerBase
 
                             if (userInput.ToLower() == "y")
                             {
-                                AccountRegistry[i].StatusAccountBlock = false;
+                                player.UnBlockAccount(i);
                                 Console.WriteLine($" Игрок  {action[3]}!");
                                 isActionCompleted = true;
                                 Console.ReadLine();
@@ -295,7 +277,7 @@ namespace PlayerBase
 
                         if (userInput.ToLower() == "y")
                         {
-                            AccountRegistry.Remove(i);
+                            player.RemoveAccount(i);
                             Console.WriteLine($" Игрок  {action[5]}!");
                             isActionCompleted = true;
                             Console.ReadLine();
@@ -321,15 +303,48 @@ namespace PlayerBase
 
             Console.Clear();
         }
+
     }
 
-    class ServiceDictionaryPlayersInfo
+    public class Player
     {
-        public string Name;
-        public string Nickname;
-        public int Level;
-        public bool StatusAccountBlock;
-        public int Id;
+        private string _name { get; set; }
+        private string _nickname { get; set; }
+        private int _level { get; set; }
+        private bool _isAccountBlock { get { return _isAccountBlock; } set { _isAccountBlock = value; } }
+        private int _id { get; set; }
+        public string Name { get { return _name; } }
+        public string Nickname { get { return _nickname; } }
+        public int Level { get { return _level; } }
+        public bool IsAccountBlock { get { return _isAccountBlock; } }
+        public int Id { get { return _id; } }
+        private Dictionary<int, Player> _accountRegistry = new Dictionary<int, Player>();
+
+        public Dictionary<int, Player> AccountRegistry
+        {
+            get { return _accountRegistry; }
+        }
+
+        public void AddPlayerInfo(int idAccount, string name, string nickname, int level, bool isAccountBlock)
+        {
+            _accountRegistry.Add(idAccount, new Player { _name = name, _nickname = nickname, _level = level, _isAccountBlock = isAccountBlock, _id = idAccount });
+        }
+
+        public void RemoveAccount(int idAccount)
+        {
+            _accountRegistry.Remove(idAccount);
+        }
+
+        public void BlockAccount(int idAccount)
+        {
+            _accountRegistry[idAccount]._isAccountBlock = true;
+        }
+
+        public void UnBlockAccount(int idAccount)
+        {
+            _accountRegistry[idAccount]._isAccountBlock = false;
+        }
+
     }
 
 }
