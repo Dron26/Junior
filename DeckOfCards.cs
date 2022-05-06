@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace deck_of_cards
@@ -44,7 +44,7 @@ namespace deck_of_cards
     class DeckOfCard
     {
         Card card = new Card();
-        private static Dictionary<int, Card> Deck = new Dictionary<int, Card>();
+        private static Dictionary<int, string> Deck = new Dictionary<int, string>();
         
         public DeckOfCard()
         {
@@ -61,12 +61,12 @@ namespace deck_of_cards
         {
             int id = 0;
 
-            foreach (string suit in card.Suits)
+            foreach (string suit in card.Suit)
             {
-                foreach (string advantage in card.Advantages)
+                foreach (string advantage in card.Advantage)
                 {
 
-                    Deck.Add(id, new Card { Advantage = advantage, Suit = suit });
+                    Deck.Add(id, advantage+ "  "+suit  );
                     id++;
                 }
             }
@@ -79,12 +79,12 @@ namespace deck_of_cards
             for (int i = 0; i < Deck.Count; i++)
             {
                 int number = random.Next(0, Deck.Count);
-                string valueAdvantage = Deck[i].Advantage;
-                string valueSuit = Deck[i].Suit;
-                Deck[i].Advantage = Deck[number].Advantage;
-                Deck[i].Suit = Deck[number].Suit;
-                Deck[number].Advantage = valueAdvantage;
-                Deck[number].Suit = valueSuit;
+                string valueAdvantage = Deck[i];
+                string valueSuit = Deck[i];
+                Deck[i] = Deck[number];
+                Deck[i] = Deck[number];
+                Deck[number] = valueAdvantage;
+                Deck[number] = valueSuit;
             }
         }
 
@@ -95,7 +95,7 @@ namespace deck_of_cards
 
             for (int i = 0; i < TakenCards.Count; i++)
             {
-                Console.WriteLine($"{Deck[TakenCards[i]].Advantage} {Deck[TakenCards[i]].Suit} ");
+                Console.WriteLine($"{Deck[TakenCards[i]]} ");
             }
 
             Console.ReadLine();
@@ -105,16 +105,13 @@ namespace deck_of_cards
 
     class Card
     {
-        private string _suit { get; set; }
-        private string _advantage { get; set; }
-        public string Suit { get { return _suit; } set { _suit = value; } }
-        public string Advantage { get { return _advantage; } set { _advantage = value; } }
-        public List<string> Advantages = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз" };
-        public List<string> Suits = new List<string> { "Трефы", "Бубны", "Червы", "Пики", };
+        public List<string> Advantage = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз" };
+        public List<string> Suit = new List<string> { "Трефы", "Бубны", "Червы", "Пики", };
+
     }
 
     class Player
-    {
+    {        
         Random random = new Random();
         int randomCard;
         private List<int> _takenCards = new List<int>();
