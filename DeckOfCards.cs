@@ -56,13 +56,11 @@ namespace deck_of_cards
         }
     }
 
-
-
     class DeckOfCard
     {
+        private static List<Card> Deck = new List<Card>();
         private List<string> Advantage = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Валет", "Дама", "Король", "Туз" };
         private List<string> Suit = new List<string> { "Трефы", "Бубны", "Червы", "Пики", };
-        private static List<Card> Deck = new List<Card>();
         private Random random = new Random();
         private int randomNumber;
         private int countCardTaken = Deck.Count;
