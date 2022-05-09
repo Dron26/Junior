@@ -124,7 +124,7 @@ namespace Player_Base
 
             while (isTrue == false)
             {
-                if (int.TryParse(userInput, out int result) == true)
+                if (int.TryParse(userInput, out int result) == false)
                 {
                     if (userInput.Length >= minLeghtName & userInput.Length <= maxLengthName & (blockSymbol.Any(symbol => symbol != userInput)))
                     {
@@ -154,7 +154,7 @@ namespace Player_Base
 
             while (isTrue == false)
             {
-                if (int.TryParse(userinput, out int result) == false)
+                if (int.TryParse(userinput, out int result) == true)
                 {
                     value = Convert.ToInt32(userinput);
 
@@ -261,7 +261,7 @@ namespace Player_Base
 
                     if (userInput2.ToLower() == "y")
                     {
-                        player.BlockPlayer(true);
+                        player.BlockPlayer();
                         Console.WriteLine($" Игрок блокирован!");
                         isActionCompleted = true;
                         Console.ReadLine();
@@ -319,7 +319,7 @@ namespace Player_Base
 
                     if (userInput2.ToLower() == "y")
                     {
-                        player.BlockPlayer(false);
+                        player.UnblockPlayer();
                         Console.WriteLine($" Игрок  разблокирован!");
                         isActionCompleted = true;
                         Console.ReadLine();
@@ -367,7 +367,7 @@ namespace Player_Base
 
                 if (userInput2.ToLower() == "y")
                 {
-                    _players.RemoveAt(number);
+                    _players.Remove(player);
                     Console.WriteLine($" Игрок  удален!");
                     isActionCompleted = true;
                     Console.ReadLine();
@@ -428,14 +428,14 @@ namespace Player_Base
             Id = id;
         }
 
-        public void BlockPlayer(bool action)
+        public void BlockPlayer()
         {
-            IsPlayerBlock = action;
+            IsPlayerBlock = true;
         }
 
-        public void UnblockPlayer(bool action)
+        public void UnblockPlayer()
         {
-            IsPlayerBlock = action;
+            IsPlayerBlock = false;
         }
 
         public void ShowParametr()
