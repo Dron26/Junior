@@ -16,7 +16,7 @@ namespace Player_Base
     class Database
     {
         private List<Player> _players = new();
-        private int id = 0;
+        private int _idPlayer = 0;
 
         public void Work()
         {
@@ -43,7 +43,7 @@ namespace Player_Base
                         BlockPlayer();
                         break;
                     case "5":
-                        UnBlockPlayer();
+                        UnblockPlayer();
                         break;
                     case "6":
                         DeletePlayer();
@@ -62,53 +62,26 @@ namespace Player_Base
             int minLevel = 1;
             int maxLevel = 100;
             List<string> listSymbolBlock = new List<string> { "~", "!", "@", "#", "$", "%", "^", "&" };
-            string name = null;
-            string nickname = null;
-            int level = 0;
+            string name;
+            string nickname;
+            int level;
             bool isPlayerBlock = false;
             string userInput;
-            string valueNameNickname;
-            int valeuLevel;
 
             Console.Clear();
             Console.WriteLine("Введите имя игрока");
             userInput = Console.ReadLine();
-
-            if (ReadName(userInput, minLeghtName, maxLengthName, listSymbolBlock, out valueNameNickname) == true)
-            {
-                name = valueNameNickname;
-            }
-            else
-            {
-                Console.WriteLine("Вы ввели неверные данные");
-            }
+            name = ReadName(userInput, minLeghtName, maxLengthName, listSymbolBlock);
 
             Console.WriteLine("Введите никнейм игрока");
             userInput = Console.ReadLine();
-
-            if (ReadName(userInput, minLeghtName, maxLengthName, listSymbolBlock, out valueNameNickname) == true)
-            {
-                nickname = valueNameNickname;
-            }
-            else
-            {
-                Console.WriteLine("Вы ввели неверные данные");
-            }
+            nickname = ReadName(userInput, minLeghtName, maxLengthName, listSymbolBlock);
 
             Console.WriteLine("Введите уровень игрока");
             userInput = Console.ReadLine();
-
-            if (ReadLevel(userInput, minLevel, maxLevel, out valeuLevel) == true)
-            {
-                level = valeuLevel;
-            }
-            else
-            {
-                Console.WriteLine("Вы ввели неверные данные");
-            }
-
-            _players.Add(new Player(name, nickname, level, isPlayerBlock, id));
-            id++;
+            level = ReadLevel(userInput, minLevel, maxLevel);
+            _players.Add(new Player(name, nickname, level, isPlayerBlock, _idPlayer));
+            _idPlayer++;
 
             Console.Clear();
             Console.WriteLine($"  Имя - { name }\n  Ник - {nickname}\n  Уровень - {level}");
@@ -117,10 +90,10 @@ namespace Player_Base
             Console.Clear();
         }
 
-        private bool ReadName(string userInput, int minLeghtName, int maxLengthName, List<string> blockSymbol, out string value)
+        private string ReadName(string userInput, int minLeghtName, int maxLengthName, List<string> blockSymbol)
         {
             bool isTrue = false;
-            value = null;
+            string value = null;
 
             while (isTrue == false)
             {
@@ -144,13 +117,13 @@ namespace Player_Base
                 }
             }
 
-            return isTrue;
+            return value;
         }
 
-        private bool ReadLevel(string userinput, int minLevel, int maxLevel, out int value)
+        private int ReadLevel(string userinput, int minLevel, int maxLevel)
         {
             bool isTrue = false;
-            value = 0;
+            int value = 0;
 
             while (isTrue == false)
             {
@@ -175,7 +148,7 @@ namespace Player_Base
                 }
             }
 
-            return isTrue;
+            return value;
         }
 
         private void FindPlayer()
@@ -189,9 +162,7 @@ namespace Player_Base
 
             foreach (Player player in _players)
             {
-                int number = _players.IndexOf(player);
-
-                if (_players[number].Name.Contains(userInput))
+                if (player.Name.Contains(userInput))
                 {
                     player.ShowParametr();
                     Console.ReadLine();
@@ -220,8 +191,7 @@ namespace Player_Base
             {
                 foreach (Player player in _players)
                 {
-                    int index = _players.IndexOf(player);
-                    _players[index].ShowParametr();
+                    player.ShowParametr();
                 }
             }
 
@@ -235,13 +205,11 @@ namespace Player_Base
             string userInput2;
             bool isActionCompleted = false;
             bool isActionCancell = false;
-            bool isUserInputTrue;
 
             Console.Clear();
             Console.WriteLine(" Ввдите уникальный номер/Id игрока : ");
 
             userInput = Console.ReadLine();
-            isUserInputTrue = int.TryParse(userInput, out int number);
 
             if (TryGetPlayer(userInput, out Player player))
             {
@@ -289,18 +257,16 @@ namespace Player_Base
             Console.Clear();
         }
 
-        private void UnBlockPlayer()
+        private void UnblockPlayer()
         {
             string userInput;
             string userInput2;
             bool isActionCompleted = false;
             bool isActionCancell = false;
-            bool isUserInputTrue;
 
             Console.Clear();
             Console.WriteLine(" Ввдите уникальный номер/Id игрока : ");
             userInput = Console.ReadLine();
-            isUserInputTrue = int.TryParse(userInput, out int number);
 
             if (TryGetPlayer(userInput, out Player player))
             {
@@ -352,12 +318,10 @@ namespace Player_Base
             string userInput2;
             bool isActionCompleted = false;
             bool isActionCancell = false;
-            bool isUserInputTrue;
 
             Console.Clear();
             Console.WriteLine(" Ввдите уникальный номер/Id игрока : ");
             userInput = Console.ReadLine();
-            isUserInputTrue = int.TryParse(userInput, out int number);
 
             if (TryGetPlayer(userInput, out Player player))
             {
@@ -399,8 +363,8 @@ namespace Player_Base
             truePlayer = null;
             bool isGetPlayer = false;
 
-            if (int.TryParse(userInput, out int number)==true)
-            {           
+            if (int.TryParse(userInput, out int number) == true)
+            {
                 foreach (Player player in _players)
                 {
                     if (player.Id == number)
