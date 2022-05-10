@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace HomeLibrary
@@ -14,10 +14,17 @@ namespace HomeLibrary
 
     public class BookStorage
     {
+        private List<string> _genres = new List<string>();
         private List<Book> _grupBooks = new List<Book>();
-        private List<string> _genres = new List<string>()
+        private int _maxLenghtNameBook = 100;
+        private int _minLenghtName = 1;
+        private int _maxLenghtNameAuthor = 30;
+        private int _maxDateRelease = DateTime.Today.Year + 1;
+        private int _id = 0;
+
+        public BookStorage()
         {
-            "Деловая литература",
+            string[] AllGenres=new string[] {"Деловая литература",
             "Детективы и Триллеры",
             "Документальная литература",
             "Дом, ремесла, досуг, хобби" +
@@ -40,13 +47,13 @@ namespace HomeLibrary
             "Фольклор",
             "Юмор",
             "Здоровье, красота, психология",
-            "Зарубежная литература"
-        };
-        private int _maxLenghtNameBook = 100;
-        private int _minLenghtName = 1;
-        private int _maxLenghtNameAuthor = 30;
-        private int _maxDateRelease = DateTime.Today.Year + 1;
-        private int _id = 0;
+            "Зарубежная литература"};
+
+            foreach (string genre in AllGenres)
+            {
+                _genres.Add(genre);
+            }
+        }
 
         public void Work()
         {
@@ -70,10 +77,10 @@ namespace HomeLibrary
                         DeleteBook();
                         break;
                     case "3":
-                        ShowAllBook();
+                        ShowAllBooks();
                         break;
                     case "4":
-                        FindBook();
+                        FindBooks();
                         break;
                     case "5":
                         isWork = false;
@@ -84,6 +91,7 @@ namespace HomeLibrary
 
         private void AddBook()
         {
+            BookStorage bookStorage = new BookStorage();
             string name;
             string author;
             string genre;
@@ -93,8 +101,8 @@ namespace HomeLibrary
             name = GetBookName();
             author = GetAuthorName();
             yearOfRelease = GetReleaseDate();
-            genre = GetGenre(out idGrence);
-
+            genre = GetGenre();
+            idGrence = bookStorage._genres.IndexOf(genre);
             _grupBooks.Add(new Book(name, author, genre, idGrence, yearOfRelease, _id));
 
             Console.Clear();
@@ -178,11 +186,10 @@ namespace HomeLibrary
             return userInput;
         }
 
-        private string GetGenre(out int selectedNumber)
+        private string GetGenre()
         {
             bool isGenreGet = false;
             string selectedGenre = null;
-            selectedNumber = 0;
 
             Console.Clear();
             Console.WriteLine("Выберите жанр книги по содержанию");
@@ -194,7 +201,6 @@ namespace HomeLibrary
                 if (int.TryParse(Console.ReadLine(), out int number) & 0 < number & number <= _genres.Count)
                 {
                     selectedGenre = _genres[number];
-                    selectedNumber = number;
                     isGenreGet = true;
                 }
                 else
@@ -208,12 +214,9 @@ namespace HomeLibrary
 
         private void ShowGenre()
         {
-            int number = 0;
-
             foreach (string genre in _genres)
             {
-                Console.WriteLine($"{number} - {genre}");
-                number++;
+                Console.WriteLine($"{_genres.IndexOf(genre)} - {genre}");
             }
         }
 
@@ -272,7 +275,7 @@ namespace HomeLibrary
             return isGetBook;
         }
 
-        private void ShowAllBook()
+        private void ShowAllBooks()
         {
             Console.Clear();
 
@@ -291,7 +294,7 @@ namespace HomeLibrary
             Console.ReadLine();
         }
 
-        private void FindBook()
+        private void FindBooks()
         {
             string userInput;
             bool isFinded = false;
@@ -313,6 +316,7 @@ namespace HomeLibrary
                 userInput = Console.ReadLine();
                 Console.Clear();
                 int.TryParse(userInput, out int result);
+                bool isSelected = false;
 
                 foreach (Book book in _grupBooks)
                 {
@@ -339,11 +343,12 @@ namespace HomeLibrary
                     {
                         Console.WriteLine("По введенным данным есть совпадения: ");
                         book.ShowInfo();
+                        isSelected = true;
                     }
-                    else
-                    {
-                        Console.WriteLine("По введенным данным совпадений нет ");
-                    }
+                }
+                if (isSelected == false)
+                {
+                    Console.WriteLine("По введенным данным совпадений нет: ");
                 }
 
                 Console.ReadLine();
