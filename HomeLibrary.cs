@@ -348,7 +348,7 @@ namespace HomeLibrary
                 }
                 if (isSelected == false)
                 {
-                    Console.WriteLine("По введенным данным совпадений нет: ");
+                    Console.WriteLine("По введенным данным совпадений нет ");
                 }
 
                 Console.ReadLine();
