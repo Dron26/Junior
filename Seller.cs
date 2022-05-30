@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Seller
@@ -15,21 +15,21 @@ namespace Seller
 
     class Store
     {
-        private readonly List<ShipmentProducts> products = new();
-        private readonly Seller seller = new();
-        private readonly Bayer bayer = new();
+        private readonly List<ShipmentProducts> _products = new();
+        private readonly Seller _seller = new();
+        private readonly Bayer _bayer = new();
 
         public void Work()
         {
             string userInput;
             bool isWorking = true;
 
-            seller.Voice(1);
+            _seller.Voice(1);
 
             while (isWorking)
             {
                 Console.WriteLine("  \n  1 - Купить товаров \n  2 - Проверить свои корзину  \n  3 - Выход");
-                bayer.ShowWallet();            
+                _bayer.ShowWallet();            
                 userInput = Console.ReadLine();
 
                 switch (userInput)
@@ -38,7 +38,7 @@ namespace Seller
                         BuyProduct();
                         break;
                     case "2":
-                        bayer.ShowBoughtProduct();
+                        _bayer.ShowBoughtProduct();
                         break;
                     case "3":
                         isWorking = false;
@@ -64,7 +64,7 @@ namespace Seller
                 {
                     if (name != null)
                     {
-                        products.Add(new ShipmentProducts(product.Name, product.Price, product.Category, product.ExpirationDate, count));
+                        _products.Add(new ShipmentProducts(product.Name, product.Price, product.Category, product.ExpirationDate, count));
                         count = 1;
                     }
                     name = product.Name;
@@ -80,11 +80,11 @@ namespace Seller
             while (isWork == true) 
             {
                 Console.Clear();
-                bayer.ShowWallet();
+                _bayer.ShowWallet();
 
-                if (products.Count==0)
+                if (_products.Count==0)
                 {
-                    seller.Voice(8);
+                    _seller.Voice(8);
                     Console.ReadLine();
                     break;
                 }
@@ -97,25 +97,25 @@ namespace Seller
                 }
 
                 price = product.Price * count;
-                seller.Voice(5);
+                _seller.Voice(5);
                 Console.WriteLine($"{price}");
-                bayer.BuyProduct(isWork, price);
+                _bayer.BuyProduct(isWork, price);
                 
                 if (isWork == true)
                 {
-                    bayer.AddProduct(product, count);
+                    _bayer.AddProduct(product, count);
                     isWork = false;
                 }
                 else
                 {
-                    seller.Voice(7);
+                    _seller.Voice(7);
                     Console.ReadLine();
                     break;
                 }
 
                 product.Sale(count);
                 SaleProduct(product);
-                seller.Voice(6);
+                _seller.Voice(6);
                 Console.ReadLine();
             }
         }
@@ -137,10 +137,10 @@ namespace Seller
             Console.WriteLine("\n Номер:  Название товара:               Цена товара:         Срок гоности до <д/м/г>:      На прилавке есть(шт/кг)");
             Console.WriteLine(line);
 
-            foreach (ShipmentProducts product in products)
+            foreach (ShipmentProducts product in _products)
             {
                 top = Console.CursorTop;
-                Console.Write($" {products.IndexOf(product)}");
+                Console.Write($" {_products.IndexOf(product)}");
                 Console.SetCursorPosition(leftPositionName, top);
                 Console.Write($" {product.Name}");
                 Console.SetCursorPosition(leftPositionPrice, top);
@@ -158,11 +158,11 @@ namespace Seller
             tryProduct = null;
             bool isProductGet = false;
 
-            foreach (ShipmentProducts product in products)
+            foreach (ShipmentProducts product in _products)
             {
-                if (products.IndexOf(product) == number)
+                if (_products.IndexOf(product) == number)
                 {
-                    tryProduct = products[products.IndexOf(product)];
+                    tryProduct = _products[_products.IndexOf(product)];
                     isProductGet = true;
                     break;
                 }
@@ -175,7 +175,7 @@ namespace Seller
         {
             if (tryProduct.Quantity == 0)
             {
-                products.RemoveAt(products.IndexOf(tryProduct));
+                _products.RemoveAt(_products.IndexOf(tryProduct));
             }
         }
 
@@ -187,10 +187,10 @@ namespace Seller
             bool isProductSelected = false;
 
             count = 0;
-            seller.Voice(1);
-            seller.Voice(2);
+            _seller.Voice(1);
+            _seller.Voice(2);
             inputNumber = Console.ReadLine();
-            seller.Voice(3);
+            _seller.Voice(3);
             inputCount = Console.ReadLine();
 
             if (int.TryParse(inputNumber, out int tryNumber) != true | int.TryParse(inputCount, out int tryCount) != true)
@@ -199,7 +199,7 @@ namespace Seller
             }
             else
             {
-                if (tryNumber > products.Count| tryNumber < 0 | tryCount == 0)
+                if (tryNumber > _products.Count| tryNumber < 0 | tryCount == 0)
                 {
                     isProductSelected = false;
                 }
@@ -220,7 +220,7 @@ namespace Seller
 
             if (isProductSelected == false)
             {
-                seller.Voice(4);
+                _seller.Voice(4);
                 Console.ReadLine();
             }
 
@@ -279,17 +279,17 @@ namespace Seller
 
     class Bayer
     {
-        private readonly Wallet wallet = new();
-        private readonly ShoppingBasket shoppingBasket = new();
+        private readonly Wallet _wallet = new();
+        private readonly ShoppingBasket _shoppingBasket = new();
 
         public void ShowBoughtProduct()
         {
-            shoppingBasket.ShowAllProduct();
+            _shoppingBasket.ShowAllProduct();
         }
 
         public void AddProduct(Product product, int count)
         {
-            shoppingBasket.AddProduct(product,count);
+            _shoppingBasket.AddProduct(product,count);
          }
 
         public bool BuyProduct(bool isPriceGet, int price)  
@@ -298,7 +298,7 @@ namespace Seller
 
             if (isPriceGet == true)
             {
-                isPurchaseCompleted = wallet.Purchase(price);
+                isPurchaseCompleted = _wallet.Purchase(price);
             }
 
             return isPurchaseCompleted;
@@ -306,7 +306,7 @@ namespace Seller
 
         public void ShowWallet()
         {
-            wallet.ShowInfo();
+            _wallet.ShowInfo();
         }
     }
 
@@ -316,7 +316,7 @@ namespace Seller
         private readonly int _minAmoutMoney = 2000;
         private readonly int _maxAmoutMoney = 7000;
         private readonly ConsoleColor color = ConsoleColor.Red;
-        private readonly string currency = " руб.";
+        private readonly string _currency = " руб.";
         private int _amoutMoney;
 
         public Wallet()
@@ -347,7 +347,7 @@ namespace Seller
 
             Console.ForegroundColor = color;
             Console.SetCursorPosition(positionX, positionY);
-            Console.WriteLine($"Сумма в кошельке : {_amoutMoney}{currency}");
+            Console.WriteLine($"Сумма в кошельке : {_amoutMoney}{_currency}");
             Console.SetCursorPosition(positionDefaultX, positionDefaultY);
             Console.ResetColor();
         }
@@ -355,11 +355,11 @@ namespace Seller
 
     class ShoppingBasket
     {
-        private readonly List<ShipmentProducts> goods = new();
+        private readonly List<ShipmentProducts> _goods = new();
 
         public void AddProduct(Product product, int count)
         { 
-            goods.Add(new ShipmentProducts(product.Name, product.Price, product.Category, product.ExpirationDate, count));
+            _goods.Add(new ShipmentProducts(product.Name, product.Price, product.Category, product.ExpirationDate, count));
         }
 
         public void ShowAllProduct()
@@ -374,7 +374,7 @@ namespace Seller
             Console.SetCursorPosition(positionX, positionY-1);
             Console.Write($"В вашей корзине есть: ");
 
-            foreach (ShipmentProducts product in goods)
+            foreach (ShipmentProducts product in _goods)
             {
                 Console.SetCursorPosition(positionX, positionY++);
                 Console.WriteLine($"{product.Quantity} шт/кг {product.Name}, Цена 1 шт/кг: {product.Price},  Срок гоности до : {product.ExpirationDate.Day} / {product.ExpirationDate.Month} /  {product.ExpirationDate.Year}"  );
@@ -408,11 +408,11 @@ namespace Seller
         {
             Random random = new();
             List<Product> goods = new();
-            int _minPrice = 25;
-            int _maxPrice = 2500;
+            int minPrice = 25;
+            int maxPrice = 2500;
             int category=0;
-            int ExpirationYear = 2022;
-            DateTime _moment = new (ExpirationYear, 1, 1);
+            int expirationYear = 2022;
+            DateTime moment = new (expirationYear, 1, 1);
             int maxOrderCount=10;
             int minOrderCount = 1;
 
@@ -434,31 +434,31 @@ namespace Seller
                 "Greenfield Black Tea",
                 "Лисма"
             };
-            List<string> ListOfGroup;
+            List<string> listOfGroup;
 
             while (category!=1)
             {
                 if (goods.Count == 0)
                 {
-                    ListOfGroup = goodsGroupByKilograms;
+                    listOfGroup = goodsGroupByKilograms;
                     category = 0;
                 }
                 else
                 {
-                    ListOfGroup = goodsGroupByPiece;
+                    listOfGroup = goodsGroupByPiece;
                     category = 1;
                 }
 
-                foreach (string product in ListOfGroup)
+                foreach (string product in listOfGroup)
                 {
-                    int ExpirationDay = random.Next(366);
-                    int randomPrice = random.Next(_minPrice, _maxPrice);
+                    int expirationDay = random.Next(366);
+                    int randomPrice = random.Next(minPrice, maxPrice);
                     int orderCount = random.Next(minOrderCount, maxOrderCount);
 
-                    _moment.AddDays(ExpirationDay);
+                    moment.AddDays(expirationDay);
                     for (int i = 0; i <= orderCount; i++)
                     {
-                        goods.Add(new Product(product, randomPrice, category, _moment.AddDays(ExpirationDay)));
+                        goods.Add(new Product(product, randomPrice, category, moment.AddDays(expirationDay)));
                     }                   
                 }
             }
