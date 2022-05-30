@@ -24,7 +24,7 @@ namespace Seller
             string userInput;
             bool isWorking = true;
 
-            _seller.Voice(1);
+            _seller.GetVoice(1);
 
             while (isWorking)
             {
@@ -84,7 +84,7 @@ namespace Seller
 
                 if (_products.Count==0)
                 {
-                    _seller.Voice(8);
+                    _seller.GetVoice(8);
                     Console.ReadLine();
                     break;
                 }
@@ -97,7 +97,7 @@ namespace Seller
                 }
 
                 price = product.Price * count;
-                _seller.Voice(5);
+                _seller.GetVoice(5);
                 Console.WriteLine($"{price}");
                 _bayer.BuyProduct(isWork, price);
                 
@@ -108,14 +108,14 @@ namespace Seller
                 }
                 else
                 {
-                    _seller.Voice(7);
+                    _seller.GetVoice(7);
                     Console.ReadLine();
                     break;
                 }
 
                 product.Sale(count);
                 SaleProduct(product);
-                _seller.Voice(6);
+                _seller.GetVoice(6);
                 Console.ReadLine();
             }
         }
@@ -187,10 +187,10 @@ namespace Seller
             bool isProductSelected = false;
 
             count = 0;
-            _seller.Voice(1);
-            _seller.Voice(2);
+            _seller.GetVoice(1);
+            _seller.GetVoice(2);
             inputNumber = Console.ReadLine();
-            _seller.Voice(3);
+            _seller.GetVoice(3);
             inputCount = Console.ReadLine();
 
             if (int.TryParse(inputNumber, out int tryNumber) != true | int.TryParse(inputCount, out int tryCount) != true)
@@ -220,7 +220,7 @@ namespace Seller
 
             if (isProductSelected == false)
             {
-                _seller.Voice(4);
+                _seller.GetVoice(4);
                 Console.ReadLine();
             }
 
@@ -252,7 +252,7 @@ namespace Seller
             }
         }
 
-        public void Voice(int topic)        
+        public void GetVoice(int topic)        
         {
             ConsoleColor color = ConsoleColor.Green;
             Console.ForegroundColor = color;
