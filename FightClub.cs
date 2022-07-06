@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace FightClub
@@ -137,16 +137,14 @@ namespace FightClub
 
             };
             List<Fighter> _fighter = new();
-            int selectFighter = 1;
 
             Console.WriteLine($"Выбирите двух бойцов для битвы");
-
             while (_fighter.Count != _countFighters)
             {
                 Random random = new();
                 int randomName = random.Next(0, NamePlayer.Count - 1);
 
-                Console.WriteLine($"Выбирите {selectFighter} бойца");
+                Console.WriteLine($"Выбирите бойца");
                 ShowList(_types);
                 string userInput = Console.ReadLine();
 
@@ -170,9 +168,11 @@ namespace FightClub
                 }
 
                 Console.Clear();
-                selectFighter++;
             }
+            if (true)
+            {
 
+            }
             return _fighter;
         }
 
@@ -333,7 +333,16 @@ namespace FightClub
 
         public void ShowArena(List<Fighter> fighters)
         {
+            List<string> NameTypes = new()
+            {
+                "Варвар",
+                "Монах",
+                "Колдун",
+                "Чародей",
+                "Охотник"
+            };
             Random random = new();
+            bool isTakeDamage;
             int first;
             int second = 0;
             int tempNumber;
@@ -361,17 +370,31 @@ namespace FightClub
 
             damage = fighters[first].Attack(number = GetChance(), type = GetChance());
             fighters[first].ShowAttakText(number, type);
-            fighters[second].TakeDamage(damage);
+            if (type == 0)
+            {
+                fighters[second].TakeDamage(damage, out isTakeDamage);
+                fighters[first].TakeAdditionalAbility(isTakeDamage);
+            }
+            else if (type == 1 & fighters[first].Type == NameTypes[1] | fighters[first].Type == NameTypes[4])
+            {
+
+                Console.WriteLine($"Прибавляет +  {damage}hp");
+            }
+            else
+            {
+                fighters[second].TakeDamage(damage, out isTakeDamage);
+                fighters[first].TakeAdditionalAbility(isTakeDamage);
+            }
 
             while (fighters[0].Health > 0 & fighters[1].Health > 0)
             {
-                Console.WriteLine($"- {damage}hp");
+                if (type == 0 | fighters[first].Type != NameTypes[1] & fighters[first].Type != NameTypes[4])
+                {
+                    Console.WriteLine($"- {damage}hp");
+                }
 
-                System.Threading.Thread.Sleep(1500);
+                System.Threading.Thread.Sleep(500);
                 Console.Clear();
-
-                damage = fighters[first].Attack(number = GetChance(), type = GetChance());
-                fighters[second].TakeDamage(damage);
 
                 tempNumber = first;
                 first = second;
@@ -382,6 +405,24 @@ namespace FightClub
                     ShowTextOfMenu(1);
                     Console.WriteLine($"{fighters[first].Type} : {fighters[first].Name}");
                     Console.WriteLine($" {fighters[first].Health}hp");
+                    damage = fighters[first].Attack(number = GetChance(), type = GetChance());
+
+                    if (type == 0)
+                    {
+                        fighters[second].TakeDamage(damage, out isTakeDamage);
+                        fighters[first].TakeAdditionalAbility(isTakeDamage);
+                    }
+                    else if (type == 1 & fighters[first].Type == NameTypes[1] | fighters[first].Type == NameTypes[4])
+                    {
+
+                        Console.WriteLine($"Прибавляет +  {damage}hp");
+                    }
+                    else
+                    {
+                        fighters[second].TakeDamage(damage, out isTakeDamage);
+                        fighters[first].TakeAdditionalAbility(isTakeDamage);
+                    }
+
                     fighters[first].ShowAttakText(number, type);
                 }
                 else
@@ -465,13 +506,16 @@ namespace FightClub
         public int Health { get; protected set; }
         public int Damage { get; protected set; }
         public int Armor { get; protected set; }
+        public int AdditionalAbility { get; protected set; }
+        public int MaxValueAdditionalAbility { get; protected set; }
+        public int MinValueAdditionalAbility { get; protected set; }
         public int DamageMaxRatio { get; protected set; }
         public int HealthMaxRatio { get; protected set; }
         public int ArmorMaxRatio { get; protected set; }
         public int CountTakeDamage { get; protected set; }
         public int MaxCountTakeDamage { get; protected set; }
         public string Type { get; protected set; }
-       
+
         public Fighter(string name)
         {
             Health = 400;
@@ -485,25 +529,25 @@ namespace FightClub
         public int Attack(int number, int type)
         {
             Random random = new();
-            int damage = 0;
 
             if (number == 0 & type == 0 | number == 1 & type == 0)
             {
-                damage = random.Next(Damage * DamageMaxRatio / 4, Damage * DamageMaxRatio);
+                return BaseAttack();
             }
-            else if (number == 0 & type == 1 | number == 1 & type == 1)
+            else
             {
-                damage = random.Next(Damage * DamageMaxRatio / 2, Damage * DamageMaxRatio);
+                return AdditionalAction();
             }
-
-            return damage;
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, out bool isTakeDamage)
         {
+            isTakeDamage = false;
+
             if (Health > damage)
             {
                 Health -= damage;
+                isTakeDamage = true;
             }
             else
             {
@@ -523,6 +567,39 @@ namespace FightClub
             }
         }
 
+        public void TakeAdditionalAbility(bool isTakeDamage)
+        {
+            if (isTakeDamage == true)
+            {
+                if (CountTakeDamage == MaxCountTakeDamage)
+                {
+                    if (AdditionalAbility + MinValueAdditionalAbility * MaxCountTakeDamage >= MaxValueAdditionalAbility)
+                    {
+                        AdditionalAbility = MaxValueAdditionalAbility;
+                    }
+                    else
+                    {
+                        AdditionalAbility += MinValueAdditionalAbility * MaxCountTakeDamage;
+                    }
+
+                    CountTakeDamage = 0;
+                }
+                else
+                {
+                    if (AdditionalAbility + MinValueAdditionalAbility >= MaxValueAdditionalAbility)
+                    {
+                        AdditionalAbility = MaxValueAdditionalAbility;
+                    }
+                    else
+                    {
+                        AdditionalAbility += MinValueAdditionalAbility;
+                    }
+
+                    CountTakeDamage++;
+                }
+            }
+        }
+
         protected void FillAttackLists(Dictionary<int, string> primary, Dictionary<int, string> additional)
         {
             foreach (var attak in primary)
@@ -536,10 +613,34 @@ namespace FightClub
             }
         }
 
+        public int BaseAttack()
+        {
+            Random random = new Random();
+            int damage;
+
+            damage = random.Next(Damage * DamageMaxRatio / 4, Damage * DamageMaxRatio);
+            return damage;
+        }
+
+        public virtual int AdditionalAction()
+        {
+            Random random = new Random();
+            int damage = 0;
+
+            damage = random.Next(Damage * DamageMaxRatio / 4, Damage * DamageMaxRatio + (AdditionalAbility / 2));
+            AdditionalAbility = AdditionalAbility - (AdditionalAbility / 2);
+            return damage;
+        }
+
+        
     }
 
     class Barbarian : Fighter
     {
+        int Rage = 30;
+        int MaxRage = 100;
+        int MinRage = 10;
+
         public Barbarian(string name) : base(name)
         {
             Random random = new();
@@ -564,16 +665,30 @@ namespace FightClub
 
             Health += HealthRatio;
             Armor += ArmorRatio;
+            AdditionalAbility = Rage;
+            MaxValueAdditionalAbility = MaxRage;
+            MinValueAdditionalAbility = MinRage;
 
             FillAttackLists(baseAttackName, additionalAttackName);
+        }
+
+        public void GetRage(bool isTakeDamage)
+        {
+            TakeAdditionalAbility(isTakeDamage);
         }
     }
 
     class Monk : Fighter
     {
+        int Spirit = 50;
+        int MaxSpirit = 100;
+        int MinSpirit = 20;
+        int MaxSpiritExpenses = 60;
+        int MinSpiritExpenses = 40;
+        Random random = new();
+
         public Monk(string name) : base(name)
         {
-            Random random = new();
             DamageMaxRatio = 7;
             CountTakeDamage = 2;
             HealthMaxRatio = 50;
@@ -590,19 +705,44 @@ namespace FightClub
 
             Dictionary<int, string> additionalAttackName = new()
             {
-                { 0, "Разряд земляных молний " },
+                { 0, "Сила предков" },
                 { 1, "Магическая мантра" },
             };
 
             Health += HealthRatio;
             Armor += ArmorRatio;
+            AdditionalAbility = Spirit;
+            MaxValueAdditionalAbility = MaxSpirit;
+            MinValueAdditionalAbility = MinSpirit;
 
             FillAttackLists(baseAttackName, additionalAttackName);
+        }
+
+        public void GetSpirit(bool isTakeDamage)
+        {
+            TakeAdditionalAbility(isTakeDamage);
+        }
+
+        public override int AdditionalAction()
+        {
+            int expenses = random.Next(MinSpiritExpenses, MaxSpiritExpenses);
+
+            if (AdditionalAbility >= MaxSpiritExpenses & Health > 0)
+            {
+                Health = Health + expenses;
+                AdditionalAbility -= expenses;
+            }
+
+            return expenses;
         }
     }
 
     class Magician : Fighter
     {
+        int Mana = 50;
+        int MaxMana = 100;
+        int MinMana = 20;
+
         public Magician(string name) : base(name)
         {
             Random random = new();
@@ -627,12 +767,25 @@ namespace FightClub
 
             Health += HealthRatio;
             Armor += ArmorRatio;
+            AdditionalAbility = Mana;
+            MaxValueAdditionalAbility = MaxMana;
+            MinValueAdditionalAbility = MinMana;
+
             FillAttackLists(baseAttackName, additionalAttackName);
+        }
+
+        public void GetMana(bool isTakeDamage)
+        {
+            TakeAdditionalAbility(isTakeDamage);
         }
     }
 
     class Sorcerer : Fighter
     {
+        int MagicalEnergy = 50;
+        int MaxMagicalEnergy = 100;
+        int MinMagicalEnergy = 20;
+
         public Sorcerer(string name) : base(name)
         {
             Random random = new();
@@ -657,16 +810,30 @@ namespace FightClub
 
             Health += HealthRatio;
             Armor += ArmorRatio;
+            AdditionalAbility = MagicalEnergy;
+            MaxValueAdditionalAbility = MaxMagicalEnergy;
+            MinValueAdditionalAbility = MinMagicalEnergy;
 
             FillAttackLists(baseAttackName, additionalAttackName);
+        }
+
+        public void GetMagicalEnergy(bool isTakeDamage)
+        {
+            TakeAdditionalAbility(isTakeDamage);
         }
     }
 
     class Hunter : Fighter
     {
+        int Hate = 30;
+        int MaxHate = 100;
+        int MinHate = 30;
+        int MaxHateExpenses = 60;
+        int MinHateExpenses = 40;
+        Random random = new();
+
         public Hunter(string name) : base(name)
         {
-            Random random = new();
             DamageMaxRatio = 8;
             HealthMaxRatio = 80;
             ArmorMaxRatio = 20;
@@ -682,14 +849,35 @@ namespace FightClub
 
             Dictionary<int, string> additionalAttackName = new()
             {
-                { 0, "Зачарованные стрелы" },
+                { 0, "Зачарованные кровь" },
                 { 1, "Черное знахарство" },
             };
+
             Health += HealthRatio;
             Armor += ArmorRatio;
+            AdditionalAbility = Hate;
+            MaxValueAdditionalAbility = MaxHate;
+            MinValueAdditionalAbility = MinHate;
 
             FillAttackLists(baseAttackName, additionalAttackName);
         }
-    }
 
-}
+        public void GetSpirit(bool isTakeDamage)
+        {
+            TakeAdditionalAbility(isTakeDamage);
+        }
+
+        public override int AdditionalAction()
+        {
+            int expenses = random.Next(MinHateExpenses, MaxHateExpenses);
+
+            if (AdditionalAbility >= MaxHateExpenses & Health > 0)
+            {
+                Health = Health + expenses;
+                AdditionalAbility -= expenses;
+            }
+
+            return expenses;
+        }
+    }
+]
