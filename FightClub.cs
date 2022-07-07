@@ -16,6 +16,7 @@ namespace FightClub
                 battleArena.SelectFighter();
                 battleArena.StartBattle();
                 battleArena.ProcessBattle();
+                battleArena.FinishBattle();
             }
         }
     }
@@ -26,8 +27,8 @@ namespace FightClub
         private List<Fighter> _selectfighters = new();
         private List<string> _groupNameTypes = new();
         private bool _isSelectGame = false;
-        private Fighter firstFighter;
-        private Fighter secondFighter;
+        private Fighter FirstFighter;
+        private Fighter SecondFighter;
         public BattleArena()
         {
             FillGroupNameTypes();
@@ -224,8 +225,8 @@ namespace FightClub
             int first = 0;
             int second = 1;
 
-            firstFighter = _allFighters[first];
-            secondFighter = _allFighters[second];
+            FirstFighter = _allFighters[first];
+            SecondFighter = _allFighters[second];
 
             Console.Clear();
             first = random.Next(_allFighters.Count);
@@ -233,16 +234,16 @@ namespace FightClub
             Console.WriteLine("Атакует");
             if (first == 0)
             {
-                Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
-                Console.WriteLine($" {firstFighter.Health}hp");
+                Console.WriteLine($"{FirstFighter.NameType} : {FirstFighter.Name}");
+                Console.WriteLine($" {FirstFighter.Health}hp");
             }
             else
             {
-                firstFighter = _allFighters[second];
-                Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
-                Console.WriteLine($" {firstFighter.Health}hp");
+                FirstFighter = _allFighters[second];
+                Console.WriteLine($"{FirstFighter.NameType} : {FirstFighter.Name}");
+                Console.WriteLine($" {FirstFighter.Health}hp");
                 first = 0;
-                secondFighter = _allFighters[first];
+                SecondFighter = _allFighters[first];
             }
         }
 
@@ -251,40 +252,39 @@ namespace FightClub
             int damageFighter;
             Fighter tempFighter;
             int sleepTimeStep = 1500;
-            int healthFirstFighter = firstFighter.Health;
-            int healthSecondFighter = secondFighter.Health;
+            int healthFirstFighter = FirstFighter.Health;
+            int healthSecondFighter = SecondFighter.Health;
             bool isTakeDamage;
 
             while (healthFirstFighter > 0 & healthSecondFighter > 0)
             {
-                firstFighter.ChoiceAttack();
-                firstFighter.ShowAttakText();
-                damageFighter = firstFighter.Damage;
+                FirstFighter.ChoiceAttack();
+                FirstFighter.ShowAttakText();
+                damageFighter = FirstFighter.Damage;
 
-                secondFighter.TakeDamage(damageFighter, out isTakeDamage);
+                SecondFighter.TakeDamage(damageFighter, out isTakeDamage);
 
-                firstFighter.TakeAdditionalAbility(isTakeDamage);
+                FirstFighter.TakeAdditionalAbility(isTakeDamage);
 
-                tempFighter = firstFighter;
-                firstFighter = secondFighter;
-                secondFighter = tempFighter;
-                healthFirstFighter = firstFighter.Health;
-                healthSecondFighter = secondFighter.Health;
+                tempFighter = FirstFighter;
+                FirstFighter = SecondFighter;
+                SecondFighter = tempFighter;
+                healthFirstFighter = FirstFighter.Health;
+                healthSecondFighter = SecondFighter.Health;
 
                 System.Threading.Thread.Sleep(sleepTimeStep);
                 Console.Clear();
-                if (firstFighter.Health == 0 | secondFighter.Health == 0)
+                if (FirstFighter.Health == 0 | SecondFighter.Health == 0)
                 {
-                    FinishBattle();
+                    break;
                 }
                 else
                 {
                     Console.WriteLine("Атакует");
-                    Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
-                    Console.WriteLine($" {firstFighter.Health}hp");
+                    Console.WriteLine($"{FirstFighter.NameType} : {FirstFighter.Name}");
+                    Console.WriteLine($" {FirstFighter.Health}hp");
                 }
             }
-
         }
 
         public void FinishBattle()
@@ -292,20 +292,20 @@ namespace FightClub
             int sleepTimeDead = 2000;
 
 
-            if (firstFighter.Health <= 0)
+            if (FirstFighter.Health <= 0)
             {
-                Console.WriteLine($"{firstFighter.NameType} :{firstFighter.Name} Погиб!");
+                Console.WriteLine($"{FirstFighter.NameType} :{FirstFighter.Name} Погиб!");
                 System.Threading.Thread.Sleep(sleepTimeDead);
                 Console.Clear();
-                Console.WriteLine($"{secondFighter.NameType} :{secondFighter.Name} Победил!");
+                Console.WriteLine($"{SecondFighter.NameType} :{SecondFighter.Name} Победил!");
                 System.Threading.Thread.Sleep(sleepTimeDead);
             }
-            else if (secondFighter.Health <= 0)
+            else if (SecondFighter.Health <= 0)
             {
-                Console.WriteLine($"{secondFighter.NameType} :{secondFighter.Name} Погиб!");
+                Console.WriteLine($"{SecondFighter.NameType} :{SecondFighter.Name} Погиб!");
                 System.Threading.Thread.Sleep(sleepTimeDead);
                 Console.Clear();
-                Console.WriteLine($"{firstFighter.NameType} :{firstFighter.Name} Победил!");
+                Console.WriteLine($"{FirstFighter.NameType} :{FirstFighter.Name} Победил!");
                 System.Threading.Thread.Sleep(sleepTimeDead);
             }
 
