@@ -12,8 +12,8 @@ namespace FightClub
 
             if (battleArena.ChoiceLaunch())
             {
-                battleArena.SelectFighter();
                 battleArena.CreateFigters();
+                battleArena.SelectFighter();
                 battleArena.StartBattle();
                 battleArena.ProcessBattle();
             }
@@ -22,8 +22,8 @@ namespace FightClub
 
     class BattleArena
     {
-        private readonly List<int> _selectNumbers = new();
-        private List<Fighter> _fighters = new();
+        private List<Fighter> _allFighters = new();
+        private List<Fighter> _selectfighters = new();
         private List<string> _groupNameTypes = new();
         private bool _isSelectGame = false;
         private Fighter firstFighter;
@@ -70,13 +70,14 @@ namespace FightClub
             while (count != countFighters)
             {
                 Console.WriteLine($"Выбирите бойца");
-                ShowList(_groupNameTypes);
+
+                ShowGroupNames();
                 userInput = Console.ReadLine();
 
-                if (int.TryParse(userInput, out figtherNumber) & figtherNumber <= _groupNameTypes.Count)
+                if (int.TryParse(userInput, out figtherNumber) & figtherNumber <= _groupNameTypes.Count-1)
                 {
 
-                    _selectNumbers.Add(figtherNumber);
+                    _selectfighters.Add(_allFighters[figtherNumber]);
                     count++;
                 }
                 else
@@ -91,6 +92,7 @@ namespace FightClub
 
         public void CreateFigters()
         {
+            int countFighters=5;
             Random random = new();
             List<string> namePlayers = new()
             {
@@ -191,26 +193,26 @@ namespace FightClub
             };
             int randomName;
 
-            foreach (int number in _selectNumbers)
+            for (int i = 1; i <= countFighters; i++)
             {
                 randomName = random.Next(0, namePlayers.Count);
 
-                switch (number)
+                switch (i)
                 {
                     case 1:
-                        _fighters.Add(new Barbarian(namePlayers[randomName]));
+                        _allFighters.Add(new Barbarian(namePlayers[randomName]));
                         break;
                     case 2:
-                        _fighters.Add(new Monk(namePlayers[randomName]));
+                        _allFighters.Add(new Monk(namePlayers[randomName]));
                         break;
                     case 3:
-                        _fighters.Add(new Magician(namePlayers[randomName]));
+                        _allFighters.Add(new Magician(namePlayers[randomName]));
                         break;
                     case 4:
-                        _fighters.Add(new Sorcerer(namePlayers[randomName]));
+                        _allFighters.Add(new Sorcerer(namePlayers[randomName]));
                         break;
                     case 5:
-                        _fighters.Add(new Hunter(namePlayers[randomName]));
+                        _allFighters.Add(new Hunter(namePlayers[randomName]));
                         break;
                 }
             }
@@ -222,11 +224,11 @@ namespace FightClub
             int first = 0;
             int second = 1;
 
-            firstFighter = _fighters[first];
-            secondFighter = _fighters[second];
+            firstFighter = _allFighters[first];
+            secondFighter = _allFighters[second];
 
             Console.Clear();
-            first = random.Next(_fighters.Count);
+            first = random.Next(_allFighters.Count);
 
             Console.WriteLine("Атакует");
             if (first == 0)
@@ -236,11 +238,11 @@ namespace FightClub
             }
             else
             {
-                firstFighter = _fighters[second];
+                firstFighter = _allFighters[second];
                 Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
                 Console.WriteLine($" {firstFighter.Health}hp");
                 first = 0;
-                secondFighter = _fighters[first];
+                secondFighter = _allFighters[first];
             }
         }
 
@@ -284,7 +286,7 @@ namespace FightClub
             }
 
         }
-        
+
         public void FinishBattle()
         {
             int sleepTimeDead = 2000;
@@ -311,14 +313,12 @@ namespace FightClub
             Console.WriteLine("Битва окончена");
         }
 
-        private static void ShowList(List<string> texts)
+        private void ShowGroupNames()
         {
-            int count = 1;
-            foreach (string line in texts)
+            for (int i = 0; i < _allFighters.Count; i++)
             {
-                Console.WriteLine($"{count} - {line}");
+                Console.WriteLine($"{i} - {_allFighters[i].NameType}");
                 System.Threading.Thread.Sleep(20);
-                count++;
             }
         }
 
