@@ -7,39 +7,92 @@ namespace FightClub
     {
         static void Main(string[] args)
         {
-            PlayWindow playWindow = new();
-            BattleArena battlearena = new();
-            playWindow.ShowMenu(out bool isStarted);
 
-            if (isStarted == true)
+            BattleArena battleArena = new();
+            battleArena.ShowMenu();
+
+            if (battleArena.ChoiceLaunch())
             {
-                battlearena.ShowArena(playWindow.CreateFigter());
+                battleArena.SelectFighter();
+                battleArena.CreateFigters();
+                battleArena.StartBattel();
             }
         }
     }
 
-    class PlayWindow
+    class BattleArena
     {
-        private readonly List<string> _types = new();
-        private readonly int _countFighters;
+        List<string> GroupNameTypes = new();
+        bool isSelectGame = false;
 
-        public PlayWindow()
+        private readonly List<Fighter> fighters = new();
+        private readonly List<int> selectNumbers = new();
+
+        public BattleArena()
         {
-            int width = 145;
-            int height = 50;
-            _countFighters = 2;
-            Console.SetWindowSize(width, height);
-            GetTextForType();
+            FillGroupNameTypes();
         }
 
-        public void ShowMenu(out bool isStarted)
+        public void ShowMenu()
         {
-            PrintMenu(out isStarted);
+            Console.WriteLine("");
+            Console.WriteLine("Добро пожаловать в бойцовский клуб");
+            Console.WriteLine("1 - Играть");
+            Console.WriteLine("Другое - Выход");
         }
 
-        public List<Fighter> CreateFigter()
+        public bool ChoiceLaunch()
         {
-            List<string> NamePlayer = new()
+            string userInput;
+            userInput = Console.ReadLine();
+
+            switch (userInput)
+            {
+                case "1":
+                    isSelectGame = true;
+                    break;
+            }
+
+            Console.Clear();
+            return isSelectGame;
+        }
+
+        public void SelectFighter()
+        {
+            string userInput;
+            int figtherNumber;
+            int countFighters = 2;
+            int count = 0;
+
+            Console.Clear();
+            Console.WriteLine($"Выбирите двух бойцов для битвы");
+
+            while (count != countFighters)
+            {
+                Console.WriteLine($"Выбирите бойца");
+                ShowList(GroupNameTypes);
+                userInput = Console.ReadLine();
+
+                if (int.TryParse(userInput, out figtherNumber) & figtherNumber <= GroupNameTypes.Count)
+                {
+
+                    selectNumbers.Add(figtherNumber);
+                    count++;
+                }
+                else
+                {
+                    Console.WriteLine("Вы допустили ошибку в выборе! попробуйте повторить.");
+                    Console.ReadLine();
+                }
+
+                Console.Clear();
+            }
+        }
+
+        public void CreateFigters()
+        {
+            Random random = new();
+            List<string> namePlayers = new()
             {
                 "Джоли Бьорн",
                 "Донат Троллебой",
@@ -136,204 +189,127 @@ namespace FightClub
                 "Эранику",
 
             };
-            List<Fighter> _fighter = new();
+            int randomName;
 
-            Console.WriteLine($"Выбирите двух бойцов для битвы");
-            while (_fighter.Count != _countFighters)
+            foreach (int number in selectNumbers)
             {
-                Random random = new();
-                int randomName = random.Next(0, NamePlayer.Count - 1);
+                randomName = random.Next(0, namePlayers.Count - 1);
 
-                Console.WriteLine($"Выбирите бойца");
-                ShowList(_types);
-                string userInput = Console.ReadLine();
-
-                switch (userInput)
+                switch (number)
                 {
-                    case "1":
-                        _fighter.Add(new Barbarian(NamePlayer[randomName]));
+                    case 1:
+                        fighters.Add(new Barbarian(namePlayers[randomName]));
                         break;
-                    case "2":
-                        _fighter.Add(new Monk(NamePlayer[randomName]));
+                    case 2:
+                        fighters.Add(new Monk(namePlayers[randomName]));
                         break;
-                    case "3":
-                        _fighter.Add(new Magician(NamePlayer[randomName]));
+                    case 3:
+                        fighters.Add(new Magician(namePlayers[randomName]));
                         break;
-                    case "4":
-                        _fighter.Add(new Sorcerer(NamePlayer[randomName]));
+                    case 4:
+                        fighters.Add(new Sorcerer(namePlayers[randomName]));
                         break;
-                    case "5":
-                        _fighter.Add(new Hunter(NamePlayer[randomName]));
+                    case 5:
+                        fighters.Add(new Hunter(namePlayers[randomName]));
                         break;
                 }
+            }
+        }
 
+        public void StartBattel()
+        {
+            Random random = new();
+            bool isTakeDamage;
+            int first = 0;
+            int second = 1;
+            int damageFighter;
+            Fighter firstFighter = fighters[first];
+            Fighter secondFighter = fighters[second];
+            Fighter tempFighter;
+            int healthFirstFighter = firstFighter.Health;
+            int healthSecondFighter = secondFighter.Health;
+            int sleepTimeStep=1500;
+            int sleepTimeDead = 2000;
+
+            Console.Clear();
+            first = random.Next(fighters.Count);
+
+            Console.WriteLine("Атакует");
+            if (first == 0)
+            {
+                Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
+                Console.WriteLine($" {firstFighter.Health}hp");
+            }
+            else
+            {
+                firstFighter = fighters[second];
+                Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
+                Console.WriteLine($" {firstFighter.Health}hp");
+                first = 0;
+                secondFighter = fighters[first];
+            }
+
+            while (healthFirstFighter > 0 & healthSecondFighter > 0)
+            {
+                firstFighter.ChoiceAttack();
+                firstFighter.ShowAttakText();
+                damageFighter = fighters[first].Damage;
+
+                secondFighter.TakeDamage(damageFighter, out isTakeDamage);
+
+                firstFighter.TakeAdditionalAbility(isTakeDamage);
+
+                tempFighter = firstFighter;
+                firstFighter = secondFighter;
+                secondFighter = tempFighter;
+                healthFirstFighter = firstFighter.Health;
+                healthSecondFighter = secondFighter.Health;
+
+                System.Threading.Thread.Sleep(sleepTimeStep);
                 Console.Clear();
-            }
-            if (true)
-            {
 
-            }
-            return _fighter;
-        }
-
-        private static void ShowList(List<string> text)
-        {
-            foreach (string line in text)
-            {
-                Console.WriteLine(line);
-                System.Threading.Thread.Sleep(20);
-            }
-        }
-
-        private static void ChoiceColor(ConsoleColor color)
-        {
-            Console.ForegroundColor = color;
-        }
-
-        private void GetTextForType()
-        {
-            List<string> NameTypes = new()
-            {
-                "1 - Варвар",
-                "2 - Монах",
-                "3 - Колдун",
-                "4 - Чародей",
-                "5 - Охотник"
-            };
-            foreach (string line in NameTypes)
-            {
-                _types.Add(line);
-            }
-        }
-
-        private void PrintMenu(out bool isStarted)
-        {
-            isStarted = false;
-            bool isWork = true;
-            int cursorPositionMenuStart = 18;
-            int cursorPositionLogo = 4;
-            int cursorPositionX = 0;
-            ConsoleColor color;
-
-            List<string> logo = new()
-            {
-                "##   ##                      ##                       #######    ##              ##         ##                ####    ###              ##",
-                "##   ##                                               ##                         ##         ##               ##  ##    ##              ##",
-                "### ###   ######   ######  ####      #####            ##       ####      ######  ######   ######            ##         ##     ##   ##  ######",
-                "## # ##  ##   ##  ##   ##    ##     ##                #####      ##     ##   ##  ##   ##    ##              ##         ##     ##   ##  ##   ##",
-                "## # ##  ##   ##  ##   ##    ##     ##                ##         ##     ##   ##  ##   ##    ##              ##         ##     ##   ##  ##   ##",
-                "##   ##  ##  ###   ######    ##     ##                ##         ##      ######  ##   ##    ##               ##  ##    ##     ##  ###  ##   ##",
-                "##   ##   ### ##       ##  ######    #####            ##       ######        ##  ##   ##     ###              ####    ####     ### ##  ######",
-                "                    #####                                                 #####"
-            };
-
-            List<string> start = new()
-            {
-                "   ##                                ######   ####       ##     ##  ##          ",
-                "  ###                                 ##  ##   ##       ####    ##  ##          ",
-                "   ##                                 ##  ##   ##      ##  ##   ##  ##          ",
-                "   ##              ######             #####    ##      ##  ##    ####           ",
-                "   ##                                 ##       ##   #  ######     ##            ",
-                "   ##                                 ##       ##  ##  ##  ##     ##            ",
-                " ######                              ####     #######  ##  ##    ####           ",
-                "",
-                "",
-            };
-
-            List<string> exite = new()
-            {
-                "",
-                " ####                               #######  ##  ##    ####    ######   ####### ",
-                "##  ##                               ##      ##  ##     ##     # ## #    ##     ",
-                "    ##                               ##       ####      ##       ##      ##     ",
-                "  ###             ######             ####      ##       ##       ##      ####   ",
-                " ##                                  ##       ####      ##       ##      ##     ",
-                "##  ##                               ##      ##  ##     ##       ##      ##     ",
-                "######                              #######  ##  ##    ####     ####    ####### ",
-            };
-
-
-            ChoiceColor(ConsoleColor.Yellow);
-
-            while (isWork == true)
-            {
-                Console.SetCursorPosition(cursorPositionX, cursorPositionMenuStart);
-                ShowList(start);
-                ShowList(exite);
-                ChoiceColor(color = ConsoleColor.Red);
-
-                while (Console.KeyAvailable == false)
+                if (firstFighter.Health <= 0)
                 {
-                    Console.ForegroundColor = color;
-                    Console.CursorVisible = false;
-                    Console.SetCursorPosition(cursorPositionX, cursorPositionLogo);
-
-                    ShowList(logo);
-
-                    if (color == ConsoleColor.Red)
-                    {
-                        color = ConsoleColor.Blue;
-                    }
-                    else
-                    {
-                        color = ConsoleColor.Red;
-                    }
+                    Console.WriteLine($"{firstFighter.NameType} :{firstFighter.Name} Погиб!");
+                    System.Threading.Thread.Sleep(sleepTimeDead);
+                    Console.Clear();
+                    Console.WriteLine($"{secondFighter.NameType} :{secondFighter.Name} Победил!");
+                    System.Threading.Thread.Sleep(sleepTimeDead);
                 }
-
-                ChoiceColor(ConsoleColor.DarkGray);
-                Console.SetCursorPosition(cursorPositionX, cursorPositionLogo);
-                ShowList(logo);
-
-                ConsoleKeyInfo key = Console.ReadKey();
-                Console.SetCursorPosition(cursorPositionX, cursorPositionMenuStart);
-
-                if (key.Key == ConsoleKey.NumPad1)
+                else if (secondFighter.Health <= 0)
                 {
-                    ChoiceColor(ConsoleColor.DarkGreen);
-                    ShowList(start);
-                    ChoiceColor(ConsoleColor.DarkGray);
-                    ShowList(exite);
-
-                    System.Threading.Thread.Sleep(200);
-
-                    isWork = false;
-                    isStarted = true;
-
-                    ChoiceColor(ConsoleColor.Yellow);
-                }
-                else if (key.Key == ConsoleKey.NumPad2)
-                {
-                    ChoiceColor(ConsoleColor.DarkGray);
-                    ShowList(start);
-                    ChoiceColor(ConsoleColor.DarkGreen);
-                    ShowList(exite);
-
-                    isWork = false;
+                    Console.WriteLine($"{secondFighter.NameType} :{secondFighter.Name} Погиб!");
+                    System.Threading.Thread.Sleep(sleepTimeDead);
+                    Console.Clear();
+                    Console.WriteLine($"{firstFighter.NameType} :{firstFighter.Name} Победил!");
+                    System.Threading.Thread.Sleep(sleepTimeDead);
                 }
                 else
                 {
-                    ChoiceColor(ConsoleColor.Yellow);
+                    Console.WriteLine("Атакует");
+                    Console.WriteLine($"{firstFighter.NameType} : {firstFighter.Name}");
+                    Console.WriteLine($" {firstFighter.Health}hp");
                 }
             }
 
             Console.Clear();
-            Console.CursorVisible = true;
+            Console.WriteLine("Битва окончена");
         }
 
-    }
-
-    class BattleArena
-    {
-        private readonly List<string> _textOfMenu = new();
-
-        public BattleArena()
+        private static void ShowList(List<string> texts)
         {
-            GetTextForMenu();
+            int i = 1;
+            foreach (string line in texts)
+            {
+                Console.WriteLine($"{i} - {line}");
+                System.Threading.Thread.Sleep(20);
+                i++;
+            }
         }
 
-        public void ShowArena(List<Fighter> fighters)
+        private void FillGroupNameTypes()
         {
-            List<string> NameTypes = new()
+            List<string> groupTypes = new()
             {
                 "Варвар",
                 "Монах",
@@ -341,157 +317,10 @@ namespace FightClub
                 "Чародей",
                 "Охотник"
             };
-            Random random = new();
-            bool isTakeDamage;
-            int first;
-            int second = 0;
-            int tempNumber;
-            int damage;
-            int type;
-            int number;
-            int win;
-            int loser;
 
-            Console.Clear();
-            ShowTextOfMenu(0);
-            first = random.Next(fighters.Count);
-
-            if (first == 0)
+            foreach (string type in groupTypes)
             {
-                Console.WriteLine($"{fighters[0].Type} : {fighters[0].Name}");
-                Console.WriteLine($" {fighters[0].Health}hp");
-                second = 1;
-            }
-            else
-            {
-                Console.WriteLine($"{fighters[1].Type} : {fighters[1].Name}");
-                Console.WriteLine($" {fighters[1].Health}hp");
-            }
-
-            damage = fighters[first].Attack(number = GetChance(), type = GetChance());
-            fighters[first].ShowAttakText(number, type);
-            if (type == 0)
-            {
-                fighters[second].TakeDamage(damage, out isTakeDamage);
-                fighters[first].TakeAdditionalAbility(isTakeDamage);
-            }
-            else if (type == 1 & fighters[first].Type == NameTypes[1] | fighters[first].Type == NameTypes[4])
-            {
-
-                Console.WriteLine($"Прибавляет +  {damage}hp");
-            }
-            else
-            {
-                fighters[second].TakeDamage(damage, out isTakeDamage);
-                fighters[first].TakeAdditionalAbility(isTakeDamage);
-            }
-
-            while (fighters[0].Health > 0 & fighters[1].Health > 0)
-            {
-                if (type == 0 | fighters[first].Type != NameTypes[1] & fighters[first].Type != NameTypes[4])
-                {
-                    Console.WriteLine($"- {damage}hp");
-                }
-
-                System.Threading.Thread.Sleep(500);
-                Console.Clear();
-
-                tempNumber = first;
-                first = second;
-                second = tempNumber;
-
-                if (fighters[0].Health > 0 & fighters[1].Health > 0)
-                {
-                    ShowTextOfMenu(1);
-                    Console.WriteLine($"{fighters[first].Type} : {fighters[first].Name}");
-                    Console.WriteLine($" {fighters[first].Health}hp");
-                    damage = fighters[first].Attack(number = GetChance(), type = GetChance());
-
-                    if (type == 0)
-                    {
-                        fighters[second].TakeDamage(damage, out isTakeDamage);
-                        fighters[first].TakeAdditionalAbility(isTakeDamage);
-                    }
-                    else if (type == 1 & fighters[first].Type == NameTypes[1] | fighters[first].Type == NameTypes[4])
-                    {
-
-                        Console.WriteLine($"Прибавляет +  {damage}hp");
-                    }
-                    else
-                    {
-                        fighters[second].TakeDamage(damage, out isTakeDamage);
-                        fighters[first].TakeAdditionalAbility(isTakeDamage);
-                    }
-
-                    fighters[first].ShowAttakText(number, type);
-                }
-                else
-                {
-                    Console.Clear();
-
-                    if (fighters[0].Health > 0)
-                    {
-                        win = 0;
-                        loser = 1;
-
-                    }
-                    else
-                    {
-                        win = 1;
-                        loser = 0;
-                    }
-                    Console.WriteLine($"{fighters[loser].Type} :{fighters[loser].Name} Погиб!");
-                    System.Threading.Thread.Sleep(2000);
-                    Console.Clear();
-                    Console.WriteLine($"{fighters[win].Type} :{fighters[win].Name} Победил!");
-                    System.Threading.Thread.Sleep(2000);
-                }
-            }
-
-            Console.Clear();
-            ShowTextOfMenu(2);
-        }
-
-        private static int GetChance()
-        {
-            Random random = new();
-            int maxPerecentChance = 100;
-            int halfChance = maxPerecentChance / 2;
-            int chance = random.Next(maxPerecentChance);
-            int type;
-
-            if (chance < halfChance)
-            {
-                type = 0;
-            }
-            else
-            {
-                type = 1;
-            }
-
-            return type;
-        }
-
-        private void ShowTextOfMenu(int topic)
-        {
-            ConsoleColor color = ConsoleColor.Green;
-            Console.ForegroundColor = color;
-            Console.WriteLine($"    {_textOfMenu[topic]}");
-            Console.ResetColor();
-        }
-
-        private void GetTextForMenu()
-        {
-            List<string> Menuline = new()
-            {
-                "Первый удар наносит:",
-                "Удар наносит",
-                "Игра окончена",
-            };
-
-            foreach (string line in Menuline)
-            {
-                _textOfMenu.Add(line);
+                GroupNameTypes.Add(type);
             }
         }
     }
@@ -510,11 +339,15 @@ namespace FightClub
         public int MaxValueAdditionalAbility { get; protected set; }
         public int MinValueAdditionalAbility { get; protected set; }
         public int DamageMaxRatio { get; protected set; }
+        public int DamageMinRatio { get; protected set; }
         public int HealthMaxRatio { get; protected set; }
         public int ArmorMaxRatio { get; protected set; }
         public int CountTakeDamage { get; protected set; }
         public int MaxCountTakeDamage { get; protected set; }
-        public string Type { get; protected set; }
+        public int TypeAttack { get; protected set; }
+        public int NumberAttack { get; protected set; }
+
+        public string NameType { get; protected set; }
 
         public Fighter(string name)
         {
@@ -526,18 +359,31 @@ namespace FightClub
             MaxCountTakeDamage = 3;
         }
 
-        public int Attack(int number, int type)
+        public void ChoiceAttack()
         {
-            Random random = new();
+            TypeAttack = GetChance();
+            NumberAttack = GetChance();
 
-            if (number == 0 & type == 0 | number == 1 & type == 0)
+            if (TypeAttack == 0)
             {
-                return BaseAttack();
+                BaseAttack();
             }
             else
             {
-                return AdditionalAction();
+                AdditionalAction();
             }
+        }
+        public void BaseAttack()
+        {
+            Random random = new();
+            Damage = random.Next(DamageMinRatio, DamageMaxRatio);
+        }
+
+        public virtual void AdditionalAction()
+        {
+            Random random = new();
+            Damage = random.Next(DamageMinRatio, DamageMaxRatio + (AdditionalAbility / 2));
+            AdditionalAbility -= (AdditionalAbility / 2);
         }
 
         public void TakeDamage(int damage, out bool isTakeDamage)
@@ -546,8 +392,15 @@ namespace FightClub
 
             if (Health > damage)
             {
-                Health -= damage;
-                isTakeDamage = true;
+                if (damage == 0)
+                {
+                    isTakeDamage = false;
+                }
+                else
+                {
+                    Health -= damage;
+                    isTakeDamage = true;
+                }
             }
             else
             {
@@ -555,16 +408,9 @@ namespace FightClub
             }
         }
 
-        public void ShowAttakText(int number, int type)
+        public virtual void ShowAttakText()
         {
-            if (type == 0)
-            {
-                Console.WriteLine(baseAttack[number]);
-            }
-            else
-            {
-                Console.WriteLine(additionalAttack[number]);
-            }
+
         }
 
         public void TakeAdditionalAbility(bool isTakeDamage)
@@ -600,7 +446,7 @@ namespace FightClub
             }
         }
 
-        protected void FillAttackLists(Dictionary<int, string> primary, Dictionary<int, string> additional)
+        protected void FillAttacksLists(Dictionary<int, string> primary, Dictionary<int, string> additional)
         {
             foreach (var attak in primary)
             {
@@ -613,43 +459,43 @@ namespace FightClub
             }
         }
 
-        public int BaseAttack()
+        private static int GetChance()
         {
-            Random random = new Random();
-            int damage;
+            Random random = new();
+            int maxPerecentChance = 100;
+            int halfChance = maxPerecentChance / 2;
+            int chance = random.Next(maxPerecentChance);
+            int type;
 
-            damage = random.Next(Damage * DamageMaxRatio / 4, Damage * DamageMaxRatio);
-            return damage;
+            if (chance < halfChance)
+            {
+                type = 0;
+            }
+            else
+            {
+                type = 1;
+            }
+
+            return type;
         }
-
-        public virtual int AdditionalAction()
-        {
-            Random random = new Random();
-            int damage = 0;
-
-            damage = random.Next(Damage * DamageMaxRatio / 4, Damage * DamageMaxRatio + (AdditionalAbility / 2));
-            AdditionalAbility = AdditionalAbility - (AdditionalAbility / 2);
-            return damage;
-        }
-
-        
     }
 
     class Barbarian : Fighter
     {
-        int Rage = 30;
-        int MaxRage = 100;
-        int MinRage = 10;
+        private readonly int Rage = 80;
+        private readonly int MaxRage = 100;
+        private readonly int MinRage = 10;
 
         public Barbarian(string name) : base(name)
         {
             Random random = new();
-            DamageMaxRatio = 10;
+            DamageMaxRatio = 80;
+            DamageMinRatio = 30;
             HealthMaxRatio = 80;
             ArmorMaxRatio = 30;
             int HealthRatio = random.Next(0, HealthMaxRatio);
             int ArmorRatio = random.Next(0, ArmorMaxRatio);
-            Type = "Варвар";
+            NameType = "Варвар";
 
             Dictionary<int, string> baseAttackName = new()
             {
@@ -669,9 +515,22 @@ namespace FightClub
             MaxValueAdditionalAbility = MaxRage;
             MinValueAdditionalAbility = MinRage;
 
-            FillAttackLists(baseAttackName, additionalAttackName);
+            FillAttacksLists(baseAttackName, additionalAttackName);
         }
 
+        public override void ShowAttakText()
+        {
+            if (TypeAttack == 0)
+            {
+                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+            }
+            else
+            {
+                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+            }
+
+            Console.WriteLine($" - { Damage}hp");
+        }
         public void GetRage(bool isTakeDamage)
         {
             TakeAdditionalAbility(isTakeDamage);
@@ -680,22 +539,25 @@ namespace FightClub
 
     class Monk : Fighter
     {
-        int Spirit = 50;
-        int MaxSpirit = 100;
-        int MinSpirit = 20;
-        int MaxSpiritExpenses = 60;
-        int MinSpiritExpenses = 40;
-        Random random = new();
+        private readonly int Spirit = 80;
+        private readonly int MaxSpirit = 100;
+        private readonly int MinSpirit = 20;
+        private readonly int MaxSpiritExpenses = 60;
+        private readonly int MinSpiritExpenses = 40;
+        private int ExpensesAdditionalAbility;
+        private bool isAction = false;
+        private readonly Random random = new();
 
         public Monk(string name) : base(name)
         {
-            DamageMaxRatio = 7;
+            DamageMaxRatio = 70;
+            DamageMinRatio = 25;
             CountTakeDamage = 2;
             HealthMaxRatio = 50;
             ArmorMaxRatio = 50;
             int HealthRatio = random.Next(0, HealthMaxRatio);
             int ArmorRatio = random.Next(0, ArmorMaxRatio);
-            Type = "Монах";
+            NameType = "Монах";
 
             Dictionary<int, string> baseAttackName = new()
             {
@@ -715,7 +577,7 @@ namespace FightClub
             MaxValueAdditionalAbility = MaxSpirit;
             MinValueAdditionalAbility = MinSpirit;
 
-            FillAttackLists(baseAttackName, additionalAttackName);
+            FillAttacksLists(baseAttackName, additionalAttackName);
         }
 
         public void GetSpirit(bool isTakeDamage)
@@ -723,35 +585,58 @@ namespace FightClub
             TakeAdditionalAbility(isTakeDamage);
         }
 
-        public override int AdditionalAction()
+        public override void ShowAttakText()
         {
-            int expenses = random.Next(MinSpiritExpenses, MaxSpiritExpenses);
-
-            if (AdditionalAbility >= MaxSpiritExpenses & Health > 0)
+            if (TypeAttack == 0)
             {
-                Health = Health + expenses;
-                AdditionalAbility -= expenses;
+                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($" - { Damage}hp");
             }
+            else
+            {
+                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                if (isAction == true)
+                {
+                    Console.WriteLine($" + {ExpensesAdditionalAbility}hp");
+                }
+            }
+        }
 
-            return expenses;
+        public override void AdditionalAction()
+        {
+            Damage = 0;
+            ExpensesAdditionalAbility = random.Next(MinSpiritExpenses, MaxSpiritExpenses);
+
+            if (AdditionalAbility >= ExpensesAdditionalAbility & Health > 0)
+            {
+                Health += ExpensesAdditionalAbility;
+                AdditionalAbility -= ExpensesAdditionalAbility;
+                isAction = true;
+            }
+            else if (ExpensesAdditionalAbility > AdditionalAbility)
+            {
+                Console.WriteLine("Недостаточно сил");
+                isAction = false;
+            }
         }
     }
 
     class Magician : Fighter
     {
-        int Mana = 50;
-        int MaxMana = 100;
-        int MinMana = 20;
+        private readonly int Mana = 50;
+        private readonly int MaxMana = 100;
+        private readonly int MinMana = 20;
+        private readonly Random random = new();
 
         public Magician(string name) : base(name)
         {
-            Random random = new();
-            DamageMaxRatio = 5;
+            DamageMaxRatio = 75;
+            DamageMinRatio = 35;
             HealthMaxRatio = 50;
             ArmorMaxRatio = 50;
             int HealthRatio = random.Next(0, HealthMaxRatio);
             int ArmorRatio = random.Next(0, ArmorMaxRatio);
-            Type = "Колдун";
+            NameType = "Колдун";
 
             Dictionary<int, string> baseAttackName = new()
             {
@@ -771,7 +656,21 @@ namespace FightClub
             MaxValueAdditionalAbility = MaxMana;
             MinValueAdditionalAbility = MinMana;
 
-            FillAttackLists(baseAttackName, additionalAttackName);
+            FillAttacksLists(baseAttackName, additionalAttackName);
+        }
+
+        public override void ShowAttakText()
+        {
+            if (TypeAttack == 0)
+            {
+                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+            }
+            else
+            {
+                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+            }
+
+            Console.WriteLine($" - { Damage}");
         }
 
         public void GetMana(bool isTakeDamage)
@@ -782,19 +681,20 @@ namespace FightClub
 
     class Sorcerer : Fighter
     {
-        int MagicalEnergy = 50;
-        int MaxMagicalEnergy = 100;
-        int MinMagicalEnergy = 20;
+        private readonly int MagicalEnergy = 80;
+        private readonly int MaxMagicalEnergy = 100;
+        private readonly int MinMagicalEnergy = 20;
+        private readonly Random random = new();
 
         public Sorcerer(string name) : base(name)
         {
-            Random random = new();
-            DamageMaxRatio = 7;
+            DamageMaxRatio = 75;
+            DamageMinRatio = 35;
             HealthMaxRatio = 40;
             ArmorMaxRatio = 40;
             int HealthRatio = random.Next(0, HealthMaxRatio);
             int ArmorRatio = random.Next(0, ArmorMaxRatio);
-            Type = "Чародей";
+            NameType = "Чародей";
 
             Dictionary<int, string> baseAttackName = new()
             {
@@ -814,7 +714,21 @@ namespace FightClub
             MaxValueAdditionalAbility = MaxMagicalEnergy;
             MinValueAdditionalAbility = MinMagicalEnergy;
 
-            FillAttackLists(baseAttackName, additionalAttackName);
+            FillAttacksLists(baseAttackName, additionalAttackName);
+        }
+
+        public override void ShowAttakText()
+        {
+            if (TypeAttack == 0)
+            {
+                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+            }
+            else
+            {
+                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+            }
+
+            Console.WriteLine($" - { Damage}");
         }
 
         public void GetMagicalEnergy(bool isTakeDamage)
@@ -825,21 +739,24 @@ namespace FightClub
 
     class Hunter : Fighter
     {
-        int Hate = 30;
-        int MaxHate = 100;
-        int MinHate = 30;
-        int MaxHateExpenses = 60;
-        int MinHateExpenses = 40;
-        Random random = new();
+        private readonly int Hate = 80;
+        private readonly int MaxHate = 100;
+        private readonly int MinHate = 30;
+        private readonly int MaxHateExpenses = 60;
+        private readonly int MinHateExpenses = 40;
+        private int ExpensesAdditionalAbility;
+        private bool isAction = false;
+        private readonly Random random = new();
 
         public Hunter(string name) : base(name)
         {
-            DamageMaxRatio = 8;
+            DamageMaxRatio = 80;
+            DamageMinRatio = 40;
             HealthMaxRatio = 80;
             ArmorMaxRatio = 20;
             int HealthRatio = random.Next(0, HealthMaxRatio);
             int ArmorRatio = random.Next(0, ArmorMaxRatio);
-            Type = "Охотник";
+            NameType = "Охотник";
 
             Dictionary<int, string> baseAttackName = new()
             {
@@ -859,7 +776,24 @@ namespace FightClub
             MaxValueAdditionalAbility = MaxHate;
             MinValueAdditionalAbility = MinHate;
 
-            FillAttackLists(baseAttackName, additionalAttackName);
+            FillAttacksLists(baseAttackName, additionalAttackName);
+        }
+
+        public override void ShowAttakText()
+        {
+            if (TypeAttack == 0)
+            {
+                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($" - { Damage}hp");
+            }
+            else
+            {
+                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                if (isAction == true)
+                {
+                    Console.WriteLine($" + {ExpensesAdditionalAbility}hp");
+                }
+            }
         }
 
         public void GetSpirit(bool isTakeDamage)
@@ -867,17 +801,22 @@ namespace FightClub
             TakeAdditionalAbility(isTakeDamage);
         }
 
-        public override int AdditionalAction()
+        public override void AdditionalAction()
         {
-            int expenses = random.Next(MinHateExpenses, MaxHateExpenses);
+            Damage = 0;
+            ExpensesAdditionalAbility = random.Next(MinHateExpenses, MaxHateExpenses);
 
-            if (AdditionalAbility >= MaxHateExpenses & Health > 0)
+            if (AdditionalAbility >= ExpensesAdditionalAbility & Health > 0)
             {
-                Health = Health + expenses;
-                AdditionalAbility -= expenses;
+                Health += ExpensesAdditionalAbility;
+                AdditionalAbility -= ExpensesAdditionalAbility;
+                isAction = true;
             }
-
-            return expenses;
+            else if (ExpensesAdditionalAbility > AdditionalAbility)
+            {
+                Console.WriteLine("Недостаточно сил");
+                isAction = false;
+            }
         }
     }
-]
+}
