@@ -256,11 +256,4 @@ namespace Supermarket
             _goods.RemoveAt(numberReturnProduct);
         }
     }
-
-
-
-
-
-
-
 }
