@@ -284,6 +284,7 @@ namespace FightClub
             }
 
         }
+        
         public void FinishBattle()
         {
             int sleepTimeDead = 2000;
