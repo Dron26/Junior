@@ -24,7 +24,7 @@ namespace FightClub
             if (ChoiceLaunch())
             {
                 CreateFigters();
-                Battle();
+                CreateBattle();
             }
         }
 
@@ -197,7 +197,7 @@ namespace FightClub
             _allFighters.Add(new Hunter(namePlayers[randomName]));
         }
 
-        public void Battle()
+        public void CreateBattle()
         {
             Fighter secondFighter = null;
             Fighter firstFighter = null;
@@ -329,7 +329,7 @@ namespace FightClub
             }
             else
             {
-                AdditionalAction();
+                AdditionalAttack();
             }
 
             ShowAttakText();
@@ -340,7 +340,7 @@ namespace FightClub
             Damage = random.Next(DamageMinRatio, DamageMaxRatio);
         }
 
-        public virtual void AdditionalAction()
+        public virtual void AdditionalAttack()
         {
             Random random = new();
             Damage = random.Next(DamageMinRatio, DamageMaxRatio + (AdditionalAbility / AbilityExpenseValue));
@@ -456,8 +456,8 @@ namespace FightClub
             DamageMinRatio = 30;
             HealthMaxRatio = 80;
             ArmorMaxRatio = 30;
-            int HealthRatio = random.Next(0, HealthMaxRatio);
-            int ArmorRatio = random.Next(0, ArmorMaxRatio);
+            int healthRatio = random.Next(0, HealthMaxRatio);
+            int armorRatio = random.Next(0, ArmorMaxRatio);
             NameType = "Варвар";
 
             Dictionary<int, string> baseAttackName = new()
@@ -472,8 +472,8 @@ namespace FightClub
                 { 1, "Разрушительный удар Яростной секирой" },
             };
 
-            Health += HealthRatio;
-            Armor += ArmorRatio;
+            Health += healthRatio;
+            Armor += armorRatio;
             AdditionalAbility = _rage;
             MaxValueAdditionalAbility = _maxRage;
             MinValueAdditionalAbility = _minRage;
@@ -514,8 +514,8 @@ namespace FightClub
             CountTakeDamage = 2;
             HealthMaxRatio = 50;
             ArmorMaxRatio = 50;
-            int HealthRatio = _random.Next(0, HealthMaxRatio);
-            int ArmorRatio = _random.Next(0, ArmorMaxRatio);
+            int healthRatio = _random.Next(0, HealthMaxRatio);
+            int armorRatio = _random.Next(0, ArmorMaxRatio);
             NameType = "Монах";
 
             Dictionary<int, string> baseAttackName = new()
@@ -530,8 +530,8 @@ namespace FightClub
                 { 1, "Магическая мантра" },
             };
 
-            Health += HealthRatio;
-            Armor += ArmorRatio;
+            Health += healthRatio;
+            Armor += armorRatio;
             AdditionalAbility = _spirit;
             MaxValueAdditionalAbility = _maxSpirit;
             MinValueAdditionalAbility = _minSpirit;
@@ -556,7 +556,7 @@ namespace FightClub
             }
         }
 
-        public override void AdditionalAction()
+        public override void AdditionalAttack()
         {
             Damage = 0;
             _expensesAdditionalAbility = _random.Next(_minSpiritExpenses, _maxSpiritExpenses);
@@ -578,7 +578,7 @@ namespace FightClub
     class Magician : Fighter
     {
         private readonly int _mana = 50;
-        private readonly int maxMana = 100;
+        private readonly int _maxMana = 100;
         private readonly int _minMana = 20;
         private readonly Random _random = new();
 
@@ -588,8 +588,8 @@ namespace FightClub
             DamageMinRatio = 35;
             HealthMaxRatio = 50;
             ArmorMaxRatio = 50;
-            int HealthRatio = _random.Next(0, HealthMaxRatio);
-            int ArmorRatio = _random.Next(0, ArmorMaxRatio);
+            int healthRatio = _random.Next(0, HealthMaxRatio);
+            int armorRatio = _random.Next(0, ArmorMaxRatio);
             NameType = "Колдун";
 
             Dictionary<int, string> baseAttackName = new()
@@ -604,10 +604,10 @@ namespace FightClub
                 { 1, "Портал миров" },
             };
 
-            Health += HealthRatio;
-            Armor += ArmorRatio;
+            Health += healthRatio;
+            Armor += armorRatio;
             AdditionalAbility = _mana;
-            MaxValueAdditionalAbility = maxMana;
+            MaxValueAdditionalAbility = _maxMana;
             MinValueAdditionalAbility = _minMana;
 
             FillAttacksLists(baseAttackName, additionalAttackName);
@@ -641,8 +641,8 @@ namespace FightClub
             DamageMinRatio = 35;
             HealthMaxRatio = 40;
             ArmorMaxRatio = 40;
-            int HealthRatio = _random.Next(0, HealthMaxRatio);
-            int ArmorRatio = _random.Next(0, ArmorMaxRatio);
+            int healthRatio = _random.Next(0, HealthMaxRatio);
+            int armorRatio = _random.Next(0, ArmorMaxRatio);
             NameType = "Чародей";
 
             Dictionary<int, string> baseAttackName = new()
@@ -657,8 +657,8 @@ namespace FightClub
                 { 1, "Проклятие души" },
             };
 
-            Health += HealthRatio;
-            Armor += ArmorRatio;
+            Health += healthRatio;
+            Armor += armorRatio;
             AdditionalAbility = _magicalEnergy;
             MaxValueAdditionalAbility = _maxMagicalEnergy;
             MinValueAdditionalAbility = _minMagicalEnergy;
@@ -699,8 +699,8 @@ namespace FightClub
             DamageMinRatio = 40;
             HealthMaxRatio = 80;
             ArmorMaxRatio = 20;
-            int HealthRatio = _random.Next(0, HealthMaxRatio);
-            int ArmorRatio = _random.Next(0, ArmorMaxRatio);
+            int healthRatio = _random.Next(0, HealthMaxRatio);
+            int armorRatio = _random.Next(0, ArmorMaxRatio);
             NameType = "Охотник";
 
             Dictionary<int, string> baseAttackName = new()
@@ -715,8 +715,8 @@ namespace FightClub
                 { 1, "Черное знахарство" },
             };
 
-            Health += HealthRatio;
-            Armor += ArmorRatio;
+            Health += healthRatio;
+            Armor += armorRatio;
             AdditionalAbility = _hate;
             MaxValueAdditionalAbility = _maxHate;
             MinValueAdditionalAbility = _minHate;
@@ -741,7 +741,7 @@ namespace FightClub
             }
         }
 
-        public override void AdditionalAction()
+        public override void AdditionalAttack()
         {
             Damage = 0;
             _expensesAdditionalAbility = _random.Next(_minHateExpenses, _maxHateExpenses);
