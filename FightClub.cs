@@ -41,15 +41,7 @@ namespace FightClub
             string userInput;
             userInput = Console.ReadLine();
 
-            switch (userInput)
-            {
-                case "1":
-                    _isSelectGame = true;
-                    break;
-            }
-
-            Console.Clear();
-            return _isSelectGame;
+            return userInput=="1";
         }
 
         public Fighter SelectFighter()
@@ -284,9 +276,9 @@ namespace FightClub
     }
     class Fighter
     {
-        protected Dictionary<int, string> baseAttack = new();
+        protected Dictionary<int, string> BaseAttacks = new();
 
-        protected Dictionary<int, string> additionalAttack = new();
+        protected Dictionary<int, string> AdditionalAttacks = new();
 
         public string Name { get; private set; }
         public int Health { get; protected set; }
@@ -413,12 +405,12 @@ namespace FightClub
         {
             foreach (var attak in primary)
             {
-                baseAttack.Add(attak.Key, attak.Value);
+                BaseAttacks.Add(attak.Key, attak.Value);
             }
 
             foreach (var attak in additional)
             {
-                additionalAttack.Add(attak.Key, attak.Value);
+                AdditionalAttacks.Add(attak.Key, attak.Value);
             }
         }
 
@@ -485,11 +477,11 @@ namespace FightClub
         {
             if (TypeAttack == 0)
             {
-                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {BaseAttacks[NumberAttack]}");
             }
             else
             {
-                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {AdditionalAttacks[NumberAttack]}");
             }
 
             Console.WriteLine($" - { Damage}hp");
@@ -543,12 +535,12 @@ namespace FightClub
         {
             if (TypeAttack == 0)
             {
-                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {BaseAttacks[NumberAttack]}");
                 Console.WriteLine($" - { Damage}hp");
             }
             else
             {
-                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {AdditionalAttacks[NumberAttack]}");
                 if (_isAction == true)
                 {
                     Console.WriteLine($" + {_expensesAdditionalAbility}hp");
@@ -617,11 +609,11 @@ namespace FightClub
         {
             if (TypeAttack == 0)
             {
-                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {BaseAttacks[NumberAttack]}");
             }
             else
             {
-                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {AdditionalAttacks[NumberAttack]}");
             }
 
             Console.WriteLine($" - { Damage}");
@@ -670,11 +662,11 @@ namespace FightClub
         {
             if (TypeAttack == 0)
             {
-                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {BaseAttacks[NumberAttack]}");
             }
             else
             {
-                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {AdditionalAttacks[NumberAttack]}");
             }
 
             Console.WriteLine($" - { Damage}");
@@ -728,12 +720,12 @@ namespace FightClub
         {
             if (TypeAttack == 0)
             {
-                Console.WriteLine($"Нанес: {baseAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {BaseAttacks[NumberAttack]}");
                 Console.WriteLine($" - { Damage}hp");
             }
             else
             {
-                Console.WriteLine($"Нанес: {additionalAttack[NumberAttack]}");
+                Console.WriteLine($"Нанес: {AdditionalAttacks[NumberAttack]}");
                 if (_isAction == true)
                 {
                     Console.WriteLine($" + {_expensesAdditionalAbility}hp");
