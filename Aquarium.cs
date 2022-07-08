@@ -8,15 +8,14 @@ namespace Aquarium
         static void Main(string[] args)
         {
             Aquarium aquarium = new();
-            bool isWork = true;
             aquarium.ShowMenu();
 
             if (aquarium.ChoiceLaunch() == true)
             {
-                while (isWork == true)
+                while (aquarium._isWork)
                 {
                     aquarium.Observe();
-                    isWork = aquarium.ChoiceAction();
+                    aquarium.ChoiceAction();
                 }
             }
         }
@@ -25,16 +24,22 @@ namespace Aquarium
     class Aquarium
     {
         private readonly int _coutFish = 15;
-        private List<Fish> _fish = new();
+        private List<Fish> _groupFish = new();
         private List<string> _groupNames = new();
         private Random _random = new();
-        private bool _isSelectObserve = false;
-        private bool isObserve = true;
+        public bool _isWork { get; private set; }
 
         public Aquarium()
         {
+            int numberName;
+            string nameFish;
+            _isWork = true;
             FillGroupNameTypes();
-            CreateFishForAquarium();
+
+            for (int i = 0; i <= _coutFish; i++)
+            {
+                _groupFish.Add(new Fish(nameFish = _groupNames[numberName = _random.Next(0, _groupNames.Count)]));
+            }
         }
 
         public void ShowMenu()
@@ -47,18 +52,9 @@ namespace Aquarium
 
         public bool ChoiceLaunch()
         {
-            string userInput;
-            userInput = Console.ReadLine();
-
-            switch (userInput)
-            {
-                case "1":
-                    _isSelectObserve = true;
-                    break;
-            }
-
+            string userInput = Console.ReadLine();
             Console.Clear();
-            return _isSelectObserve;
+            return userInput == "1";
         }
 
         public void Observe()
@@ -68,7 +64,7 @@ namespace Aquarium
             int cursorPositionY = 5;
             int sleepTime = 300;
 
-            while (Console.KeyAvailable == false & isObserve == true)
+            while (Console.KeyAvailable == false & _isWork == true)
             {
                 while (Console.KeyAvailable == false)
                 {
@@ -79,7 +75,7 @@ namespace Aquarium
                     Console.CursorVisible = false;
                     Console.SetCursorPosition(cursorPositionX, cursorPositionY);
 
-                    if (_fish.Count == 0)
+                    if (_groupFish.Count == 0)
                     {
                         Console.WriteLine("Аквариум пуст!");
                     }
@@ -89,7 +85,7 @@ namespace Aquarium
                     }
                     ShowFish();
                     System.Threading.Thread.Sleep(sleepTime);
-                    GetHealthFish();
+                    DeleteDeadFish();
                     LiveDay();
                     Console.Clear();
                 }
@@ -99,7 +95,6 @@ namespace Aquarium
 
         public bool ChoiceAction()
         {
-            bool isWork = true;
             string userInput;
             userInput = Console.ReadLine();
 
@@ -114,52 +109,39 @@ namespace Aquarium
                     GiveAwayFish();
                     break;
                 case "3":
-                    StopObserve(out isWork);
+                    _isWork=StopObserve();
                     break;
             }
 
-            return isWork;
+            return _isWork;
         }
 
         private void GiveAwayFish()
         {
             int numberFish;
 
-            if (_fish.Count == 0)
+            if (_groupFish.Count == 0)
             {
                 Console.WriteLine("Аквариум пуст, суши свчек");
             }
             else
             {
-                numberFish = _random.Next(0, _fish.Count);
-                Console.WriteLine($"Вы выловили рыбку:{_fish[numberFish].Name} ");
-                _fish.RemoveAt(numberFish);
+                numberFish = _random.Next(0, _groupFish.Count);
+                Console.WriteLine($"Вы выловили рыбку:{_groupFish[numberFish].Name} ");
+                _groupFish.RemoveAt(numberFish);
             }
 
             Console.ReadLine();
             Console.Clear();
         }
 
-        private void CreateFishForAquarium()
-        {
-            int numberName;
-            string nameFish;
-
-            for (int i = 0; i <= _coutFish; i++)
-            {
-                numberName = _random.Next(0, _groupNames.Count);
-                nameFish = _groupNames[numberName];
-                _fish.Add(new Fish(nameFish));
-            }
-        }
-
         private void LiveDay()
         {
             int day = 1;
 
-            foreach (Fish fish in _fish)
+            foreach (Fish fish in _groupFish)
             {
-                fish.SetAge(day);
+                fish.IncreasingAge(day);
                 fish.SetStatusHealth();
             }
         }
@@ -169,7 +151,7 @@ namespace Aquarium
             int numberName;
             string nameFish;
 
-            if (_fish.Count == _coutFish)
+            if (_groupFish.Count == _coutFish)
             {
                 Console.WriteLine("Аквариум полон, больше нельзя добавить");
             }
@@ -177,8 +159,8 @@ namespace Aquarium
             {
                 numberName = _random.Next(0, _groupNames.Count);
                 nameFish = _groupNames[numberName];
-                _fish.Add(new Fish(nameFish));
-                Console.WriteLine($"Вы добавили рыбку:{_fish[_fish.Count - 1].Name} ");
+                _groupFish.Add(new Fish(nameFish));
+                Console.WriteLine($"Вы добавили рыбку:{_groupFish[_groupFish.Count - 1].Name} ");
             }
 
             Console.ReadLine();
@@ -187,7 +169,7 @@ namespace Aquarium
 
         private void ShowFish()
         {
-            foreach (Fish fish in _fish)
+            foreach (Fish fish in _groupFish)
             {
                 Console.WriteLine($"  {fish.Name}\n  возраст: { fish.Age} дней   на вид состояние  { fish.HealthStatus} \n");
             }
@@ -195,81 +177,76 @@ namespace Aquarium
 
         private void FillGroupNameTypes()
         {
-            List<string> groupNames = new()
-            {
-                "Петушок",
-                "Скалярия",
-                "Барбусы",
-                "Данио",
-                "Анциструс",
-                "Тернеция",
-                "Моллинезия",
-                "Гуппи",
-                "Акары",
-                "Рыба-попугай",
-                "Коридорас",
-                "Пецилия",
-                "Астронотус",
-                "Неоны",
-                "Рыба-клоун",
-                "Цихлазомы",
-                "Меченосец",
-                "Золотая, рыбка",
-                "Боции",
-                "Гурами",
-                "Лялиус",
-                "Тетраодон",
-                "Телескоп",
-                "Апистограмма",
-                "Сиамский, водорослеед",
-                "Дискус",
-                "Птеригоплихт",
-                "Цихлазома, северум",
-                "Вуалехвост",
-                "Глофиш, (GloFish)",
-                "Макропод",
-                "Торакатум",
-                "Лабео",
-                "Данио-рерио",
-                "Барбус, суматранский",
-                "Хромис-красавец",
-                "Пельвикахромис, пульхер",
-                "Акара, бирюзовая",
-                "Радужницы",
-                "Комета",
-                "Моллинезия, черная",
-                "Голубой, дельфин",
-                "Апистограмма, Рамирези",
-                "Гурами, мраморный",
-                "Синодонтис",
-                "Гурами, жемчужный",
-                "Акантофтальмус",
-                "Гуппи, Эндлера",
-                "Тетры",
-                "Псевдотрофеусы",
-            };
-
-            foreach (string type in groupNames)
-            {
-                _groupNames.Add(type);
-            }
+                _groupNames.AddRange(new List<string> 
+                {
+                    "Петушок",
+                    "Скалярия",
+                    "Барбусы",
+                    "Данио",
+                    "Анциструс",
+                    "Тернеция",
+                    "Моллинезия",
+                    "Гуппи",
+                    "Акары",
+                    "Рыба-попугай",
+                    "Коридорас",
+                    "Пецилия",
+                    "Астронотус",
+                    "Неоны",
+                    "Рыба-клоун",
+                    "Цихлазомы",
+                    "Меченосец",
+                    "Золотая, рыбка",
+                    "Боции",
+                    "Гурами",
+                    "Лялиус",
+                    "Тетраодон",
+                    "Телескоп",
+                    "Апистограмма",
+                    "Сиамский, водорослеед",
+                    "Дискус",
+                    "Птеригоплихт",
+                    "Цихлазома, северум",
+                    "Вуалехвост",
+                    "Глофиш, (GloFish)",
+                    "Макропод",
+                    "Торакатум",
+                    "Лабео",
+                    "Данио-рерио",
+                    "Барбус, суматранский",
+                    "Хромис-красавец",
+                    "Пельвикахромис, пульхер",
+                    "Акара, бирюзовая",
+                    "Радужницы",
+                    "Комета",
+                    "Моллинезия, черная",
+                    "Голубой, дельфин",
+                    "Апистограмма, Рамирези",
+                    "Гурами, мраморный",
+                    "Синодонтис",
+                    "Гурами, жемчужный",
+                    "Акантофтальмус",
+                    "Гуппи, Эндлера",
+                    "Тетры",
+                    "Псевдотрофеусы",
+                });
         }
 
-        private bool StopObserve(out bool isWork)
+        private bool StopObserve()
         {
-            return isWork = false;
+            return  _isWork=false;
         }
 
-        private void GetHealthFish()
+        private void DeleteDeadFish()
         {
-            int number = _fish.Count;
+            int number = _groupFish.Count;
 
             for (int i = 0; i < number; i++)
             {
-                if (_fish[i].Health == 0)
+                if (_groupFish[i].IsHealth == false)
                 {
-                    _fish.RemoveAt(i);
-                    number = _fish.Count;
+                    _groupFish.RemoveAt(i);
+                    number = _groupFish.Count;
                 }
             }
         }
@@ -277,15 +254,13 @@ namespace Aquarium
 
     class Fish
     {
-
         private int _maxAge = 100;
         private int _minAge = 20;
-        private List<string> _groupHealthStatus = new();
 
         public string Name { get; private set; }
         public int Age { get; private set; }
         public string HealthStatus { get; private set; }
-        public int Health { get; private set; }
+        public bool IsHealth { get; private set; }
       
         public Fish(string name)
         {
@@ -293,45 +268,44 @@ namespace Aquarium
             _maxAge = random.Next(_maxAge - _minAge, _maxAge);
             Name = name;
             Age = random.Next(_minAge, _maxAge);
-            Health = 1;
+            IsHealth = true;
 
-            FillGroupHealthStatus();
             SetStatusHealth();
         }
 
         public void SetStatusHealth()
         {
-            int Great = 0;
-            int Normally = 1;
-            int Satisfactory = 2;
-            int Bad = 3;
-            int statusGreat = 1;
-            int statusNormally = 25;
-            int statusSatisfactory = 50;
-            int statusBad = 70;
+            string Great = "Отлично";
+            string Normally = "Нормально";
+            string Satisfactory = "Удовлетворительно";
+            string Bad = "Все плохо";
+            int _statusGreat = 1;
+            int _statusNormally = 25;
+            int _statusSatisfactory = 50;
+            int _statusBad = 70;
 
-            if (Health != 0)
+            if (IsHealth)
             {
-                if (statusGreat < Age & Age < statusNormally)
+                if (_statusGreat < Age & Age < _statusNormally)
                 {
-                    HealthStatus = _groupHealthStatus[Great];
+                    HealthStatus = Great;
                 }
-                else if (statusNormally < Age & Age < statusSatisfactory)
+                else if (_statusNormally < Age & Age < _statusSatisfactory)
                 {
-                    HealthStatus = _groupHealthStatus[Normally];
+                    HealthStatus = Normally;
                 }
-                else if (statusSatisfactory < Age & Age < statusBad)
+                else if (_statusSatisfactory < Age & Age < _statusBad)
                 {
-                    HealthStatus = _groupHealthStatus[Satisfactory];
+                    HealthStatus = Satisfactory;
                 }
-                else if (statusBad < Age)
+                else if (_statusBad < Age)
                 {
-                    HealthStatus = _groupHealthStatus[Bad];
+                    HealthStatus = Bad;
                 }
             }
         }
 
-        public void SetAge(int number)
+        public void IncreasingAge(int number)
         {
             if (Age == _maxAge)
             {
@@ -346,23 +320,7 @@ namespace Aquarium
         private void Dead()
         {
             HealthStatus = "К сожалению рыбка умерла от старости";
-            Health = 0;
-        }
-
-        private void FillGroupHealthStatus()
-        {
-            List<string> groupHealthStatus = new()
-            {
-                "Отлично",
-                "Нормально",
-                "Удовлетворительно",
-                "Все плохо",
-            };
-
-            foreach (string type in groupHealthStatus)
-            {
-                _groupHealthStatus.Add(type);
-            }
+            IsHealth=false;
         }
     }
 }
