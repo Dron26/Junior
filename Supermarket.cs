@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Supermarket
@@ -23,10 +23,9 @@ namespace Supermarket
 
     class Supermarket
     {
-
+        private readonly Random _random = new();
         private Queue<Bayer> _customersQueue = new();
         private List<Product> _goods = new();
-        private readonly Random _random = new ();
 
         public Supermarket()
         {
@@ -112,7 +111,7 @@ namespace Supermarket
             return amountPurchase;
         }
 
-        private List<Product> CreateProduct()
+        private void CreateProduct()
         {
             Random random = new();
             int minPrice = 25;
@@ -147,9 +146,6 @@ namespace Supermarket
                     _goods.Add(new Product(product, randomPrice));
                 }
             }
-
-
-            return _goods;
         }
 
         private void ReturnProducts(Bayer bayer)
@@ -159,8 +155,9 @@ namespace Supermarket
             products = bayer.GetProductShoppingBasket();
             Console.WriteLine("  У покупателя недостаточно средств,\n ему необходимо вернуть часть товаров \n\n");
 
-            while (GetAmountPurchase(bayer) >= bayer.GetAmountInWallet())
+            while (GetAmountPurchase(bayer) >= bayer._amoutMoneyWallet)
             {
+                products = bayer.GetProductShoppingBasket();
                 numberReturnProduct = _random.Next(0, products.Count);
                 Console.WriteLine($"  Возврат товара: {products[numberReturnProduct].Name}   -   цена товара:  {products[numberReturnProduct].Price}");
                 bayer.ReturnProducts(numberReturnProduct);
@@ -187,6 +184,8 @@ namespace Supermarket
         private readonly Wallet _wallet = new();
         private readonly ShoppingBasket _shoppingBasket = new();
 
+        public int _amoutMoneyWallet { get=>_wallet._amoutMoney;}
+
         public void AddProduct(Product product)
         {
             _shoppingBasket.AddProduct(product);
@@ -199,7 +198,7 @@ namespace Supermarket
 
         public int GetAmountInWallet()
         {
-            return _wallet.GetAmount();
+            return _wallet._amoutMoney;
         }
 
         public List<Product> GetProductShoppingBasket()
@@ -219,7 +218,8 @@ namespace Supermarket
         private readonly Random _random = new();
         private readonly int _minAmoutMoney = 10000;
         private readonly int _maxAmoutMoney = 15000;
-        private int _amoutMoney;
+
+        public int _amoutMoney { get; private set; }
 
         public Wallet()
         {
@@ -231,10 +231,6 @@ namespace Supermarket
                 _amoutMoney -= purchasePrice;
         }
 
-        public int GetAmount()
-        {
-            return _amoutMoney;
-        }
     }
 
     class ShoppingBasket
@@ -248,7 +244,14 @@ namespace Supermarket
 
         public List<Product> GetProducts()
         {
-            return _goods;
+            List<Product> tempGoods = new();
+
+            foreach (Product product in _goods)
+            {
+                tempGoods.Add(product);
+            }
+
+            return tempGoods;
         }
 
         public void ReturnProduct(int numberReturnProduct)
