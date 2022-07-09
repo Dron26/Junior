@@ -89,7 +89,7 @@ namespace ThePlatoonWar
             Soldier defenderSolider = new();
 
             int numberPlatoonCounty = 0;
-            int sleepTimeStep = 0;
+            int sleepTimeStep = 800;
             int healthAttackSoldier = 0;
             int healthDefenderSoldier = 0;
             bool isSoldierChange = false;
