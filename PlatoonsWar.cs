@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ThePlatoonWar
@@ -353,25 +353,6 @@ namespace ThePlatoonWar
             CreateSoldiers(countSoldiers);
         }
 
-        private void CreateSoldiers(int countSoldiers)
-        {
-            Random random = new();
-            int countTypeSolier = 2;
-
-            for (int i = 0; i < countSoldiers; i++)
-            {
-                int number = random.Next(0, countTypeSolier);
-                if (number == 1)
-                {
-                    BaseSoldiers.Add(new Swordsman());
-                }
-                else
-                {
-                    BaseSoldiers.Add(new Archer());
-                }
-            }
-        }
-
         public Soldier GetSoldiers(int number)
         {
             Soldier selectSoldier;
@@ -400,6 +381,25 @@ namespace ThePlatoonWar
         {
             BaseSoldiers.AddRange(ReservingSolders);
             ReservingSolders.Clear();
+        }
+
+        private void CreateSoldiers(int countSoldiers)
+        {
+            Random random = new();
+            int countTypeSolier = 2;
+
+            for (int i = 0; i < countSoldiers; i++)
+            {
+                int number = random.Next(0, countTypeSolier);
+                if (number == 1)
+                {
+                    BaseSoldiers.Add(new Swordsman());
+                }
+                else
+                {
+                    BaseSoldiers.Add(new Archer());
+                }
+            }
         }
     }
 
@@ -443,7 +443,7 @@ namespace ThePlatoonWar
                 Health = 0;
             }
         }
-    }
+    }   
 
     class Swordsman : Soldier
     {
