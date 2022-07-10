@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -25,15 +25,6 @@ namespace Zoo
             IsWork = true;
         }
 
-        private bool ChoiceLaunch()
-        {
-            string userInput;
-            userInput = Console.ReadLine().ToLower();
-
-            Console.Clear();
-            return userInput == "m";
-        }
-
         public void Work()
         {
             Console.WriteLine("Добро пожаловать в зоопарк!\n");
@@ -54,6 +45,15 @@ namespace Zoo
                     IsWork = false;
                 }
             }
+        }
+
+        private bool ChoiceLaunch()
+        {
+            string userInput;
+            userInput = Console.ReadLine().ToLower();
+
+            Console.Clear();
+            return userInput == "m";
         }
 
         private void SelectValliere()
@@ -176,6 +176,7 @@ namespace Zoo
             int number = random.Next(0, scream.Count);
             Scream=scream[number];
         }
+
         private void SetName()
         {
             List<string> names = new()
