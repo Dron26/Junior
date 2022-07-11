@@ -12,6 +12,7 @@ namespace TwoVariables
             int firstNumber = 3;
             int secondNumber = 5;
 
+
             for (int i = 0; i < number; i++)
             {
                 if (i % firstNumber == 0 | i % secondNumber == 0)
