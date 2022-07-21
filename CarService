@@ -20,7 +20,7 @@ namespace CarService
         CashRegister cashRegister = new();
         private bool _isSelectStart = false;
         private bool _isSelectExite = false;
-        private Dictionary<Detail, int> DetailsInStockWarehouse;
+        private Dictionary<DetailForWarehouse, int> DetailsInStockWarehouse;
         private List<string> GroupDetail = new();
         private bool IsSolvent = false;
         Random random = new Random();
@@ -37,7 +37,8 @@ namespace CarService
             {
                 FillGroupDetail();
                 CreateCustomersQueue();
-                while (_isSelectExite == false)
+
+                while (_isSelectExite == false | _clientsQueue.Count != 0)
                 {
                     ChoiceMenu();
                 }
@@ -112,51 +113,66 @@ namespace CarService
 
         public void ReceiveCar()
         {
-            Client client = _clientsQueue.Peek();
-            int sleepTimeStep = 300;
+            Client client = _clientsQueue.Dequeue();
+            int sleepTimeStep = 80;
+            int countStepForSleep = 7;
             int count = 0;
             int price;
-            string brokenDetail;
-            Detail newDetail;
+            bool isReplacementDetailDishonest = false;
+            Detail brokenDetail;
+            DetailForWarehouse newDetail;
             Car clientCar = client.Car;
-            Console.WriteLine($"Добрый день! меня зовут: {client.Name}, вот моя машина пожалуйста проверьте ее, что то барахлит");
-            Console.WriteLine($"{repairMaster.Name}: хорошо сейчас проверим!");
 
-            BreakdownDetection(client);
-            brokenDetail = client.Car.BrokenDetail;
+            Console.Clear();
+            Console.WriteLine($"Клиент - {client.Name} : Добрый день! Вот моя машина, пожалуйста проверьте ее, что то барахлит");
+            Console.WriteLine($"Мастер сервиса - {repairMaster.Name}: хорошо сейчас проверим!");
 
-            while (count != 7)
+            while (count != countStepForSleep)
             {
                 System.Threading.Thread.Sleep(sleepTimeStep);
-                Console.WriteLine(" . ");
+                Console.Write(" . ");
                 count++;
             }
 
-            Console.WriteLine($"{repairMaster.Name}: Я обнаружил сломанную деталь, это: {brokenDetail}");
+            brokenDetail = clientCar.BrokenDetail;
+            price = warehouse.GetPriceDetail(brokenDetail.Name);
 
-            price = warehouse.GetPriceDetail(client);
+            Console.WriteLine($"{repairMaster.Name}: Я обнаружил сломанную деталь, это: {client.Car.BrokenDetail.Name}");
+            Console.WriteLine($"{repairMaster.Name}: Стоимость детали и ремонта составит: {price}");
 
             if (IsClientSolvent(client, price) == false)
             {
-                Console.WriteLine($"{repairMaster.Name}:У вас недостаточно средств, пожалуйста покиньте ремонтный бокс и возвращайтесь когда у вас появятся средства.Извините");
-
+                Console.WriteLine($"{repairMaster.Name}: У вас недостаточно средств, пожалуйста покиньте ремонтный бокс и возвращайтесь когда у вас появятся средства.Извините");
+                Console.ReadLine();
             }
             else
             {
-                Console.WriteLine($"{repairMaster.Name}: Я обнаружил сломанную деталь, это: {client.Car.BrokenDetail}");
-                Console.WriteLine($"{repairMaster.Name}:Так как у вас достаточно средств, предлагаю замену детали");
-                Console.WriteLine($"{client.Name}: хорошо меняем!");
+                Console.WriteLine($"{repairMaster.Name}: Так как у вас достаточно средств, предлагаю замену детали");
+                Console.WriteLine($"{client.Name}: Хорошо меняем!");
+                
+                Console.ReadLine();
 
-                if ((warehouse.TryGetDetail(brokenDetail, out newDetail) == false))
+                if ((warehouse.TryGetDetail(brokenDetail.Name, out newDetail) == false))
                 {
-                    DishonestReplacementDetail(client, price);
+                    isReplacementDetailDishonest = true;
 
                 }
-                else
-                {
-                    ReplacementDetail(client, newDetail);
-                    cashRegister.ReplenishmentAmount(price);
-                }
+
+                ReplacementDetail(client, newDetail, isReplacementDetailDishonest);
+                cashRegister.ReplenishmentAmount(price);
+                client.Buy(price);
+                Console.WriteLine("Замена прошла удачно!");
+                Console.WriteLine("Клиент оплатил работу и покинул сервис!");
+                Console.ReadLine();
+            }
+
+            if (isReplacementDetailDishonest  == true& ChanceFindViolation()==true)
+            {
+                Console.Clear();
+                Console.WriteLine(" Удача на стороне клиента, он обнаружил нарушение! Сервис заменил не ту деталь!");
+                Console.WriteLine(" Теперь сервис должен выплатить компенсацию клиенту!\n");
+                BonusPayment(price, client);
+                Console.ReadLine();
             }
         }
 
@@ -167,6 +183,7 @@ namespace CarService
 
         private void ChoiceMenu()
         {
+            Console.Clear();
             string userInput;
 
             Console.WriteLine("  Наш сервис популярен к нам выстроилась очередь из клиентов на ремонт авто");
@@ -175,7 +192,6 @@ namespace CarService
             Console.WriteLine("  3 - Закрыть магазин");
 
             userInput = Console.ReadLine();
-            Console.Clear();
 
             switch (userInput)
             {
@@ -191,22 +207,15 @@ namespace CarService
             }
         }
 
-        public void BreakdownDetection(Client client)
-        {
-            int mumber = random.Next(0, GroupDetail.Count);
-            string brokenDetail = GroupDetail[mumber];
-
-            client.Car.SetBrokenDetail(brokenDetail);
-        }
-
         public void ChoiceMenuWarehouse()
         {
             string userInput;
 
+            Console.Clear();
             Console.WriteLine("  Нажмите:\n  1 - Проверить сток запчастей");
             Console.WriteLine("  2 - Закупить детали");
             userInput = Console.ReadLine();
-            Console.Clear();
+            
 
             switch (userInput)
             {
@@ -225,7 +234,7 @@ namespace CarService
         {
             Console.WriteLine("В наличии на складе:");
 
-            DetailsInStockWarehouse = warehouse.GetDetails();
+            DetailsInStockWarehouse = warehouse.GetDetailsInStock();
 
             foreach (var detail in DetailsInStockWarehouse)
             {
@@ -239,32 +248,36 @@ namespace CarService
         {
             string userInput;
             bool isDetailBuy = false;
+            bool isEnoughMoney = true;
+            bool isInputExite=false;
+            Detail newDetail = null;
+            List<string> DetailsGroup = warehouse.ShowDetailGroup();
 
-            while (isDetailBuy == false)
+            while (isDetailBuy == false & isEnoughMoney == true& isInputExite==false)
             {
+                Console.Clear();
+                Console.WriteLine("Для выхода нажмите (E)xite\n");
                 Console.WriteLine($"Баланс средств:  {cashRegister.AmoutMoney}");
-                Console.WriteLine("Для выхода нажмите (E)xite");
                 Console.WriteLine("Введите название детали для ее покупки:");
 
-                DetailsInStockWarehouse = warehouse.GetDetails();
-
-                foreach (var detail in DetailsInStockWarehouse)
+                for (int i = 0; i < DetailsGroup.Count; i++)
                 {
-                    Console.WriteLine($" {detail.Key.Name}\n");
-                }
+                    Console.WriteLine($"{DetailsGroup[i]}");
+                }               
 
                 userInput = Console.ReadLine();
+
                 if (userInput.ToLower() == "e")
                 {
-                    isDetailBuy = false;
+                    isInputExite = true;
                 }
                 else
                 {
-                    foreach (var detail in DetailsInStockWarehouse)
+                    foreach (var detail in warehouse.GetDetailsInStock())
                     {
-                        if (detail.Key.Name == userInput)
+                        if (detail.Key.Name.ToLower() == userInput.ToLower())
                         {
-                            if (cashRegister.Purchase(detail.Key.Price))
+                            if (cashRegister.DebitingFunds(detail.Key.Price) == true)
                             {
                                 warehouse.AddDetail(detail.Key);
                                 isDetailBuy = true;
@@ -273,14 +286,30 @@ namespace CarService
                             else
                             {
                                 Console.WriteLine("Недостаточно средств");
+                                isEnoughMoney = false;
                                 Console.ReadLine();
-                                isDetailBuy = true;
                                 break;
                             }
                         }
                     }
-
-                    if (isDetailBuy == false)
+                    if (DetailsGroup.Contains(userInput))
+                    {
+                        if (cashRegister.DebitingFunds(warehouse.GetPriceDetail(DetailsGroup[DetailsGroup.IndexOf(userInput)])) == true)
+                        {
+                            newDetail = new Detail(DetailsGroup[DetailsGroup.IndexOf(userInput)]);
+                            warehouse.CreateDetail(newDetail);
+                            isDetailBuy = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Недостаточно средств");
+                            isEnoughMoney = false;
+                            Console.ReadLine();
+                            break;
+                        }
+                        
+                    }
+                    else if (isDetailBuy == false&isEnoughMoney == true)
                     {
                         Console.WriteLine("Вы ввели неверные данные");
                         Console.ReadLine();
@@ -291,7 +320,7 @@ namespace CarService
 
         private void FillGroupDetail()
         {
-            foreach (var detail in warehouse.GetDetails())
+            foreach (var detail in warehouse.GetDetailsInStock())
             {
                 GroupDetail.Add(detail.Key.Name);
             }
@@ -299,8 +328,6 @@ namespace CarService
 
         private bool IsClientSolvent(Client client, int price)
         {
-            Console.WriteLine($"{repairMaster.Name}: Стоимость детали и ремонта составит: {price}");
-
             if (price <= client.GetAmountInWallet())
             {
                 IsSolvent = true;
@@ -309,10 +336,20 @@ namespace CarService
             return IsSolvent;
         }
 
-        private void ReplacementDetail(Client client, Detail newDetail)
+        private void ReplacementDetail(Client client, DetailForWarehouse newDetail, bool isReplacementDetailDishonest)
         {
-            warehouse.SaleDetail(newDetail);
-            client.Car.SetBrokenDetail("");
+            bool isDetailRepaired = true;
+
+            if (isReplacementDetailDishonest == false)
+            {
+                warehouse.SaleDetail(newDetail);
+            }
+            else
+            {
+                warehouse.SaleDetail(warehouse.GetRandomDetail());
+            }
+
+            client.Car.SetBrokenDetail(isDetailRepaired);
         }
 
         private void BonusPayment(int price, Client client)
@@ -320,15 +357,37 @@ namespace CarService
             int halfPart = 2;
             int minBonus = price / halfPart;
             int maxBonus = price;
-            int sumBonus = random.Next(minBonus, maxBonus);
-            client.ReplenishmentWallet(sumBonus);
+            int sumBonus = random.Next(minBonus, maxBonus)+maxBonus;
+
+            if (cashRegister.DebitingFunds(sumBonus)==false)
+            {
+                Console.WriteLine($"{repairMaster.Name} : К сожалению мастерская не может оплатить штраф, так как у нее  не хватает средств");
+                Console.WriteLine($"{repairMaster.Name} : Мастерская будет закрыта, вам в ближайшее время.");
+                Console.ReadLine();
+                _clientsQueue.Clear();
+            }
+            else
+            {
+                client.ReplenishmentWallet(sumBonus);
+
+            }
         }
 
-        private void DishonestReplacementDetail(Client client, int price)
+        private bool ChanceFindViolation()
         {
-            warehouse.SaleDetail(warehouse.GetRandomDetail());
-            client.Car.SetBrokenDetail("");
+            bool isClientFindViolation = false;
+            int maxChance=100;
+            int halfMaxChance = maxChance / 2;
+            int number=random.Next(maxChance);
+
+            if (number< halfMaxChance )
+            {
+                isClientFindViolation = true;
+            }
+
+            return isClientFindViolation;
         }
+
     }
 
 
@@ -345,8 +404,8 @@ namespace CarService
     class CashRegister
     {
         private readonly Random _random = new();
-        private readonly int _minAmoutMoney = 90000;
-        private readonly int _maxAmoutMoney = 200000;
+        private readonly int _minAmoutMoney = 0;
+        private readonly int _maxAmoutMoney = 0;
         private readonly ConsoleColor color = ConsoleColor.Red;
         private readonly string _currency = " руб.";
         private int _amoutMoney;
@@ -358,7 +417,7 @@ namespace CarService
             _amoutMoney = _random.Next(_minAmoutMoney, _maxAmoutMoney);
         }
 
-        public bool Purchase(int purchasePrice)
+        public bool DebitingFunds(int purchasePrice)
         {
             bool isPurchaseCompleted = false;
 
@@ -400,20 +459,20 @@ namespace CarService
 
     class Warehouse
     {
-        public Dictionary<Detail, int> Details = new();
-
+        public Dictionary<DetailForWarehouse, int> Details = new();
+        public Dictionary<string, int> DetailGroup = new();
         public Warehouse()
         {
-            CreateDetail();
+            CreateDetails();
         }
 
-        public void CreateDetail()
+        public void CreateDetails()
         {
             Random random = new Random();
-            int maxCountDetails = 10;
-            int minCountDetails = 2;
+            int maxCountDetails = 1;
+            int minCountDetails = 1;
 
-            Dictionary<string, int> BrakePads = new()
+            Dictionary<string, int> DetailsGroup = new()
             {
                 { "Стойка амортизатора", 4000 },
                 { "Тормозные колодки", 2000 },
@@ -425,11 +484,11 @@ namespace CarService
                 { "Набор плавких предохранителей", 100 }
             };
 
-            foreach (var item in BrakePads)
+            foreach (var item in DetailGroup)
             {
                 int number = random.Next(minCountDetails, maxCountDetails);
 
-                Details.Add(new Detail(item.Key, item.Value), number);
+                Details.Add(new DetailForWarehouse(item.Key, item.Value), number);
             }
         }
 
@@ -444,9 +503,9 @@ namespace CarService
             }
         }
 
-        public Dictionary<Detail, int> GetDetails()
+        public Dictionary<DetailForWarehouse, int> GetDetailsInStock()
         {
-            Dictionary<Detail, int> tempDetails = new();
+            Dictionary<DetailForWarehouse, int> tempDetails = new();
 
             foreach (var detail in Details)
             {
@@ -456,7 +515,19 @@ namespace CarService
             return tempDetails;
         }
 
-        public bool TryGetDetail(string name, out Detail newDetail)
+        public List<string> ShowDetailGroup()
+        {
+            List<string> tempDetailsGroup = new();
+
+            foreach (var item in DetailGroup)
+            {
+                tempDetailsGroup.Add(item.Key);
+            }
+
+            return tempDetailsGroup;
+        }
+
+        public bool TryGetDetail(string name, out DetailForWarehouse newDetail)
         {
             bool isAvaidle = false;
 
@@ -468,53 +539,74 @@ namespace CarService
                 {
                     newDetail = detail.Key;
                     isAvaidle = true;
+                    break;
                 }
             }
 
             return isAvaidle;
         }
-        public void AddDetail(Detail purchasedDetail)
+        public void AddDetail(DetailForWarehouse purchasedDetail)
         {
-            int countDetails = Details[purchasedDetail];
-            Details[purchasedDetail] = countDetails++;
+
+        
+        int countDetails = Details[purchasedDetail];
+        Details[purchasedDetail] = countDetails++;
+        }
+    public void CreateDetail(Detail newDetail)
+    {
+        Random random = new Random();
+
+
+            int number = 1;
+
+
+        foreach (var item in DetailGroup)
+        {
+                if (item.Key== newDetail.Name)
+                {
+                    Details.Add(new DetailForWarehouse(item.Key, item.Value), number);
+                    break;
+                }            
         }
 
-        public int GetPriceDetail(Client client)
+    }
+
+        public int GetPriceDetail(string detailName)
         {
             int price = 0;
 
             foreach (var detail in Details)
             {
-                if (detail.Key.Name == client.Car.BrokenDetail)
+                if (detail.Key.Name == detailName)
                 {
-                    price = detail.Value;
+                    price = detail.Key.Price;
+                    break;
                 }
             }
             return price;
         }
 
-        public void SaleDetail(Detail newDetail)
+        public void SaleDetail(DetailForWarehouse newDetail)
         {
-            foreach (var detail in Details)
+            if (Details.ContainsKey(newDetail))
             {
-                if (detail.Key.Name == newDetail.Name)
-                {
-                    int countDetails = Details[detail.Key];
-                    Details[detail.Key] = countDetails--;
-                }
+                Details.TryGetValue(newDetail, out int countDetails);
+                countDetails--;
+                Details[newDetail]= countDetails;
             }
         }
 
-        public Detail GetRandomDetail()
+        public DetailForWarehouse GetRandomDetail()
         {
             bool isAvaidle = false;
-            Detail randomDetail = null;
+            DetailForWarehouse randomDetail = null;
             Random random = new Random();
             int number;
-            int count = 0;
+            int count ;
 
             while (isAvaidle == false)
             {
+                count = 0;
                 number = random.Next(0, Details.Count);
 
                 foreach (var detail in Details)
@@ -525,15 +617,16 @@ namespace CarService
                     }
                     else
                     {
-                        if (TryGetDetail(detail.Key.Name, out Detail newDetail))
+                        if (TryGetDetail(detail.Key.Name, out DetailForWarehouse newDetail))
                         {
                             randomDetail = newDetail;
-
+                            isAvaidle = true;                           
                         }
                         else
                         {
-                            isAvaidle = false;
+                            isAvaidle = false;                           
                         }
+                        break;
                     }
                 }
             }
@@ -545,15 +638,22 @@ namespace CarService
     class Detail
     {
         public string Name { get; private set; }
-        public int Price { get; private set; }
 
-        public Detail(string name, int price)
+        public Detail(string name)
         {
             Name = name;
+        }
+    }
+
+    class DetailForWarehouse : Detail
+    {
+        public int Price { get; private set; }
+        public DetailForWarehouse(string name, int price) : base(name)
+        {
             Price = price;
         }
-
     }
+
 
     class Human
     {
@@ -578,16 +678,10 @@ namespace CarService
 
         }
 
-        public bool BuyProduct(bool isPriceGet, int price)
+
+        public void Buy( int price)
         {
-            bool isPurchaseCompleted = false;
-
-            if (isPriceGet == true)
-            {
-                isPurchaseCompleted = _wallet.Purchase(price);
-            }
-
-            return isPurchaseCompleted;
+_wallet.Purchase(price);
         }
 
         public int GetAmountInWallet()
@@ -604,16 +698,51 @@ namespace CarService
 
     class Car
     {
+        public Detail BrokenDetail { get; private set; }
 
-        public string BrokenDetail { get; private set; }
+        Dictionary<int, Detail> Details = new();
+        Random random = new Random();
+        private bool isDetailRepaired;
         public Car()
         {
+            SetDetails();
+            isDetailRepaired = false;
+            SetBrokenDetail(isDetailRepaired);
 
         }
 
-        public void SetBrokenDetail(string detail)
+        public void SetBrokenDetail(bool isDetailRepaired)
         {
-            BrokenDetail = detail;
+            if (isDetailRepaired == true)
+            {
+                BrokenDetail = new Detail("");
+            }
+            else
+            {
+                int mumber = random.Next(0, Details.Count);
+                BrokenDetail = Details[mumber];
+            }
+
+        }
+
+        public void SetDetails()
+        {
+            List<string> DetailsName = new()
+            {
+                { "Стойка амортизатора" },
+                { "Тормозные колодки" },
+                { "Воздушный фильтр" },
+                { "Масляный фильтр " },
+                { "Ремень ГРМ" },
+                { "Свечи зажигания" },
+                { "Аккумулятор" },
+                { "Набор плавких предохранителей" }
+            };
+
+            for (int i = 0; i < DetailsName.Count; i++)
+            {
+                Details.Add(i, (new Detail(DetailsName[i])));
+            }
         }
     }
 
@@ -632,17 +761,10 @@ namespace CarService
             _amoutMoney = _random.Next(_minAmoutMoney, _maxAmoutMoney);
         }
 
-        public bool Purchase(int purchasePrice)
-        {
-            bool isPurchaseCompleted = false;
-
-            if (purchasePrice <= _amoutMoney)
-            {
+        public void Purchase(int purchasePrice)
+        { 
                 _amoutMoney -= purchasePrice;
-                isPurchaseCompleted = true;
-            }
 
-            return isPurchaseCompleted;
         }
         public void ReplenishmentAmount(int price)
         {
@@ -659,3 +781,4 @@ namespace CarService
     }
 
 }
+
