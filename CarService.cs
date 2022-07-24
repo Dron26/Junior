@@ -29,21 +29,13 @@ namespace CarService
 
         public void Work()
         {
-            bool _isSelectExite = false;
-            bool _isStoreliquidation = false;
 
             ShowMenuStart();
 
             if (IsStoreOpen())
             {
                 CreateCustomersQueue();
-
-                while (_isSelectExite == false & _clientsQueue.Count != 0)
-                {
-                    _isSelectExite = ActionSelection();
-                }
-
-                ShowExiteText(_isStoreliquidation);
+                SelectsActions();                
             }
         }
 
@@ -136,20 +128,18 @@ namespace CarService
             {
                 Console.WriteLine($"{_repairMaster.Name}: Так как у вас достаточно средств, предлагаю замену детали");
                 Console.WriteLine($"{client.Name}: Хорошо меняем!");
-
                 Console.ReadLine();
 
                 if ((_warehouse.TryGetDetail(brokenDetail.Name, out Cell newDetail) == false))
                 {
                     isReplacementDetailDishonest = true;
-
                 }
 
                 isDetailRepaired = TryReplacementDetail(client, newDetail, isReplacementDetailDishonest);
 
                 if (isDetailRepaired == true)
                 {
-                    _cashRegister.ReplenishesFunds(price);
+                    _cashRegister.RemoveMomey(price);
                     client.Buy(price);
                     Console.WriteLine("Замена прошла удачно!");
                     Console.WriteLine("Клиент оплатил работу и покинул сервис!");
@@ -164,7 +154,7 @@ namespace CarService
 
                 if (isReplacementDetailDishonest == true & isDetailRepaired == true)
                 {
-                    if (ChanceFindViolation() == true)
+                    if (IsClientFindViolation() == true)
                     {
                         Console.Clear();
                         Console.WriteLine(" Удача на стороне клиента, он обнаружил нарушение! Сервис заменил не ту деталь!");
@@ -174,34 +164,44 @@ namespace CarService
             }
         }
 
-        private bool ActionSelection()
+        private void SelectsActions()
         {
-            bool _isSelectExite = false;
+            bool isSelectExite = false;
             string userInput;
 
-            Console.Clear();
-            Console.WriteLine("  Наш автосервис популярен к нам выстроилась очередь из клиентов на ремонт авто");
-            Console.WriteLine("  Нажмите:\n  1 - Чтобы принять клиента");
-            Console.WriteLine("  2 - Посетить склад запчастей");
-            Console.WriteLine("  3 - Закрыть автосервис");
-            Console.WriteLine($"  \n\nБаланс средств:  {_cashRegister.AmoutMoney} {_currency}");
-
-            userInput = Console.ReadLine();
-
-            switch (userInput)
+            while (isSelectExite==false | _clientsQueue.Count != 0)
             {
-                case "1":
-                    ReceiveCar();
-                    break;
-                case "2":
-                    VisitWarehouse();
-                    break;
-                case "3":
-                    _isSelectExite = true;
-                    break;
+                Console.Clear();
+                Console.WriteLine("  Наш автосервис популярен к нам выстроилась очередь из клиентов на ремонт авто");
+                Console.WriteLine("  Нажмите:\n  1 - Чтобы принять клиента");
+                Console.WriteLine("  2 - Посетить склад запчастей");
+                Console.WriteLine("  3 - Закрыть автосервис");
+                Console.WriteLine($"  \n\nБаланс средств:  {_cashRegister.AmoutMoney} {_currency}");
+
+                userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "1":
+                        ReceiveCar();
+                        break;
+                    case "2":
+                        VisitWarehouse();
+                        break;
+                    case "3":
+                        isSelectExite = true;
+                        break;
+                }
             }
 
-            return _isSelectExite;
+            if (_clientsQueue.Count != 0 & isSelectExite == false)
+            {
+                ShowLiquidationText();
+            }
+            else if(_clientsQueue.Count == 0)
+            {
+                ShowExiteText();
+            }
         }
 
         private void VisitWarehouse()
@@ -245,7 +245,6 @@ namespace CarService
             bool isDetailBuy = false;
             bool isEnoughMoney = true;
             bool isInputExite = false;
-            Dictionary<string, int> DetailsGroup = _warehouse.GetDetailsGroup();
             DetailForWarehouse soughtDetail;
 
             while (isDetailBuy == false & isEnoughMoney == true & isInputExite == false)
@@ -255,7 +254,7 @@ namespace CarService
                 Console.WriteLine($"  Баланс средств:  {_cashRegister.AmoutMoney} {_currency}");
                 Console.WriteLine("  Введите название детали для ее покупки:\n");
 
-                ShowDetailGroup(DetailsGroup);
+                ShowDetailGroup(_warehouse.GetDetailsGroup());
 
                 userInput = Console.ReadLine();
 
@@ -271,7 +270,7 @@ namespace CarService
                     {
                         if (cell.Name == soughtDetail.Name)
                         {
-                            if (_cashRegister.DebitsFunds(soughtDetail.Price) == true)
+                            if (_cashRegister.AddMoney(soughtDetail.Price) == true)
                             {
                                 _warehouse.AddDetail(soughtDetail);
                                 isDetailBuy = true;
@@ -285,9 +284,9 @@ namespace CarService
                         }
                     }
 
-                    if (isDetailBuy == false & DetailsGroup.ContainsKey(soughtDetail.Name))
+                    if (isDetailBuy == false & _warehouse.GetDetailsGroup().Contains(soughtDetail))
                     {
-                        if (_cashRegister.DebitsFunds(soughtDetail.Price) == true)
+                        if (_cashRegister.AddMoney(soughtDetail.Price) == true)
                         {
                             _warehouse.CreateDetail(soughtDetail);
                             isDetailBuy = true;
@@ -319,14 +318,14 @@ namespace CarService
 
         private bool IsClientSolvent(Client client, int price)
         {
-            bool _isSolvent = false;
+            bool isSolvent = false;
 
             if (price <= client.GetAmountInWallet())
             {
-                _isSolvent = true;
+                isSolvent = true;
             }
 
-            return _isSolvent;
+            return isSolvent;
         }
 
         private bool TryReplacementDetail(Client client, Cell newDetail, bool isReplacementDetailDishonest)
@@ -362,20 +361,18 @@ namespace CarService
             int minBonus = price / halfPart;
             int maxBonus = price;
             int sumBonus = _random.Next(minBonus, maxBonus) + maxBonus;
-            bool _isStoreliquidation;
 
             Console.WriteLine(" Теперь сервис должен выплатить компенсацию клиенту!\n");
             Console.WriteLine($" Сумма компенсации составит:{sumBonus}\n");
             Console.WriteLine($"  \n\nБаланс средств автосервиса: {_cashRegister.AmoutMoney} {_currency}");
             Console.ReadLine();
 
-            if (_cashRegister.DebitsFunds(sumBonus) == false)
+            if (_cashRegister.AddMoney(sumBonus) == false)
             {
                 Console.WriteLine($"{_repairMaster.Name} : К сожалению автосервис не может оплатить штраф, так как не хватает средств");
                 Console.WriteLine($"{_repairMaster.Name} : Автосервис будет закрыт, средства будут переведены вам в ближайшее время. До новых встреч");
-                ShowExiteText(_isStoreliquidation = true);
                 Console.ReadLine();
-                StoreLiquidation();
+                CloseStore();
             }
             else
             {
@@ -383,7 +380,7 @@ namespace CarService
             }
         }
 
-        private bool ChanceFindViolation()
+        private bool IsClientFindViolation()
         {
             bool isClientFindViolation = false;
             int maxChance = 100;
@@ -398,29 +395,27 @@ namespace CarService
             return isClientFindViolation;
         }
 
-        private void ShowExiteText(bool _isStoreliquidation)
+        private void ShowExiteText()
         {
-            if (_isStoreliquidation == true)
-            {
-                Console.WriteLine($"Не все клиенты успели пройти ремонт((, для них это печальные новости, ведь в очереди осталось {_clientsQueue.Count} машин");
-                Console.WriteLine("Наш Автосервис закрывается");
-            }
-            else
-            {
                 Console.WriteLine("Все клиенты прошли осмотр и ремонт!");
                 Console.WriteLine("Наш Автосервис закрывается");
-            }
         }
 
-        private void ShowDetailGroup(Dictionary<string, int> DetailsGroup)
+        private void ShowLiquidationText()
         {
-            foreach (var detail in DetailsGroup)
+            Console.WriteLine($"Не все клиенты успели пройти ремонт((, для них это печальные новости, ведь в очереди осталось {_clientsQueue.Count} машин");
+            Console.WriteLine("Наш Автосервис закрывается");
+        }
+
+        private void ShowDetailGroup(List<DetailForWarehouse> DetailsGroup)
+        {
+            foreach (DetailForWarehouse detail in DetailsGroup)
             {
-                Console.WriteLine($"{detail.Key} - {detail.Value} {_currency}");
+                Console.WriteLine($"{detail.Name} - {detail.Price} {_currency}");
             }
         }
 
-        public void StoreLiquidation()
+        private void CloseStore()
         {
             _clientsQueue.Clear();
         }
@@ -434,7 +429,6 @@ namespace CarService
 
         public int AmoutMoney { get; private set; }
 
-
         public CashRegister()
         {
             AmoutMoney = _random.Next(_minAmoutMoney, _maxAmoutMoney);
@@ -442,7 +436,7 @@ namespace CarService
             _maxAmoutMoney = 0;
         }
 
-        public bool DebitsFunds(int purchasePrice)
+        public bool AddMoney(int purchasePrice)
         {
             bool isPurchaseCompleted = false;
 
@@ -455,7 +449,7 @@ namespace CarService
             return isPurchaseCompleted;
         }
 
-        public void ReplenishesFunds(int price)
+        public void RemoveMomey(int price)
         {
             if (price > 0)
             {
@@ -471,7 +465,7 @@ namespace CarService
     class Warehouse
     {
         private readonly List<Cell> _details = new();
-        private readonly Dictionary<string, int> _detailsGroup = new();
+        private readonly List<DetailForWarehouse> _detailsGroup = new();
         private readonly Random _random = new();
 
         public Warehouse()
@@ -501,13 +495,13 @@ namespace CarService
             return tempDetails;
         }
 
-        public Dictionary<string, int> GetDetailsGroup()
+        public List<DetailForWarehouse> GetDetailsGroup()
         {
-            Dictionary<string, int> tempDetailsGroup = new();
+            List<DetailForWarehouse> tempDetailsGroup = new();
 
-            foreach (var item in _detailsGroup)
+            foreach (DetailForWarehouse detail in _detailsGroup)
             {
-                tempDetailsGroup.Add(item.Key, item.Value);
+                tempDetailsGroup.Add(detail);
             }
 
             return tempDetailsGroup;
@@ -559,12 +553,13 @@ namespace CarService
 
             foreach (var detail in _detailsGroup)
             {
-                if (detail.Key == detailName)
+                if (detail.Name == detailName)
                 {
-                    price = detail.Value;
+                    price = detail.Price;
                     break;
                 }
             }
+
             return price;
         }
 
@@ -650,15 +645,15 @@ namespace CarService
                 { "Набор плавких предохранителей", 100 }
             };
 
-            foreach (var item in DetailsAndPriceGroup)
+            foreach (var detail in DetailsAndPriceGroup)
             {
-                _detailsGroup.Add(item.Key, item.Value);
+                _detailsGroup.Add(new DetailForWarehouse(detail.Key, detail.Value));
             }
 
-            foreach (var item in _detailsGroup)
+            foreach (DetailForWarehouse detail in _detailsGroup)
             {
                 int count = _random.Next(minCountDetails, maxCountDetails);
-                _details.Add(new Cell(item.Key, item.Value, count));
+                _details.Add(new Cell(detail.Name, detail.Price, count));
                 number++;
             }
         }
@@ -708,9 +703,6 @@ namespace CarService
         {
             _wallet.ReplenishmentAmount(price);
         }
-
-
-
     }
 
     class Car
@@ -763,31 +755,30 @@ namespace CarService
         private readonly Random _random = new();
         private readonly int _minAmoutMoney;
         private readonly int _maxAmoutMoney;
-        private int _amoutMoney;
 
-        public int AmoutMoney { get { return _amoutMoney; } }
+        public int AmoutMoney { get;private set; }
 
         public Wallet()
         {
             _minAmoutMoney = 10000;
             _maxAmoutMoney = 15000;
-            _amoutMoney = _random.Next(_minAmoutMoney, _maxAmoutMoney);
+            AmoutMoney = _random.Next(_minAmoutMoney, _maxAmoutMoney);
         }
 
         public void Purchase(int purchasePrice)
         {
-            _amoutMoney -= purchasePrice;
+            AmoutMoney -= purchasePrice;
         }
 
         public void ReplenishmentAmount(int price)
         {
             if (price > 0)
             {
-                _amoutMoney += price;
+                AmoutMoney += price;
             }
-            else if (price + _amoutMoney >= _maxAmoutMoney)
+            else if (price + AmoutMoney >= _maxAmoutMoney)
             {
-                _amoutMoney = _maxAmoutMoney;
+                AmoutMoney = _maxAmoutMoney;
             }
         }
     }
