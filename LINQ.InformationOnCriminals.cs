@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,7 +30,8 @@ namespace LINQ.InformationOnCriminals
             int minHight = 145;
             int weight;
             int hight;
-            int maxvalueForDetention = 50;
+            int maxValueForDetention = 70;
+            int minValueForDetention = 50;
             int valueForDetention;
             bool isDetention = false;
 
@@ -69,7 +70,7 @@ namespace LINQ.InformationOnCriminals
 
             };
 
-            List<string> surname = new()
+            List<string> surnames = new()
             {
                 "Иванов",
                 "Васильев",
@@ -102,18 +103,18 @@ namespace LINQ.InformationOnCriminals
             {
 
                 numberName = random.Next(names.Count);
-                numberSurname = random.Next(surname.Count);
+                numberSurname = random.Next(surnames.Count);
                 numberNationality = random.Next(nationalities.Count);
                 hight = random.Next(minHight, maxHight);
                 weight = random.Next(minWeight, maxWeight);
-                valueForDetention = random.Next();
+                valueForDetention = random.Next(0, maxValueForDetention);
 
-                if (valueForDetention > maxvalueForDetention)
+                if (valueForDetention > minValueForDetention)
                 {
                     isDetention = true;
                 }
 
-                _felons.Add(new Felon(names[numberName], surname[numberSurname], nationalities[numberNationality], hight, weight, isDetention));
+                _felons.Add(new Felon(names[numberName], surnames[numberSurname], nationalities[numberNationality], hight, weight, isDetention));
             }
         }
 
@@ -130,7 +131,7 @@ namespace LINQ.InformationOnCriminals
                 switch (userInput)
                 {
                     case "1":
-                        FindFelon();
+                        FindFelons();
                         break;
                     case "2":
                         isWorking = false;
@@ -141,7 +142,7 @@ namespace LINQ.InformationOnCriminals
             }
         }
 
-        private void FindFelon()
+        private void FindFelons()
         {
             Console.Clear();
             ParametrsFelon parametrs = GetParametrsFindFelon();
@@ -153,17 +154,17 @@ namespace LINQ.InformationOnCriminals
                                           select felon;
                 resultNationalities.ToList();
 
-                var resultHeight = from Felon felon in _felons
+                var resultHeight = from Felon felon in resultNationalities
                                    where felon.Height <= parametrs.MaxHight & felon.Height >= parametrs.MinHight
                                    select felon;
                 resultHeight.ToList();
 
-                var resultWeight = from Felon felon in _felons
+                var resultWeight = from Felon felon in resultHeight
                                    where felon.Weight <= parametrs.MaxWeight & felon.Weight >= parametrs.MinWeight
                                    select felon;
                 resultWeight.ToList();
 
-                ShowResultFind(resultNationalities.ToList(), resultHeight.ToList(), resultWeight.ToList());
+                ShowResultFind(resultWeight.ToList());
             }
         }
         private void ShowNationality()
@@ -206,24 +207,16 @@ namespace LINQ.InformationOnCriminals
                 nationality = Console.ReadLine();
 
                 Console.WriteLine("  Введите диапазон поиска по росту, минимальный рост см :");
-                userInput = Console.ReadLine();
-                if (int.TryParse(userInput, out int resultMinHight) == true)
-                {
-                    minHight = resultMinHight;
-                    isUserInputNumber = true;
-                }
+
+                isUserInputNumber = int.TryParse(Console.ReadLine(), out minHight);
 
                 if (isUserInputNumber == true)
                 {
                     Console.WriteLine("  Введите диапазон поиска по росту, максимальный рост см :");
-                    userInput = Console.ReadLine();
 
-                    if (int.TryParse(userInput, out int resultMaxHight) == true)
-                    {
-                        maxHight = resultMaxHight;
-                        isUserInputNumber = true;
-                    }
-                    else
+                    isUserInputNumber = int.TryParse(Console.ReadLine(), out maxHight);
+
+                    if (isUserInputNumber != true)
                     {
                         isUserInputNumber = false;
                     }
@@ -232,14 +225,10 @@ namespace LINQ.InformationOnCriminals
                 if (isUserInputNumber == true)
                 {
                     Console.WriteLine("  Введите диапазон поиска по весу, минимальный вес кг :");
-                    userInput = Console.ReadLine();
 
-                    if (int.TryParse(userInput, out int resultMinWeight) == true)
-                    {
-                        minWeight = resultMinWeight;
-                        isUserInputNumber = true;
-                    }
-                    else
+                    isUserInputNumber = int.TryParse(Console.ReadLine(), out minWeight);
+
+                    if (isUserInputNumber != true)
                     {
                         isUserInputNumber = false;
                     }
@@ -248,14 +237,10 @@ namespace LINQ.InformationOnCriminals
                 if (isUserInputNumber == true)
                 {
                     Console.WriteLine("  Введите диапазон поиска по весу, максимальный вес кг :");
-                    userInput = Console.ReadLine();
 
-                    if (int.TryParse(userInput, out int resultMaxWeight) == true)
-                    {
-                        maxWeight = resultMaxWeight;
-                        isUserInputNumber = true;
-                    }
-                    else
+                    isUserInputNumber = int.TryParse(Console.ReadLine(), out maxWeight);
+
+                    if (isUserInputNumber != true)
                     {
                         isUserInputNumber = false;
                     }
@@ -275,39 +260,18 @@ namespace LINQ.InformationOnCriminals
             return parametrs;
         }
 
-        private void ShowResultFind(List<Felon> resultNationalities, List<Felon> resultHeight, List<Felon> resultWeight)
+        private void ShowResultFind(List<Felon> resultWeight)
         {
-            if (resultNationalities.Count + resultHeight.Count + resultWeight.Count > 0)
+
+            if (resultWeight.Count > 0)
             {
-                Console.WriteLine("  По введенным данным есть совпадения:");
+                Console.WriteLine("\n  По введенным данным есть совпадения");
 
-                if (resultNationalities.Count > 0)
+                foreach (Felon felon in resultWeight)
                 {
-                    Console.WriteLine("  По Национальности:");
-
-                    foreach (Felon felon in resultNationalities)
+                    if (felon.IsDetention == false)
                     {
-                        Console.WriteLine($"{felon.Name}  {felon.Surname} - {felon.Nationality}");
-                    }
-                }
-
-                if (resultHeight.Count > 0)
-                {
-                    Console.WriteLine("\n  По Росту:");
-
-                    foreach (Felon felon in resultHeight)
-                    {
-                        Console.WriteLine($"{felon.Name}  {felon.Surname} - {felon.Height} см");
-                    }
-                }
-
-                if (resultWeight.Count > 0)
-                {
-                    Console.WriteLine("\n  По Весу:");
-
-                    foreach (Felon felon in resultWeight)
-                    {
-                        Console.WriteLine($"{felon.Name}  {felon.Surname} - {felon.Weight} кг");
+                        Console.WriteLine($"Name: {felon.Name} Surname: {felon.Surname} - Nationality:{felon.Nationality} - Height: {felon.Height} см - Weight: {felon.Weight} кг");
                     }
                 }
             }
