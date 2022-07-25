@@ -29,13 +29,48 @@ namespace CarService
 
         public void Work()
         {
+            bool isSelectExite = false;
+            string userInput;
 
             ShowMenuStart();
 
             if (IsStoreOpen())
             {
                 CreateCustomersQueue();
-                SelectsActions();                
+
+                while (isSelectExite == false | _clientsQueue.Count != 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("  Наш автосервис популярен к нам выстроилась очередь из клиентов на ремонт авто");
+                    Console.WriteLine("  Нажмите:\n  1 - Чтобы принять клиента");
+                    Console.WriteLine("  2 - Посетить склад запчастей");
+                    Console.WriteLine("  3 - Закрыть автосервис");
+                    Console.WriteLine($"  \n\nБаланс средств:  {_cashRegister.AmoutMoney} {_currency}");
+
+                    userInput = Console.ReadLine();
+
+                    switch (userInput)
+                    {
+                        case "1":
+                            ReceiveCar();
+                            break;
+                        case "2":
+                            VisitWarehouse();
+                            break;
+                        case "3":
+                            isSelectExite = true;
+                            break;
+                    }
+                }
+
+                if (_clientsQueue.Count != 0 & isSelectExite == false)
+                {
+                    ShowLiquidationText();
+                }
+                else if (_clientsQueue.Count == 0)
+                {
+                    ShowExiteText();
+                }
             }
         }
 
@@ -106,11 +141,10 @@ namespace CarService
             Console.WriteLine($"Клиент - {client.Name} : Добрый день! Вот моя машина, пожалуйста проверьте ее, что то барахлит");
             Console.WriteLine($"Мастер сервиса - {_repairMaster.Name}: хорошо сейчас проверим!");
 
-            while (count != countStepForSleep)
+            for (int i = 0; i < countStepForSleep; i++)
             {
                 System.Threading.Thread.Sleep(sleepTimeStep);
                 Console.Write(" . ");
-                count++;
             }
 
             brokenDetail = clientCar.BrokenDetail;
@@ -149,7 +183,7 @@ namespace CarService
                 {
                     Console.Clear();
                     Console.WriteLine($"{_repairMaster.Name}: К сожалению на складе автосервиса отсутствует необходимая деталь.");
-                    BonusPayment(price, client);
+                    PayBonus(price, client);
                 }
 
                 if (isReplacementDetailDishonest == true & isDetailRepaired == true)
@@ -158,49 +192,9 @@ namespace CarService
                     {
                         Console.Clear();
                         Console.WriteLine(" Удача на стороне клиента, он обнаружил нарушение! Сервис заменил не ту деталь!");
-                        BonusPayment(price, client);
+                        PayBonus(price, client);
                     }
                 }
-            }
-        }
-
-        private void SelectsActions()
-        {
-            bool isSelectExite = false;
-            string userInput;
-
-            while (isSelectExite==false | _clientsQueue.Count != 0)
-            {
-                Console.Clear();
-                Console.WriteLine("  Наш автосервис популярен к нам выстроилась очередь из клиентов на ремонт авто");
-                Console.WriteLine("  Нажмите:\n  1 - Чтобы принять клиента");
-                Console.WriteLine("  2 - Посетить склад запчастей");
-                Console.WriteLine("  3 - Закрыть автосервис");
-                Console.WriteLine($"  \n\nБаланс средств:  {_cashRegister.AmoutMoney} {_currency}");
-
-                userInput = Console.ReadLine();
-
-                switch (userInput)
-                {
-                    case "1":
-                        ReceiveCar();
-                        break;
-                    case "2":
-                        VisitWarehouse();
-                        break;
-                    case "3":
-                        isSelectExite = true;
-                        break;
-                }
-            }
-
-            if (_clientsQueue.Count != 0 & isSelectExite == false)
-            {
-                ShowLiquidationText();
-            }
-            else if(_clientsQueue.Count == 0)
-            {
-                ShowExiteText();
             }
         }
 
@@ -232,7 +226,7 @@ namespace CarService
 
             foreach (Cell cell in _warehouse.GetDetailsInStock())
             {
-                Console.WriteLine($"{cell.Name}  -   {cell.Quantity}шт, цена за штуку {cell.Price} {_currency}");
+                Console.WriteLine($"{cell.Detail.Name}  -   {cell.Quantity}шт, цена за штуку {cell.Detail.Price} {_currency}");
             }
 
             Console.ReadLine();
@@ -268,9 +262,9 @@ namespace CarService
 
                     foreach (Cell cell in _warehouse.GetDetailsInStock())
                     {
-                        if (cell.Name == soughtDetail.Name)
+                        if (cell.Detail.Name == soughtDetail.Name)
                         {
-                            if (_cashRegister.AddMoney(soughtDetail.Price) == true)
+                            if (_cashRegister.RemoveMomey(soughtDetail.Price) == true)
                             {
                                 _warehouse.AddDetail(soughtDetail);
                                 isDetailBuy = true;
@@ -286,7 +280,7 @@ namespace CarService
 
                     if (isDetailBuy == false & _warehouse.GetDetailsGroup().Contains(soughtDetail))
                     {
-                        if (_cashRegister.AddMoney(soughtDetail.Price) == true)
+                        if (_cashRegister.RemoveMomey(soughtDetail.Price) == true)
                         {
                             _warehouse.CreateDetail(soughtDetail);
                             isDetailBuy = true;
@@ -355,7 +349,7 @@ namespace CarService
             return isDetailRepaired;
         }
 
-        private void BonusPayment(int price, Client client)
+        private void PayBonus(int price, Client client)
         {
             int halfPart = 2;
             int minBonus = price / halfPart;
@@ -367,7 +361,7 @@ namespace CarService
             Console.WriteLine($"  \n\nБаланс средств автосервиса: {_cashRegister.AmoutMoney} {_currency}");
             Console.ReadLine();
 
-            if (_cashRegister.AddMoney(sumBonus) == false)
+            if (_cashRegister.RemoveMomey(sumBonus) == false)
             {
                 Console.WriteLine($"{_repairMaster.Name} : К сожалению автосервис не может оплатить штраф, так как не хватает средств");
                 Console.WriteLine($"{_repairMaster.Name} : Автосервис будет закрыт, средства будут переведены вам в ближайшее время. До новых встреч");
@@ -397,8 +391,8 @@ namespace CarService
 
         private void ShowExiteText()
         {
-                Console.WriteLine("Все клиенты прошли осмотр и ремонт!");
-                Console.WriteLine("Наш Автосервис закрывается");
+            Console.WriteLine("Все клиенты прошли осмотр и ремонт!");
+            Console.WriteLine("Наш Автосервис закрывается");
         }
 
         private void ShowLiquidationText()
@@ -436,7 +430,7 @@ namespace CarService
             _maxAmoutMoney = 0;
         }
 
-        public bool AddMoney(int purchasePrice)
+        public bool RemoveMomey(int purchasePrice)
         {
             bool isPurchaseCompleted = false;
 
@@ -449,7 +443,7 @@ namespace CarService
             return isPurchaseCompleted;
         }
 
-        public void RemoveMomey(int price)
+        public void AddMomey(int price)
         {
             if (price > 0)
             {
@@ -477,9 +471,9 @@ namespace CarService
         {
             Console.WriteLine(" На скдаже в наличии есть:");
 
-            foreach (Cell detail in _details)
+            foreach (Cell cell in _details)
             {
-                Console.WriteLine($"{detail.Name} - {detail.Quantity}шт ,цена за штуку {detail.Price}");
+                Console.WriteLine($"{cell.Detail.Name} - {cell.Quantity}шт ,цена за штуку {cell.Detail.Price}");
             }
         }
 
@@ -489,7 +483,7 @@ namespace CarService
 
             for (int i = 0; i < _details.Count; i++)
             {
-                tempDetails.Add(new Cell(_details[i].Name, _details[i].Price, _details[i].Quantity));
+                tempDetails.Add(new Cell(_details[i].Detail.Name, _details[i].Detail.Price, _details[i].Quantity));
             }
 
             return tempDetails;
@@ -515,7 +509,7 @@ namespace CarService
 
             foreach (Cell detail in _details)
             {
-                if (detail.Name == name & detail.Quantity > 0)
+                if (detail.Detail.Name == name & detail.Quantity > 0)
                 {
                     newDetail = detail;
                     isAvaidle = true;
@@ -528,13 +522,13 @@ namespace CarService
 
         public void AddDetail(DetailForWarehouse purchasedDetail)
         {
-            foreach (Cell detail in _details)
+            foreach (Cell cell in _details)
             {
-                if (detail.Name == purchasedDetail.Name)
+                if (cell.Detail.Name == purchasedDetail.Name)
                 {
-                    int countDetails = detail.Quantity;
+                    int countDetails = cell.Quantity;
                     countDetails++;
-                    detail.SetQuantity(countDetails);
+                    cell.AddQuantity(countDetails);
                     break;
                 }
             }
@@ -569,7 +563,7 @@ namespace CarService
             {
                 int countDetails = _details[_details.IndexOf(newDetail)].Quantity;
                 countDetails--;
-                _details[_details.IndexOf(newDetail)].SetQuantity(countDetails);
+                _details[_details.IndexOf(newDetail)].RemoveQuantity(countDetails);
 
                 if (countDetails == 0)
                 {
@@ -597,7 +591,7 @@ namespace CarService
                     count = 0;
                     number = _random.Next(0, _details.Count);
 
-                    foreach (Cell detail in _details)
+                    foreach (Cell cell in _details)
                     {
                         if (count != number)
                         {
@@ -605,7 +599,7 @@ namespace CarService
                         }
                         else
                         {
-                            if (TryGetDetail(detail.Name, out Cell newDetail))
+                            if (TryGetDetail(cell.Detail.Name, out Cell newDetail))
                             {
                                 randomDetail = newDetail;
                                 isAvaidle = true;
@@ -683,7 +677,7 @@ namespace CarService
         private readonly Wallet _wallet = new();
         private readonly Car _car = new();
 
-        public Car Car { get { return _car; } set {; } }
+        public Car Car => _car;
 
         public Client(string name) : base(name)
         {
@@ -756,7 +750,7 @@ namespace CarService
         private readonly int _minAmoutMoney;
         private readonly int _maxAmoutMoney;
 
-        public int AmoutMoney { get;private set; }
+        public int AmoutMoney { get; private set; }
 
         public Wallet()
         {
@@ -802,20 +796,26 @@ namespace CarService
 
     class Cell
     {
-        public string Name { get; private set; }
-        public int Price { get; private set; }
+
+        public DetailForWarehouse Detail { get; private set; }
         public int Quantity { get; private set; }
         public Cell(string name, int price, int quantity)
         {
-            Name = name;
-            Price = price;
             Quantity = quantity;
+            Detail = new DetailForWarehouse(name, price);
         }
-        public void SetQuantity(int quantity)
+        public void AddQuantity(int quantity)
         {
             if (quantity >= 0)
             {
-                Quantity = quantity;
+                Quantity += quantity;
+            }
+        }
+        public void RemoveQuantity(int quantity)
+        {
+            if (quantity >= 0)
+            {
+                Quantity -= quantity;
             }
         }
     }
