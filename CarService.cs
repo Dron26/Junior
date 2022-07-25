@@ -130,7 +130,6 @@ namespace CarService
             Client client = _clientsQueue.Dequeue();
             int sleepTimeStep = 80;
             int countStepForSleep = 7;
-            int count = 0;
             int price;
             bool isReplacementDetailDishonest = false;
             Detail brokenDetail;
@@ -574,7 +573,8 @@ namespace CarService
 
         public bool TryGetRandomDetail(out Cell randomDetail)
         {
-            bool isAvaidle = false; randomDetail = null;
+            bool isAvaidle = false; 
+            randomDetail = null;
             int number;
             int count;
             int countDetail = 0;
@@ -701,9 +701,9 @@ namespace CarService
 
     class Car
     {
-        public Detail BrokenDetail { get; private set; }
+        private Dictionary<int, Detail> _details = new();
 
-        private Dictionary<int, Detail> Details = new();
+        public Detail BrokenDetail { get; private set; }
 
         public Car()
         {
@@ -719,8 +719,8 @@ namespace CarService
         private void SetBrokenDetail()
         {
             Random random = new();
-            int mumber = random.Next(0, Details.Count);
-            BrokenDetail = Details[mumber];
+            int mumber = random.Next(0, _details.Count);
+            BrokenDetail = _details[mumber];
         }
 
         private void SetDetails()
@@ -739,7 +739,7 @@ namespace CarService
 
             for (int i = 0; i < DetailsName.Count; i++)
             {
-                Details.Add(i, (new Detail(DetailsName[i])));
+                _details.Add(i, (new Detail(DetailsName[i])));
             }
         }
     }
