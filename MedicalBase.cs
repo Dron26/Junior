@@ -235,7 +235,7 @@ namespace LINQ.InformationOnCriminals
             return findClients.ToList();
         }
 
-        public List<Client> SortByAge()
+        private List<Client> SortByAge()
         {
             Console.Clear();
             Console.WriteLine("Please enter the client's age: ");
@@ -255,7 +255,7 @@ namespace LINQ.InformationOnCriminals
             }
         }
 
-        public List<Client> SortByDisease()
+        private List<Client> SortByDisease()
         {
             Console.Clear();
             Console.WriteLine("Please enter the client's disease: ");
