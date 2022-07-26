@@ -125,7 +125,7 @@ namespace LINQ.InformationOnCriminals
 
             while (isWorking)
             {
-                Console.WriteLine("  База Данных преступников  \n  1 - Поиск преступника   \n  2 - Выход");
+                Console.WriteLine("  База Данных преступников  \n  1 - Поиск преступника   \n Любая другая кнопка - Выход");
                 userInput = Console.ReadLine();
 
                 switch (userInput)
@@ -133,7 +133,7 @@ namespace LINQ.InformationOnCriminals
                     case "1":
                         FindFelons();
                         break;
-                    case "2":
+                    default:
                         isWorking = false;
                         break;
                 }
@@ -149,22 +149,15 @@ namespace LINQ.InformationOnCriminals
 
             if (parametrs != null)
             {
-                var resultNationalities = from Felon felon in _felons
-                                          where felon.Nationality.Contains(parametrs.Nationality)
-                                          select felon;
-                resultNationalities.ToList();
-
-                var resultHeight = from Felon felon in resultNationalities
+                var selectFelons = from Felon felon in _felons
+                                   where felon.Nationality.Contains(parametrs.Nationality)
                                    where felon.Height <= parametrs.MaxHight & felon.Height >= parametrs.MinHight
-                                   select felon;
-                resultHeight.ToList();
-
-                var resultWeight = from Felon felon in resultHeight
                                    where felon.Weight <= parametrs.MaxWeight & felon.Weight >= parametrs.MinWeight
+                                   where felon.IsDetention==false
                                    select felon;
-                resultWeight.ToList();
-
-                ShowResultFind(resultWeight.ToList());
+                selectFelons.ToList();
+                
+                ShowResultFind(selectFelons.ToList());
             }
         }
         private void ShowNationality()
@@ -187,7 +180,6 @@ namespace LINQ.InformationOnCriminals
 
         private ParametrsFelon GetParametrsFindFelon()
         {
-            string userInput;
             string nationality;
             int maxWeight = 0;
             int minWeight = 0;
@@ -215,11 +207,6 @@ namespace LINQ.InformationOnCriminals
                     Console.WriteLine("  Введите диапазон поиска по росту, максимальный рост см :");
 
                     isUserInputNumber = int.TryParse(Console.ReadLine(), out maxHight);
-
-                    if (isUserInputNumber != true)
-                    {
-                        isUserInputNumber = false;
-                    }
                 }
 
                 if (isUserInputNumber == true)
@@ -227,11 +214,6 @@ namespace LINQ.InformationOnCriminals
                     Console.WriteLine("  Введите диапазон поиска по весу, минимальный вес кг :");
 
                     isUserInputNumber = int.TryParse(Console.ReadLine(), out minWeight);
-
-                    if (isUserInputNumber != true)
-                    {
-                        isUserInputNumber = false;
-                    }
                 }
 
                 if (isUserInputNumber == true)
@@ -239,11 +221,6 @@ namespace LINQ.InformationOnCriminals
                     Console.WriteLine("  Введите диапазон поиска по весу, максимальный вес кг :");
 
                     isUserInputNumber = int.TryParse(Console.ReadLine(), out maxWeight);
-
-                    if (isUserInputNumber != true)
-                    {
-                        isUserInputNumber = false;
-                    }
                 }
 
                 if (isUserInputNumber == false)
@@ -262,7 +239,6 @@ namespace LINQ.InformationOnCriminals
 
         private void ShowResultFind(List<Felon> resultWeight)
         {
-
             if (resultWeight.Count > 0)
             {
                 Console.WriteLine("\n  По введенным данным есть совпадения");
