@@ -8,18 +8,18 @@ namespace LINQ.InformationOnCriminals
     {
         static void Main(string[] args)
         {
-            Database criminalBase = new();
+            Database criminalBase = new Database();
             criminalBase.Work();
         }
     }
 
     class Database
     {
-        private List<Felon> _felons = new();
+        private List<Felon> _felons = new List<Felon>();
 
         public Database()
         {
-            Random random = new();
+            Random random = new Random ();
             int numberName;
             int numberSurname;
             int numberNationality;
@@ -35,7 +35,7 @@ namespace LINQ.InformationOnCriminals
             int valueForDetention;
             bool isDetention = false;
 
-            List<string> names = new()
+            List<string> names = new List<string>()
             {
                 "Александр",
                 "Михаил",
@@ -70,7 +70,7 @@ namespace LINQ.InformationOnCriminals
 
             };
 
-            List<string> surnames = new()
+            List<string> surnames = new List<string>()
             {
                 "Иванов",
                 "Васильев",
@@ -89,7 +89,7 @@ namespace LINQ.InformationOnCriminals
                 "Степанов",
             };
 
-            List<string> nationalities = new()
+            List<string> nationalities = new List<string>()
             {
                 "Русский",
                 "Татар",
@@ -162,7 +162,7 @@ namespace LINQ.InformationOnCriminals
         }
         private void ShowNationality()
         {
-            List<string> nationalities = new()
+            List<string> nationalities = new List<string>()
             {
                 "Русский",
                 "Татар",
