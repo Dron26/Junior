@@ -57,7 +57,6 @@ namespace LINQ.InformationOnCriminals
                 "Богдан",
                 "Федор",
                 "Андрей",
-
             };
 
             List<string> surnames = new List<string>()
@@ -90,7 +89,6 @@ namespace LINQ.InformationOnCriminals
 
             for (int i = 0; i < countFelon; i++)
             {
-
                 numberName = random.Next(names.Count);
                 numberSurname = random.Next(surnames.Count);
                 numberArticle = random.Next(articlesViolate.Count); ;
@@ -112,6 +110,7 @@ namespace LINQ.InformationOnCriminals
                 default:
                     break;
             }
+            
             Console.WriteLine("\n  Нажмите любую кнопку для завершения работы рограммы");
             Console.ReadLine();
             Console.Clear();
