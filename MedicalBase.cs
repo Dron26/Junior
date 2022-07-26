@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -766,7 +766,7 @@ namespace LINQ.InformationOnCriminals
 
             while (isWork==true)
             {
-                Console.WriteLine("  Medical Base \n\n  1 -  Sorting clients by Name\n  2 -  Sorting clients by Surname\n  3 -  Sorting clients by Age  \n  Any other button - Exite");
+                Console.WriteLine("  Medical Base \n\n  1 -  Sorting clients by Name\n  2 -  Sorting clients by Surname\n  3 -  Sorting clients by Age \n  4 -  Sorting clients by Disease \n  Any other button - Exite");
 
                 switch (Console.ReadLine())
                 {
@@ -778,6 +778,9 @@ namespace LINQ.InformationOnCriminals
                         break;
                     case "3":
                         ShowClients(SortByAge());
+                        break;
+                    case "4":
+                        ShowClients(SortByDisease());
                         break;
                     default:
                         isWork = false;
@@ -855,6 +858,19 @@ namespace LINQ.InformationOnCriminals
             {
                 return null;
             }         
+        }
+
+        public List<Client> SortByDisease()
+        {
+            Console.Clear();
+            Console.WriteLine("Please enter the client's disease: ");
+            string disease = Console.ReadLine();
+
+            var findClients = from Client client in _clients
+                              where client.Disease.Contains(disease)
+                              select client;
+
+            return findClients.ToList();
         }
     }
 
