@@ -154,7 +154,7 @@ namespace LINQ.InformationOnCriminals
 
     class Handler
     {
-        DataBase _groupClients= new DataBase();
+        private DataBase _groupClients= new DataBase();
         
         public void Work()
         {
