@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LINQ.PlayerBase
+namespace LINQ.CansWithStews
 {
     internal class Program
     {
@@ -41,7 +41,7 @@ namespace LINQ.PlayerBase
                 productionDate = productionDate.AddDays(productionDay);
                 expirationDate = productionDate.AddDays(maxExpirationDate);
 
-                _cansStews.Add(new CanWithStews(names[numberName], productionDate, expirationDate, maxExpirationDate));
+                _cansStews.Add(new CanWithStews(names[numberName], productionDate, expirationDate));
             }
         }
 
@@ -87,22 +87,19 @@ namespace LINQ.PlayerBase
         public string Name { get; private set; }
         public DateTime ProductionDate { get; private set; }
         public DateTime ExpirationDate { get; private set; }
-        public int ShelfLife { get; private set; }
 
-        public Can(string name, DateTime productionDate, DateTime expirationDate, int shelfLife)
+        public Can(string name, DateTime productionDate, DateTime expirationDate)
         {
             Name = name;
             ProductionDate = productionDate;
             ExpirationDate = expirationDate;
-            ShelfLife = shelfLife;
         }
     }
 
     class CanWithStews : Can
     {
-        public CanWithStews(string name, DateTime roductionDate, DateTime expirationDate,int shelfLife) :base(name, roductionDate, expirationDate, shelfLife)
+        public CanWithStews(string name, DateTime roductionDate, DateTime expirationDate) :base(name, roductionDate, expirationDate)
         {            
         }
     }
 }
-
