@@ -134,7 +134,7 @@ namespace LINQ.Soldier
 
         public void Work()
         {
-            var selectParametrsSoldiers = _soldiers.Select(s => new { s.FullName, s.Title }).ToList();
+            var selectParametrsSoldiers = _soldiers.Select(soldier => new { soldier.FullName, soldier.Title }).ToList();
 
             foreach (var soldier in selectParametrsSoldiers)
             {
