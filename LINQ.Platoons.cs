@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LINQ.Platoons
+namespace LINQ.Soldiers
+
 {
     internal class Program
     {
@@ -12,91 +13,33 @@ namespace LINQ.Platoons
             barrack.Work();
         }
     }
+
     class Barrack
     {
-        private List<Platoon> _platoons = new List<Platoon>();
-
+        private List<Soldier> _firstPlatoon = new();
+        private List<Soldier> _secondPlatoon = new();
         public Barrack()
         {
-            CreatePlatoons();
+            _firstPlatoon = CreateSoldiers();
+            _secondPlatoon = CreateSoldiers();
         }
 
         public void Work()
         {
-            int umberFirstPlatoon = 0;
-            int numberSecondPlatoon = 1;
+            var selectSoldiers = _secondPlatoon.Union(_firstPlatoon.Where(soldier => soldier.Name.ToUpper().StartsWith("Б"))).ToList();
+            var firstPlatoon = _firstPlatoon.Except(selectSoldiers).ToList();
 
-            var selectSoldiers = _platoons[umberFirstPlatoon].GetSoldiers().Where(soldier => soldier.Name.ToUpper().StartsWith("Б")).ToList();
+            _firstPlatoon.Clear();
+            _secondPlatoon.Clear();
 
-            for (int i = 0; i < selectSoldiers.Count; i++)
-            {
-                for (int j = 0; j < _platoons[umberFirstPlatoon].GetSoldiers().Count; j++)
-                {
-                    if (selectSoldiers[i] == _platoons[umberFirstPlatoon].GetSoldiers()[j])
-                    {
-                        _platoons[numberSecondPlatoon].GetSoldiers().Add(_platoons[umberFirstPlatoon].GetSoldiers()[j]);
-                        _platoons[umberFirstPlatoon].GetSoldiers().RemoveAt(i);
-                        j--;
-                        break;
-                    }                    
-                }               
-            }
+            TransferSoldier(firstPlatoon, _firstPlatoon);
+            TransferSoldier(selectSoldiers, _secondPlatoon);
         }
 
-        private void CreatePlatoons()
+        private List<Soldier> CreateSoldiers()
         {
-            int countPlatoom = 2;
-            int countSoldiersInPlatoon = 15;
-
-            for (int i = 0; i < countPlatoom; i++)
-            {
-                _platoons.Add(new Platoon(countSoldiersInPlatoon));
-            }
-        }
-    }
-    class Soldier
-    {
-        public string Name { get; protected set; }
-        public string Surname { get; protected set; }
-        public string Weapon { get; protected set; }
-        public string Title { get; protected set; }
-        public DateTime ServiceLife { get; protected set; }
-
-        public Soldier(string name, string surname, string weapon, string title, DateTime serviceLife)
-        {
-            Name = name;
-            Surname = surname;
-            Weapon = weapon;
-            Title = title;
-            ServiceLife = serviceLife;
-        }
-    }
-
-    class Platoon
-    {
-        private List<Soldier> _soldiers = new();
-
-        public int CountSoldiers { get { return _soldiers.Count; } }
-
-        public Platoon(int countSoldiers)
-        {
-            CreateSoldiers(countSoldiers);
-        }
-
-        public List<Soldier> GetSoldiers()
-        {
-            List<Soldier> selectSoldier = new List<Soldier>();
-
-            foreach (Soldier soldier in _soldiers)
-            {
-                selectSoldier.Add(soldier);
-            }
-
-            return selectSoldier;
-        }
-
-        private void CreateSoldiers(int countSoldiers)
-        {
+            List<Soldier> tempGroupSoldiers = new();
+            int countSoldiers = 15;
             Random random = new Random();
             int numberName;
             string name;
@@ -196,13 +139,36 @@ namespace LINQ.Platoons
 
                 soldierServiceLife = new DateTime(2022, 01 + random.Next(maxSoldierServiceLife), 01);
 
-                _soldiers.Add(new Soldier(name, surname, weapon, title, soldierServiceLife));
+                tempGroupSoldiers.Add(new Soldier(name, surname, weapon, title, soldierServiceLife));
             }
 
+            return tempGroupSoldiers;
+        }
+
+        public void TransferSoldier(List<Soldier> tempPlatoon , List<Soldier> platoon)
+        {
+            foreach (Soldier soldier in tempPlatoon)
+            {
+                platoon.Add(soldier);
+            }
         }
     }
 
+    class Soldier
+    {
+        public string Name { get; protected set; }
+        public string Surname { get; protected set; }
+        public string Weapon { get; protected set; }
+        public string Title { get; protected set; }
+        public DateTime ServiceLife { get; protected set; }
 
-
+        public Soldier(string name, string surname, string weapon, string title, DateTime serviceLife)
+        {
+            Name = name;
+            Surname = surname;
+            Weapon = weapon;
+            Title = title;
+            ServiceLife = serviceLife;
+        }
+    }
 }
-
