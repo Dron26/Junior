@@ -16,41 +16,118 @@ namespace LINQ.Soldiers
 
     class Barrack
     {
-        private List<Soldier> _firstPlatoon = new();
-        private List<Soldier> _secondPlatoon = new();
+        private List<Platoon> _platoons = new List<Platoon>();
+
         public Barrack()
         {
-            _firstPlatoon = CreateSoldiers();
-            _secondPlatoon = CreateSoldiers();
+            CreatePlatoons();
         }
 
         public void Work()
         {
-            var selectSoldiers = _secondPlatoon.Union(_firstPlatoon.Where(soldier => soldier.Name.ToUpper().StartsWith("Б"))).ToList();
-            var firstPlatoon = _firstPlatoon.Except(selectSoldiers).ToList();
+            int numberFirstPlatoon = 0;
+            int numberSecondPlatoon = 1;
 
-            _firstPlatoon.Clear();
-            _secondPlatoon.Clear();
+            var secondPlatoon = _platoons[numberSecondPlatoon].GetSoldiers().Union(_platoons[numberFirstPlatoon].GetSoldiers().Where(soldier => soldier.Name.ToUpper().StartsWith("Б"))).ToList();
+            var firstPlatoon = _platoons[numberFirstPlatoon].GetSoldiers().Except(secondPlatoon).ToList();
 
-            TransferSoldier(firstPlatoon, _firstPlatoon);
-            TransferSoldier(selectSoldiers, _secondPlatoon);
+            _platoons[numberFirstPlatoon].RemoveSoldiers();
+            _platoons[numberSecondPlatoon].RemoveSoldiers();
+
+            TransferSoldier(firstPlatoon.ToList(), numberFirstPlatoon);
+            TransferSoldier(secondPlatoon.ToList(), numberSecondPlatoon);
         }
 
-        private List<Soldier> CreateSoldiers()
+        private void CreatePlatoons()
         {
-            List<Soldier> tempGroupSoldiers = new();
-            int countSoldiers = 15;
-            Random random = new Random();
-            int numberName;
-            string name;
-            int numberSurname;
+            int countPlatoom = 2;
+            int countSoldiersInPlatoon = 15;
+
+            for (int i = 0; i < countPlatoom; i++)
+            {
+                _platoons.Add(new Platoon(countSoldiersInPlatoon));
+            }
+        }
+
+        private void TransferSoldier(List<Soldier> tempPlatoon,int number)
+        {
+            foreach (Soldier soldier in tempPlatoon)
+            {
+                _platoons[number].AddSoldier(soldier);
+            }
+        }
+    }
+
+    class Soldier
+    {
+        public string Name { get; protected set; }
+        public string Surname { get; protected set; }
+        public string Weapon { get; protected set; }
+        public string Title { get; protected set; }
+        public DateTime ServiceLife { get; protected set; }
+
+        public Soldier(string name, string surname, string weapon, string title, DateTime serviceLife)
+        {
+            Name = name;
+            Surname = surname;
+            Weapon = weapon;
+            Title = title;
+            ServiceLife = serviceLife;
+        }
+    }
+
+    class Platoon
+    {
+        private List<Soldier> _soldiers = new();
+        private Random random = new Random();
+        public int CountSoldiers { get { return _soldiers.Count; } }
+
+        public Platoon(int countSoldiers)
+        {
+            CreateSoldiers(countSoldiers);
+        }
+
+        public List<Soldier> GetSoldiers()
+        {
+            List<Soldier> selectSoldier = new List<Soldier>();
+
+            foreach (Soldier soldier in _soldiers)
+            {
+                selectSoldier.Add(soldier);
+            }
+
+            return selectSoldier;
+        }
+
+        private void CreateSoldiers(int countSoldiers)
+        {
+            string name;           
             string surname;
-            int numberWeapons;
             string weapon;
-            int numberTitle;
             string title;
             int maxSoldierServiceLife = 12;
             DateTime soldierServiceLife = new DateTime();
+
+            for (int j = 0; j < countSoldiers; j++)
+            {                
+                name = GetSoldierName();
+                surname = GetSoldierSurname();
+                weapon = GetSoldierTitles();
+                title = GetSoldierWeapon();
+                soldierServiceLife = new DateTime(2022, 01 + random.Next(maxSoldierServiceLife), 01);
+
+                _soldiers.Add(new Soldier(name, surname, weapon, title, soldierServiceLife));
+            }
+        }
+
+        public void RemoveSoldiers ()
+        {
+            _soldiers.Clear();
+        }
+
+        private string GetSoldierName()
+        {
+            int numberName;
 
             List<string> names = new List<string>()
             {
@@ -75,6 +152,14 @@ namespace LINQ.Soldiers
                 "Федор",
                 "Андрей",
             };
+            numberName = random.Next(names.Count);
+
+            return names[numberName];
+        }
+
+        private string GetSoldierSurname()
+        {
+            int numberSurname;
 
             List<string> surnames = new List<string>()
             {
@@ -94,6 +179,15 @@ namespace LINQ.Soldiers
                 "Григорьев",
                 "Степанов",
             };
+            
+            numberSurname = random.Next(surnames.Count);
+
+            return surnames[numberSurname];
+        }
+
+        private string GetSoldierTitles()
+        {
+            int numberTitle;
 
             List<string> titles = new List<string>()
             {
@@ -113,6 +207,14 @@ namespace LINQ.Soldiers
                 "Полковник",
                 "Генерал-майор",
             };
+            numberTitle = random.Next(titles.Count);
+
+            return titles[numberTitle];
+        }
+
+        private string GetSoldierWeapon()
+        {
+            int numberWeapons;
 
             List<string> weapons = new List<string>()
             {
@@ -124,51 +226,14 @@ namespace LINQ.Soldiers
                 "5,45-мм ручной пулемет Калашникова РПК",
                 "7,62-мм снайперская винтовка Драгунова СВД "
             };
+            numberWeapons = random.Next(weapons.Count);
 
-            for (int j = 0; j < countSoldiers; j++)
-            {
-                numberName = random.Next(names.Count);
-                numberSurname = random.Next(surnames.Count);
-                name = names[numberName];
-                surname = surnames[numberSurname];
-                numberWeapons = random.Next(weapons.Count);
-                weapon = weapons[numberWeapons];
-
-                numberTitle = random.Next(titles.Count);
-                title = titles[numberTitle];
-
-                soldierServiceLife = new DateTime(2022, 01 + random.Next(maxSoldierServiceLife), 01);
-
-                tempGroupSoldiers.Add(new Soldier(name, surname, weapon, title, soldierServiceLife));
-            }
-
-            return tempGroupSoldiers;
+            return weapons[numberWeapons];
         }
 
-        public void TransferSoldier(List<Soldier> tempPlatoon , List<Soldier> platoon)
+        public void AddSoldier(Soldier soldier)
         {
-            foreach (Soldier soldier in tempPlatoon)
-            {
-                platoon.Add(soldier);
-            }
-        }
-    }
-
-    class Soldier
-    {
-        public string Name { get; protected set; }
-        public string Surname { get; protected set; }
-        public string Weapon { get; protected set; }
-        public string Title { get; protected set; }
-        public DateTime ServiceLife { get; protected set; }
-
-        public Soldier(string name, string surname, string weapon, string title, DateTime serviceLife)
-        {
-            Name = name;
-            Surname = surname;
-            Weapon = weapon;
-            Title = title;
-            ServiceLife = serviceLife;
+            _soldiers.Add(soldier);
         }
     }
 }
